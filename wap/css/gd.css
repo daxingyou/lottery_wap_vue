@@ -1,0 +1,300 @@
+.color1 {
+  background: #e60d39 !important;
+  // border: 1px solid #e60d39 !important; 
+}
+
+.color_money {
+  color: #e60d39 !important
+}
+
+.active1 {
+  border: 1px solid red !important
+}
+
+.active8 {
+  background: #f3a518 !important;
+  color: #ff6000
+}
+.active4{
+	border: 1px solid #e60d39 !important;
+}
+.active4 .odd{
+	  background: #e60d39 !important;
+    color: #fff !important;
+}
+.odd {
+  color: #999999 !important
+}
+
+.color4 {
+  background: white !important
+}
+
+.active3 {
+  border: 1px solid #e60d39 !important
+}
+
+.active3 span:nth-child(2) {
+  background: #e60d39 !important;
+  color: #fff !important
+}
+
+/*.colortitle {
+  background: -webkit-radial-gradient(#555, #2a2926) !important;
+  color: #fff !important
+}*/
+
+.color_shuzi {
+  background: #f3a518 !important;
+  color: #fff !important
+}
+
+.my_1 {
+  background: url(../../wap/images/my1.png) no-repeat !important
+}
+
+.my_1 p {
+  color: #fff !important
+}
+
+.nav_o_1 li {
+  background: #e60d39
+}
+
+.mu-tab-active {
+  background: #e60d39 !important
+}
+
+.border_left {
+  border-color: #f2a51b !important
+}
+
+.run_lottery {
+  background: #f3a518 !important;
+  color: #fff !important
+}
+button{
+  outline: none;
+}
+.run_lottery_b {
+  color: #676767 !important;
+  // background: white !important;
+  // border: 1px solid red;
+  // border-top-left-radius: .21rem
+}
+.logo {
+  width: 6rem;
+  height: 1.8rem;
+  background: url(../../wap/images/guang_da.png) no-repeat !important;
+  background-size: 100% 100% !important
+}
+.logoali {
+	background: url(../../wap/images/logogd.png)!important;
+	background-size: 100% 100%!important
+}
+.bdlogo{
+ 
+  background: url(../../wap/images/gd/banner.png) no-repeat !important;
+  background-size: 100% 100% !important
+}
+
+.zhanhao {
+  background: url(//jkysxh.cn/img/wap/gd/sm_avatar_gd.png) !important;
+  background-size: 100% 100% !important
+}
+
+.loc {
+  background: url(//jkysxh.cn/img/wap/gd/lock_my_gd.png) !important;
+  background-size: 100% 100% !important
+}
+
+.openEyes {
+  background: url(//jkysxh.cn/img/wap/images/eye2.png) no-repeat !important;
+  background-size: 100% 100% !important;
+  height: .55rem !important;
+  width: 1rem !important;
+  top: 1rem !important
+}
+.avatar {
+  background-image: url(../../wap/images/avatar.png);
+  background-repeat: no-repeat
+}
+
+.avatar_bg {
+  background-image: url(../../wap/images/avatar_bg.jpg);
+  background-repeat: no-repeat
+}
+
+
+.lock_money {
+  background-image: url(//jkysxh.cn/img/wap/gd/lock_money.png);
+  background-repeat: no-repeat
+}
+
+.hook {
+  background-image: url(//jkysxh.cn/img/wap/gd/hook.png);
+  background-repeat: no-repeat
+}
+
+.recommend {
+  background: url(../../wap/images/recommend.png) no-repeat !important;
+  background-size: 100% 100% !important
+}
+
+.lock_my {
+  background-image: url(//jkysxh.cn/img/wap/gd/lock_my_gd.png);
+  background-repeat: no-repeat
+}
+.note_my {
+  background-image: url(//jkysxh.cn/img/wap/gd/note_my.png);
+  background-repeat: no-repeat
+}
+.sm_avatar {
+  background-image: url(//jkysxh.cn/img/wap/gd/sm_avatar_gd.png);
+  background-repeat: no-repeat
+}
+.my_about {
+  background-image: url(//jkysxh.cn/img/wap/gd/my_about.png);
+  background-repeat: no-repeat
+}
+.service_my {
+  background-image: url(//jkysxh.cn/img/wap/gd/service_my_gd.png);
+  background-repeat: no-repeat
+}
+
+.money_my {
+   background-image: url(//jkysxh.cn/img/wap/gd/money_my_gd.png);
+   background-repeat: no-repeat
+ }
+
+.history_my {
+  background-image: url(//jkysxh.cn/img/wap/gd/history_my.png);
+  background-repeat: no-repeat
+}
+
+.my_bg {
+  background-image: url(//jkysxh.cn/img/wap/gd/bg2_gd.jpg);
+  color: #ffda22;
+}
+
+.ali_activey_a {
+  background-image: url(../../wap/images/guo_qing_gd_a.jpg)
+}
+
+.ali_activey_b {
+  background-image: url(../../wap/images/qian_dao_gd_a.jpg)
+
+}
+
+.ali_activey_c {
+  background-image: url(../../wap/images/login_hao_li_gd_a.jpg)
+
+}
+
+.my_about_tron_logo {
+  background-image: url(../../wap/images/gd/my-about-logo.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+header .header_login button {
+  background-color: #d30c34 !important;
+}
+
+header .header_login button {
+  border: solid 1px #c10b31 !important;
+}
+
+header .header_login .gdusername {
+  background-color: #d30c34 !important;
+  border: solid 1px #c10b31 !important;
+}
+
+.gdcolor {
+  border: none !important;
+}
+
+.headerLogo {
+  background: url(../../wap/images/headerlogogd.png) no-repeat !important;
+  background-size: 100% !important;
+}
+
+.gdcolor {
+  background-color: #c10b31 !important;
+}
+
+.gdcolor1 {
+  color: red !important;
+}
+
+.changebg {
+  background: url('../../wap/images/gd/bg.jpg');
+}
+
+.yen_currency {
+  background-image: url(//jkysxh.cn/img/wap/images/yen_currency.png);
+  background-repeat: no-repeat
+}
+.clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+  }
+  .arrow-down {
+    background: url("../../wap/images/arrow-down.png") no-repeat right;
+    }
+  .clearfix { display: inline-block; }
+  * html .clearfix { height: 1%; }
+  .clearfix { display: block; }
+
+.xiaoxia{
+	background:url(//jkysxh.cn/img/wap/gd/xiaoxiala2.png) no-repeat;
+  background-size: 100% 100%;
+ }
+ #lottery{
+	background: url(../../../wap/images/gd/alicj.png) no-repeat;
+	}
+#signin{
+
+		background: url(../../../wap/images/gd/signin.png) no-repeat;
+	}
+	.iponenumberq{
+  background: url(//jkysxh.cn/img/wap/gd/findnumber1.png) !important;
+  background-size: 100% 100% !important
+}
+
+.iponenumberyes{
+  background: url(//jkysxh.cn/img/wap/gd/findnumber2.png) !important;
+  background-size: 100% 100% !important
+}
+.zhanhaofind{
+
+  background: url(//jkysxh.cn/img/wap/gd/finduser.png) !important;
+  background-size: 100% 100% !important
+
+}
+.colorbie{
+	color:#e60d39 !important;
+}
+#sdhd{
+	background: url(../../../wap/images/gd/gdsd.jpg) no-repeat;
+	background-size: 100% 100%;
+}
+#sdhd .lingqu{
+	top:22.5rem!important;
+}
+#sdhd .lingqu div span:nth-child(1){
+	color: black!important;
+}
+#sdhd .lingqu a{
+	background: #fffc00!important;
+	color: black!important;
+}
+#nowyear{
+	background: url(../../../wap/images/gd/newyear.png) no-repeat;
+	background-size: 100% 100%;
+	height: 37.36rem!important;
+}

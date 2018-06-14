@@ -1,0 +1,325 @@
+[
+  {
+    "code": 200,
+    "msg": "请求成功",
+    "type": "success"
+  },
+  {
+    "code": 201,
+    "msg": "更新成功",
+    "type": "success",
+    "alert": true
+  },
+  {
+    "code": 500,
+    "msg": "空指针异常",
+    "type": "error"
+  },
+  {
+    "code": 501,
+    "msg": "授权失败",
+    "type": "error"
+  },
+  {
+    "code": 502,
+    "msg": "参数错误",
+    "type": "error"
+  },
+  {
+    "code": 503,
+    "msg": "更新失败",
+    "type": "error"
+  },
+  {
+    "code": 504,
+    "msg": "SQL异常",
+    "type": "error"
+  },
+  {
+    "code": 505,
+    "msg": "新增成功",
+    "type": "success",
+    "alert": true
+  },
+  {
+    "code": 506,
+    "msg": "新增失败",
+    "type": "error"
+  },
+  {
+    "code": 507,
+    "msg": "删除成功",
+    "type": "success",
+    "alert": true
+  },
+  {
+    "code": 508,
+    "msg": "删除失败",
+    "type": "error"
+  },
+  {
+    "code": 509,
+    "msg": "登出成功",
+    "type": "success",
+    "alert": true
+  },
+  {
+    "code": 510,
+    "msg": "密码不匹配",
+    "type": "error"
+  },
+  {
+    "code": 511,
+    "msg": "没有绑定银行卡",
+    "type": "error"
+  },
+  {
+    "code": 512,
+    "msg": "旧密码错误",
+    "type": "error"
+  },
+  {
+    "code": 2007,
+    "msg": "支付密码错误",
+    "type": "error"
+  },
+  {
+    "code": 514,
+    "msg": "获取数据失败",
+    "type": "error"
+  },
+  {
+    "code": 515,
+    "msg": "登陆成功",
+    "alert": true
+  },
+  {
+    "code": 516,
+    "msg": "登陆失败",
+    "type": "error"
+  },
+  {
+    "code": 517,
+    "msg": "用户余额不足",
+    "type": "error"
+  },
+  {
+    "code": 518,
+    "msg": "系统内部错误",
+    "type": "error"
+  },
+  {
+    "code": 519,
+    "msg": "银行卡号已经存在",
+    "type": "error"
+  },
+  {
+    "code": 520,
+    "msg": "无数据",
+    "type": "error"
+  },
+  {
+    "code": 2004,
+    "msg": "该账号已存在",
+    "type": "error"
+  },
+  {
+    "code": 2001,
+    "msg": "登陆失败,账号或密码错误",
+    "type": "error"
+  },
+  {
+    "code": 523,
+    "msg": "登陆失败,用户已在线",
+    "type": "error"
+  },
+  {
+    "code": 2002,
+    "msg": "登陆失败,用户不存在",
+    "type": "error"
+  },
+  {
+    "code": 4001,
+    "msg": "sessionid不同步或者用户已被踢线",
+    "type": "error"
+  },
+  {
+    "code": 526,
+    "msg": "投注成功",
+    "type": "success",
+    "alert": true
+  },
+  {
+    "code": 527,
+    "msg": "投注失败",
+    "type": "error"
+  },
+  {
+    "code": 528,
+    "msg": "添加成功",
+    "type": "success",
+    "alert": true
+  },
+  {
+    "code": 529,
+    "msg": "添加失败",
+    "type": "error"
+  },
+  {
+    "code": 530,
+    "msg": "提现成功",
+    "type": "success",
+    "alert": true
+  },
+  {
+    "code": 531,
+    "msg": "提现失败",
+    "type": "error"
+  },
+  {
+    "code": 532,
+    "msg": "注册成功",
+    "type": "success",
+    "alert": true
+  },
+  {
+    "code": 533,
+    "msg": "注册失败",
+    "type": "error"
+  },
+  {
+    "code": 534,
+    "msg": "帐号可用",
+    "type": "error"
+  },
+  {
+    "code": 535,
+    "msg": "sessionId不能为空",
+    "type": "error"
+  },
+  {
+    "code": 536,
+    "msg": "usersId不能为空",
+    "type": "error"
+  },
+  {
+    "code": 537,
+    "msg": "充值失败",
+    "type": "error"
+  },
+  {
+    "code": 538,
+    "msg": "用户已被禁用",
+    "type": "error"
+  },
+  {
+    "code": 539,
+    "msg": "用户没有拥有此游戏",
+    "type": "error"
+  },
+  {
+    "code": 540,
+    "msg": "该游戏已封盘，禁止下注",
+    "type": "error"
+  },
+  {
+    "code": 541,
+    "msg": "下注金额小于单注最小金额",
+    "type": "error"
+  },
+  {
+    "code": 542,
+    "msg": "下注金额大于单注最大金额",
+    "type": "error"
+  },
+  {
+    "code": 543,
+    "msg": "下注总额大于单期最高限额",
+    "type": "error"
+  },
+  {
+    "code": 544,
+    "msg": "两面盘玩法不允许对买",
+    "type": "error"
+  },
+  {
+    "code": 545,
+    "msg": "存在未审核订单情况下不允许入款",
+    "type": "error"
+  },
+  {
+    "code": 546,
+    "msg": "获取期数有误",
+    "type": "error"
+  },
+  {
+    "code": 547,
+    "msg": "该游戏未开盘",
+    "type": "error"
+  },
+  {
+    "code": 548,
+    "msg": "下注金额不能小于等于0元",
+    "type": "error"
+  },
+  {
+    "code": 549,
+    "msg": "重复操作",
+    "type": "error"
+  },
+  {
+    "code": 550,
+    "msg": "获取支付链接失败",
+    "type": "error"
+  },
+  {
+    "code": 551,
+    "msg": "选的号码的个数少于最低个数",
+    "type": "error"
+  },
+  {
+    "code": 552,
+    "msg": "选的号码的个数大于最高个数",
+    "type": "error"
+  },
+  {
+    "code": 566,
+    "msg": "彩种正在封盘维护",
+    "type": "error"
+  },
+  {
+    "code": 563,
+    "msg": "游戏维护中",
+    "type": "error"
+  },
+  {
+    "code": 518,
+    "msg": "系统内部错误",
+    "type": "error"
+  },
+  {
+    "code": 564,
+    "msg": "游戏创建失败",
+    "type": "error"
+  },
+  {
+    "code": 565,
+    "msg": "游戏进入失败",
+    "type": "error"
+  },
+  {
+    "code": 567,
+    "msg": "游戏转账失败",
+    "type": "error"
+  },
+  {
+    "code": 554,
+    "msg": "彩票余额不足",
+    "type": "error"
+  },
+  {
+    "code": 568,
+    "msg": "AG获取余额失败",
+    "type": "error"
+  }
+]

@@ -1,0 +1,333 @@
+.color1 {
+	background: #146cdc!important
+}
+
+.color_money {
+	color: #999!important
+}
+.color_money1{
+	color:#6993d5;
+}
+.active1 {
+	border: 1px solid red!important
+}
+
+.active8 {
+	background: #1f97f6!important;
+	color: #ff6000
+}
+.active4{
+	border: 1px solid #3261d8 !important;
+}
+.active4 .odd{
+	  background: #3261d8 !important;
+    color: #fff !important;
+}
+.odd {
+	color: #999999!important
+}
+
+.color4 {
+	background: white!important
+}
+
+.active3 {
+	border: 1px solid #3261d8!important
+}
+
+.active3 span:nth-child(2) {
+	background: #3261d8!important;
+	color: #fff!important;
+
+}
+
+.colortitle {
+	background: #666 !important;
+	color: #fff!important;
+	border: none!important;
+}
+
+.color_shuzi {
+	color: #fff!important
+}
+
+.my_1 {
+	background: url(../../wap/images/blue1.png) no-repeat!important
+}
+
+.my_1 p {
+	color: #9ab4ed!important
+}
+
+.nav_o_1 li {
+	background: #1366dc
+}
+
+.mu-tab-active {
+	background: #166ade!important
+}
+
+.logo {
+	width: 6rem;
+	height: 1.8rem;
+	background: url(../../wap/images/agcai/header-logo.png) no-repeat!important;
+	background-size: 100% 100%!important
+}
+
+.ziji {
+	background-image: url(../../wap/images/info.png)!important;
+	background-repeat: no-repeat;
+	background-size: 100% 100%!important
+}
+
+.hist {
+	background-image: url(//jkysxh.cn/img/wap/images/account.png)!important;
+	background-repeat: no-repeat;
+	background-size: 100% 100%!important
+}
+
+.pass {
+	background: url(../../wap/images/password.png) no-repeat!important;
+	background-size: 100% 100%!important
+}
+
+.recommend {
+	background: url(../../wap/images/recommend.png) no-repeat!important;
+	background-size: 100% 100%!important
+}
+
+.kefu {
+	background: url(../../wap/images/service.png) no-repeat!important;
+	background-size: 100% 100%!important
+}
+
+.dengchu {
+	background: url(../../wap/images/dc.png) no-repeat!important;
+	background-size: 100% 100%!important
+}
+
+.fffhui {
+	background: url(../../wap/images/fanhui.png) no-repeat!important;
+	background-size: 80% 90%!important
+}
+
+.game_login {
+	background: url(../../wap/images/game_login.png)
+}
+
+.wo_de {
+	background: url(../../wap/images/wo_de.png)
+}
+
+.ali_pc {
+	background-image: url(../../wap/images/H2.png)!important
+}
+
+.user_login {
+	background: url(../../wap/images/agcai/header-logo.png)!important
+}
+
+.logoali {
+	background: url(../../wap/images/agcai/header-logo.png)!important;
+	background-size: 100% 100%!important
+}
+.bdlogo{
+	background: url(../../wap/images/ali/banner.png)!important;
+	background-size: 100% 100%!important
+}
+/*.logoazhu {
+	background: url(../../wap/images/zhu.png)!important;
+	background-size: 100% 100%!important
+}*/
+
+.zhanhao {
+	background: url(//jkysxh.cn/img/wap/images/user_login.png)!important;
+	background-size: 100% 100%!important
+}
+.zhanhao1 {
+	background: url(../../wap/images/user2.png)!important;
+	background-size: 100% 100%!important
+}
+
+.loc {
+	background: url(//jkysxh.cn/img/wap/images/lock.png)!important;
+	background-size: 100% 100%!important
+}
+.loc1{
+	background: url(../../wap/images/lock2.png)!important;
+	background-size: 100% 100%!important
+}
+
+.openEyes {
+	background: url(//jkysxh.cn/img/wap/images/eye2.png) no-repeat!important;
+	background-size: 100% 100%!important;
+	height: .55rem!important;
+	width: 1rem!important;
+	top: 1rem!important
+
+}
+.my_about_tron_logo {
+  background-image: url(../../wap/images/agcai/header-logo.png);
+  background-repeat: no-repeat;
+}
+.avatar {
+	background-image: url(../../wap/images/avatar.png);
+	background-repeat: no-repeat
+}
+.avatar_bg {
+	background-image: url(../../wap/images/avatar_bg.jpg);
+	background-repeat: no-repeat
+}
+.e_mail {
+	background-image: url(../../wap/images/e_mail.png);
+	background-repeat: no-repeat
+}
+.yen_currency {
+  background-image: url(//jkysxh.cn/img/wap/images/yen_currency.png);
+  background-repeat: no-repeat
+}
+.lock_money {
+	background-image: url(//jkysxh.cn/img/wap/money_card.png);
+	background-repeat: no-repeat
+}
+.hook {
+	background-image: url(//jkysxh.cn/img/wap/hook.png);
+	background-repeat: no-repeat
+}
+.lock_my {
+	background-image: url(//jkysxh.cn/img/wap/lock_my.png);
+	background-repeat: no-repeat
+}
+.sm_avatar {
+	background-image: url(//jkysxh.cn/img/wap/sm_avatar.png);
+	background-repeat: no-repeat
+}
+.service_my {
+	background-image: url(//jkysxh.cn/img/wap/service_my.png);
+	background-repeat: no-repeat
+}
+.note_my {
+	background-image: url(//jkysxh.cn/img/wap/note_my.png);
+	background-repeat: no-repeat
+}
+.history_my {
+  background-image: url(//jkysxh.cn/img/wap/history_my.png);
+  background-repeat: no-repeat
+}
+.money_my {
+	background-image: url(//jkysxh.cn/img/wap/money_my.png);
+	background-repeat: no-repeat
+}
+.my_about {
+  background-image: url(//jkysxh.cn/img/wap/my_about.png);
+  background-repeat: no-repeat;
+}
+.my_bg {
+	background-image: url(//jkysxh.cn/img/wap/images/avatar_bg.jpg)!important;
+	color: #99c5f6;
+}
+
+.ali_activey_a {
+	background-image: url(../../wap/images/guo_qing_ali_a.jpg)
+}
+
+.ali_activey_b {
+	background-image: url(../../wap/images/login_hao_li_ali_a.jpg)
+}
+
+.ali_activey_c {
+	background-image: url(../../wap/images/qian_dao_ali_a.jpg)
+}
+
+.header .header_login button {
+	background-color: #2b5cc3!important;
+}
+
+header .header_login buttonr {
+	border: solid 1px #2754b2!important;
+}
+
+.headerLogo {
+	background: url(../../wap/images/headerlogoal.png) no-repeat!important;
+	background-size: 100%!important;
+}
+
+.changebg{
+  background: url('../../wap/images/ali/bg.jpg');
+}
+
+.pay-arrow-right-icon {
+	background: url("../../wap/images/28.png") no-repeat center;
+	background-size: contain;
+}
+
+.clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+  }
+  .arrow-down {
+	background: url("../../wap/images/arrow-down.png") no-repeat right;
+  }
+  .clearfix { display: inline-block; }
+  * html .clearfix { height: 1%; }
+  .clearfix { display: block; }
+
+.xiaoxia{
+	
+background:url(//jkysxh.cn/img/wap/ali/xiaoxiala2.png) no-repeat;
+  background-size: 100% 100%;
+ }
+
+#signin{
+	background: url(../../../wap/images/ali/signin.png) no-repeat;
+}
+.alibgimg{
+	background: url(../../../wap/images/ali/qdp.png) no-repeat;
+	background-size: 100% 100%;
+}
+
+.iponenumberq{
+  background: url(//jkysxh.cn/img/wap/ali/findnumber1.png) !important;
+  background-size: 100% 100% !important
+}
+
+.iponenumberyes{
+  background: url(//jkysxh.cn/img/wap/ali/findnumber2.png) !important;
+  background-size: 100% 100% !important
+}
+.zhanhaofind{
+
+  background: url(//jkysxh.cn/img/wap/ali/finduser.png) !important;
+  background-size: 100% 100% !important
+
+}
+#lottery{
+	height: 44.3733333rem!important;
+	background: url(../../../wap/images/ali/alicj.png) no-repeat;
+	background-size:100% 100%;
+	}
+	
+.pointer{
+	background: url(../../../wap/images/ali/pointer.png) no-repeat;
+					background-size:100% 100%;
+}
+.circle{
+	background: url(../../../wap/images/ali/circle.png) no-repeat;
+				background-size:100% 100%;
+}
+.zhuanpan{
+	background: url(../../../wap/images/ali/turntable.png) no-repeat;
+			background-size:100% 100%;
+}
+#sdhd{
+	background: url(../../../wap/images/ali/alisd.jpg) no-repeat;
+	background-size: 100% 100%;
+}
+#nowyear{
+	background: url(../../../wap/images/ali/newyear.png) no-repeat;
+	background-size: 100% 100%;
+}

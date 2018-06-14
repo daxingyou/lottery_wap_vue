@@ -1,0 +1,38 @@
+.luzhu-box .mu-tabs{
+  background-color: white;
+  color: black;
+}
+
+.luzhu-box .mu-tab-text{
+  color: #333;
+  font-size: 0.7rem
+}
+
+.mu-tab-text {
+  white-space: nowrap;
+}
+
+.luzhu-box .mu-tab-link-highlight,.mg-games .mu-tab-link-highlight{
+  display: none;
+}
+
+.luzhu-box .mu-tab-link,.mg-games .mu-tab-link{
+  min-height: 1.5rem;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.luzhu-box .mu-tab-active{
+  background-color:#d3e8f1!important;
+}
+
+.mg-games .mu-tabs{
+  background-color: #7990ab;
+}
+
+.mg-games .mu-tab-active{
+  background-color:#0157bf;
+}
+
+.swal2-popup .swal2-title{
+  font-size: 1rem;
+}

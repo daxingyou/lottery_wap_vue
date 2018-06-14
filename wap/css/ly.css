@@ -1,0 +1,381 @@
+.color1 {
+  background: #c33949 !important;
+  border: 1px solid #c33949 !important; 
+}
+.color_money {
+  color: #999999 !important
+}
+.active1 {
+  border: 1px solid red !important
+}
+.active8 {
+  background: #f3a518 !important;
+  color: #ff6000
+}
+.active4{
+	border: 1px solid #c33949 !important;
+}
+.active4 .odd{
+	  background: #c33949 !important;
+    color: #fff !important;
+}
+.odd {
+  color: #999999 !important
+}
+.color4 {
+  background: white !important
+}
+.active3 {
+  border: 1px solid #c33949 !important
+}
+.active3 span:nth-child(2) {
+  background: #c33949 !important;
+  color: #fff !important
+}
+.colortitle {
+  background: #666;
+  color: #ccc;
+}
+.color_shuzi {
+  background: #f3a518 !important;
+  color: #fff !important
+}
+.my_1 {
+  background: url(../../wap/images/my1.png) no-repeat !important
+}
+.my_1 p {
+  color: #fff !important
+}
+
+.nav_o_1 li {
+  background: #c33949
+}
+
+.mu-tab-active {
+  background: #c33949 !important
+}
+
+.border_left {
+  border-color: #f2a51b !important
+}
+
+.run_lottery {
+  background: #f3a518 !important;
+  color: #fff !important
+}
+button{
+  outline: none;
+}
+.run_lottery_b {
+  color: #676767 !important;
+  /* background: white !important;
+  border: 1px solid red;
+  border-top-left-radius: .21rem */
+}
+.logo {
+  width: 6rem;
+  height: 1.8rem;
+  background: url('../images/pn/panda.png') no-repeat !important;
+  background-size: 100% 100% !important
+}
+
+.container .logo {
+  width: 290px!important;
+  height: 85px!important;
+  background-size: 100% 100% !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+.logo>img{
+  width:100%
+}
+.logoali{
+  background-size: 100% 100%!important;
+}
+#signin{
+		height: 29.29066667rem!important;
+		background: url(../../../wap/images/pn/signin.png) no-repeat;
+	}
+.bdlogo{
+ 
+  background: url(../../wap/images/gd/banner.png) no-repeat !important;
+  background-size: 100% 100% !important
+}
+
+.ziji {
+  background: url(../../wap/images/redziji.png) no-repeat !important;
+  background-size: 100% 100% !important
+}
+
+.hist {
+  background: url(../../wap/images/redhist.png) no-repeat !important;
+  background-size: 100% 100% !important
+}
+
+.pass {
+  background: url(../../wap/images/redpass.png) no-repeat !important;
+  background-size: 100% 100% !important
+}
+
+.kefu {
+  background: url(../../wap/images/redkefu.png) no-repeat !important;
+  background-size: 100% 100% !important
+}
+
+.dengchu {
+  background: url(../../wap/images/reddeng.png) no-repeat !important;
+  background-size: 100% 100% !important
+}
+
+.fffhui {
+  background: url(../../wap/images/fffhui.png) no-repeat !important;
+  background-size: 80% 90% !important
+}
+
+.gd_gb_app {
+  background: url(../../wap/images/gd_app.png) no-repeat !important;
+  background-size: 1rem .851rem !important
+}
+
+/*!*跳转到电脑端*!*/
+.gd_gb_pc {
+  background: url(../../wap/images/gd_pc.png) no-repeat !important;
+  background-size: 1rem .851rem !important
+}
+
+/*!*客服*!*/
+.gd_gb_service {
+  background: url(../../wap/images/gd_kf.png) no-repeat !important;
+  background-size: 1rem .851rem !important
+}
+
+.game_login {
+  background-image: url(../../wap/images/game_login_gd.png)
+}
+
+.wo_de {
+  background-image: url(../../wap/images/wo_de_gd.png)
+}
+
+.ali_pc {
+  background-image: url(../../wap/images/gd_pc.png)
+}
+
+.user_login {
+  background: url(../../wap/images/logo_login.png) !important
+}
+
+.zhanhao {
+  background: url('//jkysxh.cn/img/wap/pn/user_login.png') !important;
+  background-size: 100% 100% !important;
+}
+
+.loc {
+  background: url('//jkysxh.cn/img/wap/pn/lock.png') !important;
+  background-size: 100% 100% !important;
+}
+.iponenumberq{
+  background: url(../../wap/images/pn/iponenumberq.png) !important;
+  background-size: 100% 100% !important;
+}
+
+.iponenumberyes{
+  background: url(../../wap/images/pn/iponenumberyes.png) !important;
+  background-size: 100% 100% !important
+}
+.iponenumpassword{
+	width: 0.9rem!important;
+	background: url(../../wap/images/gd/locknumber.png) !important;
+  background-size: 100% 100% !important
+
+}
+.openEyes {
+  background: url(//jkysxh.cn/img/wap/images/eye2.png) no-repeat !important;
+  background-size: 100% 100% !important;
+  height: .55rem !important;
+  width: 1rem !important;
+  top: 1rem !important
+}
+
+.avatar {
+  background-image: url(../../wap/images/avatar.png);
+  background-repeat: no-repeat
+}
+
+.avatar_bg {
+  background-image: url(../../wap/images/avatar_bg.jpg);
+  background-repeat: no-repeat
+}
+
+.e_mail {
+  background-image: url(../../wap/images/e_mail.png);
+  background-repeat: no-repeat
+}
+
+.lock_money {
+  background-image: url('//jkysxh.cn/img/wap/pn/lock_money.png');
+  background-repeat: no-repeat
+}
+
+.hook {
+  background-image: url('//jkysxh.cn/img/wap/pn/hook.png');
+  background-repeat: no-repeat
+}
+
+.recommend {
+  background: url(../../wap/images/recommend.png) no-repeat !important;
+  background-size: 100% 100% !important
+}
+
+.lock_my {
+  background-image: url('//jkysxh.cn/img/wap/pn/lock_my.png');
+  background-repeat: no-repeat;
+}
+.note_my {
+  background-image: url('//jkysxh.cn/img/wap/pn/note_my.png');
+  background-repeat: no-repeat;
+}
+.sm_avatar {
+  background-image: url('//jkysxh.cn/img/wap/pn/sm_avatar.png');
+  background-repeat: no-repeat;
+}
+.my_about {
+  background-image: url('//jkysxh.cn/img/wap/pn/my_about.png');
+  background-repeat: no-repeat;
+}
+.service_my {
+  background-image: url('//jkysxh.cn/img/wap/pn/service_my.png');
+  background-repeat: no-repeat;
+}
+
+.money_my {
+   background-image: url('//jkysxh.cn/img/wap/pn/money_my.png');
+   background-repeat: no-repeat;
+ }
+
+.history_my {
+  background-image: url('//jkysxh.cn/img/wap/pn/history_my.png');
+  background-repeat: no-repeat;
+}
+
+.my_bg {
+  background-image: url('//jkysxh.cn/img/wap/pn/bg2_gd.jpg');
+  color: #fff;
+}
+
+.ali_activey_a {
+  background-image: url(../../wap/images/guo_qing_gd_a.jpg)
+}
+
+.ali_activey_b {
+  background-image: url(../../wap/images/qian_dao_gd_a.jpg)
+
+}
+
+.ali_activey_c {
+  background-image: url(../../wap/images/login_hao_li_gd_a.jpg)
+
+}
+
+.my_about_tron_logo {
+  background-image: url(../../wap/images/pn/my-about-logo.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+header .header_login button {
+  background: linear-gradient(to bottom, rgba(253,204,67,1) 0%, rgba(254,218,127,1) 50%, rgba(248,181,0,1) 51%, rgba(253,181,0,1) 100%)!important;
+  border: solid 1px #aa4c18 !important;
+  color: #a42e3c!important;
+}
+
+header .header_login .gdusername {
+  background: linear-gradient(to bottom, rgba(253,204,67,1) 0%, rgba(254,218,127,1) 50%, rgba(248,181,0,1) 51%, rgba(253,181,0,1) 100%)!important;
+  border: solid 1px #aa4c18 !important;
+  /* border: solid 1px #c10b31 !important; */
+}
+
+.headerLogo {
+  background: url(../../wap/images/headerlogogd.png) no-repeat !important;
+  background-size: 100% !important;
+}
+
+.gdcolor {
+  background-color: #c33949 !important;
+  border: none !important;
+}
+
+.gdcolor1 {
+  color: #c33949 !important;
+}
+
+.changebg {
+  background: url('../../wap/images/gd/bg.jpg');
+}
+
+.yen_currency {
+  background-image: url(../../wap/images/yen_currency.png);
+  background-repeat: no-repeat
+}
+
+.clearfix:after {
+	visibility: hidden;
+	display: block;
+	font-size: 0;
+	content: " ";
+	clear: both;
+	height: 0;
+  }
+
+  .arrow-down {
+    background: url("../images/arrow-down.png") no-repeat right;
+    }
+
+  .clearfix { display: inline-block; }
+  * html .clearfix { height: 1%; }
+  .clearfix { display: block; }
+  
+.bgImg{
+	background: url('../../../wap/images/gd/user.png') no-repeat;
+	background-size: 100% 100%;
+  }
+  
+.xiaoxia{
+	background:url('//jkysxh.cn/img/wap/gd/xiaoxiala2.png') no-repeat;
+  background-size: 100% 100%;
+ }
+
+ .adsInfo1 {
+  background: url('../images/pn/ads1.jpg');
+  width: 95%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  height: 5rem;
+ }
+
+ .adsInfo2 {
+  content: url('../images/pn/ads2.jpg');
+  width: 95%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  height: 5rem;;
+ }
+
+ .ads1 {
+  background: url('../images/pn/ads1more.jpg');
+  width: 94%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  height: 8rem;
+ }
+
+ .ads2 {
+  background: url('../images/pn/ads2more.jpg');
+  width: 94%;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  height: 8rem;
+ }
+.mg-play{
+  background-color: #c33949!important
+}
