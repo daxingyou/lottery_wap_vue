@@ -192,5 +192,31 @@ export default [
         "ctype": 10
       }
     ]
+  },
+  {
+    "title": "北京快乐8",
+    "game_code": "180",
+    "typecode": "0",
+    "tabs": [
+      {
+        title: "总和数",
+        "ctype": 1
+      }, {
+        title: "总和大小",
+        "ctype": 2
+      }, {
+        title: "总和单双",
+        "ctype": 3
+      }, {
+        title: "五行",
+        "ctype": 4
+      }, {
+        title: "前后和",
+        "ctype": 5
+      }, {
+        title: "单双和",
+        "ctype": 6
+      }
+    ]
   }
 ]

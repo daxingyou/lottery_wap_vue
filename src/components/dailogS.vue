@@ -21,7 +21,7 @@
       </div>
       <footer class="color1" >
         <span @click="xiazhu">确认</span>
-        <span @click="sendParent">取消</span>
+        <span @click="hideDailog">取消</span>
       </footer>
     </div>
   </div>
@@ -43,8 +43,7 @@
 </template>
 <script>
 //import {getOid,getUrl} from '../api'
-import promptbox from '../components/promptbox';
-import { mapActions } from "vuex";
+import promptbox from '../components/promptbox'
 export default {
   data() {
     return {
@@ -64,15 +63,18 @@ export default {
 	    panelShow:false,
 	    promptboxshow:true,
 	    successshow:false,
-	    promptsystem:''
+	    promptsystem:'',
+	    gametoken1:JSON.parse(sessionStorage.getItem('gametoken'))
     }
+  },
+  mounted() {
   },
 	components: {
 	  promptbox
 	},
   props: {
     typecode: {
-      type: Number|String
+      type: Number
     },
     lotteryM: {
       type: Array
@@ -104,22 +106,22 @@ export default {
     this.odd.number = this.odd.number.substr(0, this.odd.number.length - 1);
 
     switch (this.typecode) {
-      case '2032':
+      case 2032:
         this.title_r = "任选二";
         this.lengthss = this.kadun(this.lengths, 2);
         this.zonghe = this.lengthss * this.money
         break;
-      case '2035':
+      case 2035:
       	this.title_r = "任选三"
         this.lengthss = this.kadun(this.lengths, 3);
         this.zonghe = this.lengthss * this.money
         break;
-      case '2038':
+      case 2038:
         this.title_r = "任选四"
         this.lengthss = this.kadun(this.lengths, 4);
         this.zonghe = this.lengthss * this.money
         break;
-      case '2039':
+      case 2039:
         this.title_r = "任选五"
         this.lengthss = this.kadun(this.lengths, 5);
         this.zonghe = this.lengthss * this.money
@@ -152,12 +154,14 @@ export default {
       case 808:
         this.title_r = "四中一"
         this.lengthss = this.kadun(this.lengths, 4);
+        console.log(this.lengths);
         this.zonghe = this.lengthss * this.money
         break;
     }
   },
+  beforeUpdate() {
+  },
   methods: {
-    ...mapActions(["CONTINUOUS_CODE"]),
     sendParent(){
       this.$emit("listenToChildEvent",true);
     },
@@ -167,14 +171,118 @@ export default {
       }
       return factorial(m) / factorial(m - s) / factorial(s)
     },
-    xiazhu() {  
-      this.loading = false;
+    xiazhu() {
       this.sendParent();
-      let { game_code, round, type_code, typecode } = this;
-      this.CONTINUOUS_CODE({ game_code, round, type_code, typecode, betmoney:this.money, number:this.odd.number  }).then(
-        res => {this.sendParent();}
-      );
+      this.loading=false;
+      let oidInfo = sessionStorage.getItem('im_token');
+      this.odd.oid = oidInfo;
+      this.odd.game_code = this.game_code;
+      this.odd.type_code = this.type_code;
+      this.odd.round = this.round;
+      this.odd.typecode = this.typecode;
+      this.odd.betmoney = this.money;
+      this.odd.token = this.gametoken1;
+      this.$http.post(`${getUrl()}/inup`, JSON.stringify(this.odd), {}).then(res => {
+      	this.successshow=false
+				if(res.data.msg==4003){
+	        		this.$router.push({
+	            	path: '/weihu'
+	          })
+	        }
+        if ((res.data) instanceof Array) {
+          this.promptboxtext = '恭喜下注成功'
+          this.panelShow =true
+          this.successshow=true
+          this.sendParent();
+          this.gametoken=res.data[0].token;	sessionStorage.setItem('gametoken', JSON.stringify(res.data[0].token))
+          setTimeout(this.hideDailog, 1200);
+        } else if (res.data.msg == 4001) {
+					sessionStorage.clear();
+          this.promptboxtext = '您的账户已失效，请重新登录'
+          this.panelShow = true
+          this.sendParent();
+          setTimeout(this.kadun, 1200);
+          setTimeout(() => {
+          	this.$router.push({
+            	path: '/login'
+          	})
+          },1000)
+          setTimeout(this.hideDailog,1000);
+        }else if (res.data.msg == 5001) {
+          this.promptboxtext = "下注项为空或金额不正确，请重试"+ res.data.maxbetamount;
+          this.panelShow = true;
+          this.sendParent();
+          setTimeout(this.hideDailog, 1200);
+        }else if (res.data.msg == 5002) {
+         	this.erreocode='5002'
+					this.panelShow = true
+					this.promptsystem = "该游戏正在封盘，可前往其他游戏！"
+          this.sendParent()
+          setTimeout(this.hideDailog, 1200);
+        }else if (res.data.msg == 5003) {
+          this.erreocode='5003'
+					this.panelShow = true
+					this.promptsystem = "因网络原因，本次投注未成功，请稍后重试！"
+          this.sendParent();
+          setTimeout(this.hideDailog, 1200);
+        }else if (res.data.msg == 5004) {
+          this.promptboxtext = "余额不足";
+          this.panelShow = true;
+         	this.sendParent();
+          setTimeout(this.hideDailog, 1200);
+        }else if (res.data.msg == 6002) {
+          this.promptboxtext = "投注球数过多";
+          this.panelShow = true;
+          this.sendParent();
+          setTimeout(this.hideDailog, 1200);
+        }else if(res.data.msg ==3001){
+        	this.erreocode='3001'
+					this.panelShow = true
+					this.promptsystem = "下注内容未开放，请尝试其他游戏！"
+					this.sendParent();
+          setTimeout(this.hideDailog, 1200);
+        }else if(res.data.msg ==3002){
+        	this.erreocode='3002'
+					this.panelShow = true
+					this.promptsystem = "下注内容未开放，请尝试该游戏的其他玩法!"
+					this.sendParent();
+          setTimeout(this.hideDailog, 1200);
+        }else if(res.data.msg ==3003){
+        	this.erreocode='3003'
+					this.panelShow = true
+					this.promptsystem = "抱歉，网络原因导致下注未成功，请重新尝试!"
+					this.sendParent();
+          setTimeout(this.hideDailog, 1200);
+        } else if(res.data.msg==5008){
+          this.erreocode='5008'
+					this.panelShow = true
+					this.promptsystem = "网络繁忙，请稍等在试"
+					this.sendParent();
+					setTimeout(this.hideDailog, 1200);
+        }
+        else if(res.data.msg==5009){
+          this.promptboxtext = "提交太频繁，请稍等在试";
+          this.panelShow = true
+          this.sendParent();
+          setTimeout(this.hideDailog, 1200);
+        }
+        else if(res.data.msg==5010){
+          this.promptboxtext = "请勿重复提交";
+          this.panelShow = true
+          sessionStorage.setItem('gametoken', JSON.stringify(""))
+          this.sendParent();
+          setTimeout(this.hideDailog, 1200);
+        }
+      }).catch(err => {
+          	console.log(err)
+          })
+    },
+    hideDailog() {
+
+
+      this.$store.dispatch('hideDailogS')
     }
+
   },
 }
 </script>

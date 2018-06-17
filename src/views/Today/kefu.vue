@@ -3,7 +3,7 @@
 	<div>		
 		<i-header class="color1" title="在线客服"></i-header>
 		<div style="height: 26.5rem;width: 100%;position: fixed;left: 0;bottom: 0;">
-       	 	<iframe ref="kefu" :src="kufuUrl" style="height:100%;width: 100%;border: 0;" ></iframe>
+       	 	<iframe ref="kefu" :src="kefuUrl" style="height:100%;width: 100%;border: 0;" ></iframe>
 		</div>
         <div style="position: fixed; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 2;" v-show='urlqingqiu'>
         	 <div class="loading">
@@ -22,20 +22,11 @@
 	</div>
 </template>
 <script>
-  import iHeader from '../../components/i-header'
-  import { mapActions } from "vuex";
+	import iHeader from '../../components/i-header'
 	export default {
 		components: {
 			iHeader
-    },
-    methods:{
-      ...mapActions(["SITEBASIC_INFO"]),
-      site(){
-        this.SITEBASIC_INFO().then(res => {
-          this.kufuUrl = res.kufuUrl
-        })
-      }
-    },
+		},
 		data(){
 			return {
 				kufuUrl: '',
@@ -45,7 +36,11 @@
 			}
 		},
 		created() {
-
+			
+			this.$http.post(`${getUrl()}/user/getCustomerService`, "").then(res => {
+				this.urlqingqiu = false
+				this.kefuUrl = res.data.kefu;
+			})
 		},
 	}
 </script>

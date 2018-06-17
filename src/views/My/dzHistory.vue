@@ -122,6 +122,11 @@
 	      successshow:false,
       }
     },
+    props: {
+      zMoney: {
+        type: Number
+      }
+    },
     methods: {
     	pasgedayshow(){
     		this.pageshow=!this.pageshow
@@ -144,9 +149,9 @@
       	this.pagenmb = false
       	this.pageshow =false
         let params = {}
-        params.oid = this.$store.state.userData.sessionId;
+        params.oid = sessionStorage.getItem('im_token');
         params.gameName = 'mgswallet';
-        this.$http.post(`/externalGame/record`, JSON.stringify(params)).then(res => {
+        this.$http.post(`${getUrl()}/externalGame/record`, JSON.stringify(params)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;
@@ -189,7 +194,7 @@
      		this.pagenum =index
      		this.$refs.pagecolor[index-1].style='color:#196fde;'
         let prams = {};
-        let oidinfo = this.$store.state.userData.sessionId;
+        let oidinfo = sessionStorage.getItem('im_token');
         prams.oid = oidinfo;
         if(this.isShow3){
         	prams.type = 0;
@@ -203,7 +208,7 @@
         prams.page = index;
        	prams.number = this.pageNumber;
 				prams.time = this.pageday;
-        this.$http.post(`/externalGame/record`, JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/externalGame/record`, JSON.stringify(prams)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;
@@ -239,7 +244,7 @@
       	}
       	this.$refs.pagecolor[this.pagenum-1].style='color:#196fde;'
         let prams = {};
-        let oidinfo = this.$store.state.userData.sessionId;
+        let oidinfo = sessionStorage.getItem('im_token');
         prams.oid = oidinfo;
         if(this.isShow3){
         	prams.type = 0;
@@ -250,7 +255,7 @@
         prams.page = this.pagenum;
        	prams.number = this.pageNumber;
 				prams.time = this.pageday;
-        this.$http.post(`/externalGame/record`, JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/externalGame/record`, JSON.stringify(prams)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;
@@ -286,7 +291,7 @@
       	}
 				this.$refs.pagecolor[this.pagenum-1].style='color:#196fde;'
         let prams = {};
-        let oidinfo = this.$store.state.userData.sessionId;
+        let oidinfo = sessionStorage.getItem('im_token');
         prams.oid = oidinfo;
         if(this.isShow3){
         	prams.type = 0;
@@ -297,7 +302,7 @@
         prams.page = this.pagenum;
        	prams.number = this.pageNumber;
 				prams.time = this.pageday;
-        this.$http.post(`/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;

@@ -112,7 +112,7 @@
     },
     data() {
       return {
-      	isWan:this.$store.state.userData.username?this.$store.state.userData.username:'游客',
+      	isWan:sessionStorage.getItem('im_username')?sessionStorage.getItem('im_username'):'游客',
       	bgSrc:'',
       	agbgimg:'',
       	isUser:false,
@@ -151,7 +151,7 @@
            window.location.href=sessionStorage.getItem("im_sportsurl");
          }
          else {
-            // 发送后退的状态
+           this.$store.dispatch('goBack') // 发送后退的状态
            // 后退
            this.$router.go(-1)
          }
@@ -167,9 +167,9 @@
     			}else{
     				this.showCurtion=true
     			let params ={};
-						params.oid = this.$store.state.userData.sessionId;
-							params.oid = this.$store.state.userData.sessionId;
-							this.$http.post(`/Wh_H5_Api/RedirectLogin`, JSON.stringify(params)).then(res => {
+						params.oid = sessionStorage.getItem('im_token');
+							params.oid = sessionStorage.getItem('im_token');
+							this.$http.post(`${getUrl()}/Wh_H5_Api/RedirectLogin`, JSON.stringify(params)).then(res => {
 									this.showCurtion=false
 		         	if(res.data.msg == 4001){
 				          sessionStorage.clear();
@@ -218,7 +218,7 @@
 					console.log()
       		this.successshow=false
 	        let params ={};
-	        params.oid = this.$store.state.userData.sessionId;
+	        params.oid = sessionStorage.getItem('im_token');
 	        params.amount = this.nut
 	        params.type = this.transferType;
 				// kong 或者 0
@@ -307,15 +307,15 @@
             if(this.transferType == 0){
               this.chessMoney = parseFloat(this.chessMoney) +  parseFloat(res.data.data.amount);
               this.balance = parseFloat(this.balance) - parseFloat(res.data.data.amount);
-							
+							sessionStorage.setItem('im_money', this.balance)
             }else if(this.transferType == 1){
               this.chessMoney =parseFloat(this.chessMoney) - parseFloat(res.data.data.amount);
               this.balance =  parseFloat(this.balance) + parseFloat(res.data.data.amount);
-              
+              sessionStorage.setItem('im_money', this.balance)
             }
             this.chessMoney = this.chessMoney.toFixed(2);
             this.balance = this.balance.toFixed(2);
-            
+            sessionStorage.setItem('im_money', this.balance)
             this.panelShow = true;
            
             this.isEdzh=false
@@ -326,7 +326,7 @@
 				let game_code = '';
         this.game_code = game_code;
         //试玩账号权限限制
-        this.isWan = this.$store.state.userData.username
+        this.isWan = sessionStorage.getItem('im_username')
         if (this.isWan == '游客') {
         	this.mask=false;
         	this.isOpen=false;
@@ -342,7 +342,7 @@
         } else if (/activity*/.test(path)) {
           this.$router.push(path)
         } else {
-          if (!this.$store.state.userData.sessionId) {
+          if (!sessionStorage.getItem("im_token")) {
            this.$router.push("/login")
             }
            else {
@@ -359,8 +359,8 @@
 
     created() {
 				let params = {};
-     		params.oid = this.$store.state.userData.sessionId;
-				this.$http.post(`/Wh_H5_Api/index`, JSON.stringify(params)).then(res => {
+     		params.oid = sessionStorage.getItem('im_token');
+				this.$http.post(`${getUrl()}/Wh_H5_Api/index`, JSON.stringify(params)).then(res => {
 						if(res.data.msg == 7001){
 							this.promptboxtext = res.data.info;
 			          this.panelShow = true;
@@ -374,8 +374,8 @@
        		this.showCurtion=false
        	}else{
        	let params = {};
-     		params.oid = this.$store.state.userData.sessionId;
-				this.$http.post(`/Wh_H5_Api/getWhInfo`, JSON.stringify(params)).then(res => {
+     		params.oid = sessionStorage.getItem('im_token');
+				this.$http.post(`${getUrl()}/Wh_H5_Api/getWhInfo`, JSON.stringify(params)).then(res => {
 				this.showCurtion = false;
 				 if(res.data.msg == 4001){
 			          sessionStorage.clear();
@@ -398,7 +398,7 @@
 		          }
 			          this.chessMoney = Number(res.data.balance.whBalance).toFixed(2);			          
 			          this.balance = Number(res.data.balance.userBalance).toFixed(2);
-			          
+			          sessionStorage.setItem('im_money', this.balance)
 		        }else if(res.data.msg == 7001){
 			          this.promptboxtext = res.data.info;
 			          this.panelShow = true;

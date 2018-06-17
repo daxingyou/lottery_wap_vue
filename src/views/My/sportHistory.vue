@@ -13,7 +13,7 @@
         <div v-for='item in ite.content' style="margin-bottom:.5rem;">
           <div>
             <span>{{item.betDate}}</span>
-            <span class="more" style="background: url(@{public_img}/images/more003.png) no-repeat;background-size: 100% 100%;"></span>
+            <span class="more"></span>
           </div>
           <div>
             <span>
@@ -180,6 +180,11 @@ export default {
       history: []
     };
   },
+  props: {
+    zMoney: {
+      type: Number
+    }
+  },
   methods: {
     getFormatDate(timeStr, dateSeparator, timeSeparator) {
       dateSeparator = dateSeparator ? dateSeparator : "-";
@@ -220,7 +225,7 @@ export default {
       // }
       this.finished111 = [];
       let params = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem('im_token');
       params.oid = oidinfo;
       params.type = 0;
       params.page = 1;
@@ -233,14 +238,26 @@ export default {
       params.is_total = 0;
       params.pc = 1;
       this.$http
-        .post(`/SportFunction/getBetInfo`, JSON.stringify(params))
+        .post(`${getUrl()}/SportFunction/getBetInfo`, JSON.stringify(params))
         .then(res => {
-          this.finished = res.data.data || [];
-          console.log(this.finished);
-          if (this.finished.length == 0) {
-            this.kon = true;
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
           } else {
-            this.kon = false;
+            this.finished = res.data.data || [];
+            console.log(this.finished);
+            if (this.finished.length == 0) {
+              this.kon = true;
+            } else {
+              this.kon = false;
+            }
           }
         });
       this.isShow3 = true;
@@ -260,14 +277,31 @@ export default {
       this.pagenmb = false;
       this.pageshow = false;
       let params = {};
-      params.oid = this.$store.state.userData.sessionId;
+      params.oid = sessionStorage.getItem('im_token');
       params.is_total = 1;
       params.pc = 1;
       this.$http
-        .post(`/SportFunction/getBetInfo`, JSON.stringify(params))
+        .post(`${getUrl()}/SportFunction/getBetInfo`, JSON.stringify(params))
         .then(res => {
-          if (res.data.msg == 2006) {
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else if (res.data.msg == 7001) {
+            this.panelShow = true;
+            this.promptboxtext = "获取注单失败";
+            setTimeout(() => {
+              this.panelShow = false;
+            }, 1000);
+          } else if (res.data.msg == 2006) {
             this.history = res.data.data || [];
+            console.log(this.history);
             if (this.history.length == 0) {
               this.kon = true;
             } else {
@@ -288,7 +322,7 @@ export default {
       }
       this.finished111 = [];
       let params = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem('im_token');
       params.oid = oidinfo;
       params.type = 1;
       params.page = 1;
@@ -301,19 +335,31 @@ export default {
       params.is_total = 0;
       params.pc = 1;
       this.$http
-        .post(`/SportFunction/getBetInfo`, JSON.stringify(params))
+        .post(`${getUrl()}/SportFunction/getBetInfo`, JSON.stringify(params))
         .then(res => {
           this.daywin = false;
-          this.finished11 = res.data.data || [];
-          if (this.finished11.length >= 20) {
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
             setTimeout(() => {
-              this.$refs.yijies[19].style = "margin-bottom:2rem;";
-            }, 10);
-          }
-          if (this.finished11.length == 0) {
-            this.kon = true;
-          } else {
-            this.kon = false;
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else if (res.data.msg == 2006) {
+            this.finished11 = res.data.data || [];
+            if (this.finished11.length >= 20) {
+              setTimeout(() => {
+                this.$refs.yijies[19].style = "margin-bottom:2rem;";
+              }, 10);
+            }
+            if (this.finished11.length == 0) {
+              this.kon = true;
+            } else {
+              this.kon = false;
+            }
           }
         });
       this.isShow = false;
@@ -330,7 +376,7 @@ export default {
       }
       this.finished111 = [];
       let params = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem('im_token');
       params.oid = oidinfo;
       // params.type = 1;
       params.page = 1;
@@ -342,11 +388,27 @@ export default {
       params.is_total = 0;
       params.pc = 1;
       this.$http
-        .post(`/SportFunction/getBetInfo`, JSON.stringify(params))
+        .post(`${getUrl()}/SportFunction/getBetInfo`, JSON.stringify(params))
         .then(res => {
           console.log(res.data.data);
           this.daywin = false;
-          if (res.data.msg == 2006) {
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else if (res.data.msg == 7001) {
+            this.panelShow = true;
+            this.promptboxtext = "获取注单失败";
+            setTimeout(() => {
+              this.panelShow = false;
+            }, 1000);
+          } else if (res.data.msg == 2006) {
             this.finished11 = res.data.data || [];
             if (this.finished11.length > 19) {
               setTimeout(() => {
@@ -389,7 +451,7 @@ export default {
       this.pagenum = index;
       this.$refs.pagecolor[index - 1].style = "color:#196fde;";
       let prams = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem('im_token');
       prams.oid = oidinfo;
       if (this.isShow3) {
         prams.type = 0;
@@ -404,15 +466,30 @@ export default {
       prams.number = this.pageNumber;
       prams.time = this.pageday;
       this.$http
-        .post(`/getinfo/getMissedOrHasClosedBet`, JSON.stringify(prams))
+        .post(
+          `${getUrl()}/getinfo/getMissedOrHasClosedBet`,
+          JSON.stringify(prams)
+        )
         .then(res => {
-          if (this.isShow3) {
-            this.finished = res.data.res;
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            if (this.isShow3) {
+              this.finished = res.data.res;
+            }
+            if (this.isShow5) {
+              this.finished11 = res.data.res;
+            }
+            this.pageshow = false;
           }
-          if (this.isShow5) {
-            this.finished11 = res.data.res;
-          }
-          this.pageshow = false;
         });
     },
     //上一页
@@ -429,7 +506,7 @@ export default {
       }
       this.$refs.pagecolor[this.pagenum - 1].style = "color:#196fde;";
       let prams = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem('im_token');
       prams.oid = oidinfo;
       if (this.isShow3) {
         prams.type = 0;
@@ -441,13 +518,28 @@ export default {
       prams.number = this.pageNumber;
       prams.time = this.pageday;
       this.$http
-        .post(`/getinfo/getMissedOrHasClosedBet`, JSON.stringify(prams))
+        .post(
+          `${getUrl()}/getinfo/getMissedOrHasClosedBet`,
+          JSON.stringify(prams)
+        )
         .then(res => {
-          if (this.isShow3) {
-            this.finished = res.data.res;
-          }
-          if (this.isShow5) {
-            this.finished11 = res.data.res;
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            if (this.isShow3) {
+              this.finished = res.data.res;
+            }
+            if (this.isShow5) {
+              this.finished11 = res.data.res;
+            }
           }
         });
     },
@@ -464,7 +556,7 @@ export default {
       }
       this.$refs.pagecolor[this.pagenum - 1].style = "color:#196fde;";
       let prams = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem('im_token');
       prams.oid = oidinfo;
       if (this.isShow3) {
         prams.type = 0;
@@ -476,13 +568,28 @@ export default {
       prams.number = this.pageNumber;
       prams.time = this.pageday;
       this.$http
-        .post(`/getinfo/getMissedOrHasClosedBet`, JSON.stringify(prams))
+        .post(
+          `${getUrl()}/getinfo/getMissedOrHasClosedBet`,
+          JSON.stringify(prams)
+        )
         .then(res => {
-          if (this.isShow3) {
-            this.finished = res.data.res;
-          }
-          if (this.isShow5) {
-            this.finished11 = res.data.res;
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            if (this.isShow3) {
+              this.finished = res.data.res;
+            }
+            if (this.isShow5) {
+              this.finished11 = res.data.res;
+            }
           }
         });
     }
@@ -493,21 +600,51 @@ export default {
       this.Recharge = "AG充值";
       this.transactionRecord = "AG交易记录";
       let params = {};
-
-      this.$http.post(`/aginfo/getAgInfo`, JSON.stringify(params)).then(res => {
-        this.successshow = false;
-        this.showCurtion = false;
-        if (res.data.balance.agBalance < 0) {
-          that.title = "AG余额不足";
-          that.panelShow = true;
-          setTimeout(() => {
-            this.panelShow = false;
-            this.$router.push("/index");
-          }, 1200);
-        }
-        this.gameUsermoney = Number(res.data.balance.agBalance).toFixed(2);
-        this.resDate.money = Number(res.data.balance.agBalance).toFixed(2);
-      });
+      params.oid = sessionStorage.getItem('im_token');
+      this.$http
+        .post(`${getUrl()}/aginfo/getAgInfo`, JSON.stringify(params))
+        .then(res => {
+          this.successshow = false;
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
+          this.showCurtion = false;
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else if (res.data.msg == 2006) {
+            if (res.data.balance.agBalance < 0) {
+              that.title = "AG余额不足";
+              that.panelShow = true;
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push("/index");
+              }, 1200);
+            }
+            this.gameUsermoney = Number(res.data.balance.agBalance).toFixed(2);
+            this.resDate.money = Number(res.data.balance.agBalance).toFixed(2);
+          } else if (res.data.msg == 7001) {
+            this.erreocode = "7001";
+            this.panelShow = true;
+            this.promptsystem = res.data.info;
+          } else {
+            this.promptboxtext = "获取真人游戏额度失败";
+            this.panelShow = true;
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push("/index");
+            }, 1200);
+          }
+        });
     }
     this.newday();
     let d = new Date();
@@ -517,8 +654,8 @@ export default {
     this.isShow = true;
     this.isShow4 = true;
     let params = {};
-    params.oid = this.$store.state.userData.sessionId;
-    this.isWan = this.$store.state.userData.username;
+    params.oid = sessionStorage.getItem('im_token');
+    this.isWan = sessionStorage.getItem("im_username");
     if (this.isWan != "游客") {
       // this.quanbu();
     } else {
@@ -526,16 +663,30 @@ export default {
       this.isShow1 = true;
       this.isShow3 = true;
       let prams = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem('im_token');
       prams.oid = oidinfo;
-      this.$http.post(`/getinfo/bet`, JSON.stringify(prams)).then(res => {
-        this.finished = res.data[0].res;
-        if (this.finished.length == 0) {
-          this.kon = true;
-        } else {
-          this.kon = false;
-        }
-      });
+      this.$http
+        .post(`${getUrl()}/getinfo/bet`, JSON.stringify(prams))
+        .then(res => {
+          console.log(res);
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          }
+          this.finished = res.data[0].res;
+          if (this.finished.length == 0) {
+            this.kon = true;
+          } else {
+            this.kon = false;
+          }
+        });
     }
     this.quanbu();
   },

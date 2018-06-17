@@ -32,7 +32,7 @@
 					panelShow:false,
 					title:'',
 					times:'0',
-					
+					imMoney:sessionStorage.getItem("im_money"),
 					isWan:'',
 					titleshow:true,
 					erreocode:'',
@@ -51,7 +51,7 @@
      },
      cjd(){
      		this.successshow=false
-     		this.isWan = this.$store.state.userData.username
+     		this.isWan = sessionStorage.getItem('im_username')
         if (this.isWan == '游客') {
          		this.times = 0
             this.promptboxtext = "请登录正式会员账号!"
@@ -64,10 +64,10 @@
 	      	let userOid =window.location.href.split('?')[1].split('=')[1];
 	      	params.oid = userOid;
 				}else{
-	      	let userOid = this.$store.state.userData.sessionId;
+	      	let userOid = sessionStorage.getItem('im_token');
 	      	params.oid = userOid;
 				}
-      	this.$http.post(`/WheelActivity/doUserDraw`, JSON.stringify(params)).then(res =>{
+      	this.$http.post(`${getUrl()}/WheelActivity/doUserDraw`, JSON.stringify(params)).then(res =>{
       	
        	if (res.data.msg == 4001) { //  1未登陆
             sessionStorage.clear();
@@ -103,8 +103,8 @@
 	          },7500)
           	this.promptboxtext = "恭喜您抽到"+res.data.money+"彩金!";
           	this.promptboxshow =false;
-          	
-        		
+          	this.imMoney=this.imMoney+Number(res.data.money)
+        		sessionStorage.setItem('im_money', this.imMoney)
         		this.times = 0
           }else if(res.data.msg==9003){
           	this.panelShow = true;
@@ -127,7 +127,7 @@
 	    promptbox
 	  },
     created(){
-    		this.isWan = this.$store.state.userData.username
+    		this.isWan = sessionStorage.getItem('im_username')
         if (this.isWan == '游客') {
           this.times = 0
           return
@@ -139,10 +139,10 @@
       	params.oid = userOid;
 			}else{
 				this.promptboxtextshow = true
-      	let userOid = this.$store.state.userData.sessionId;
+      	let userOid = sessionStorage.getItem('im_token');
       	params.oid = userOid;
 			}
-       this.$http.post(`/WheelActivity/getUserDrawTimes`, JSON.stringify(params)).then(res => {
+       this.$http.post(`${getUrl()}/WheelActivity/getUserDrawTimes`, JSON.stringify(params)).then(res => {
        	if (res.data.msg == 4001){
             sessionStorage.clear();
 						this.panelShow = true;

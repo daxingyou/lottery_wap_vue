@@ -59,7 +59,7 @@
 			lyimgsrc:'../../../wap/images/pn/yessig.png',
 			imgshow:false,
 			day:'',
-			
+			imMoney:sessionStorage.getItem("im_money"),
 			statusArr:'',
 			imghide:true,
 			bgmoney:'',
@@ -104,7 +104,7 @@
    
      },
      yesimg(){
-     	 this.isWan = this.$store.state.userData.username
+     	 this.isWan = sessionStorage.getItem('im_username')
         if (this.isWan == '游客') {
             this.promptboxtext = "请登录正式会员账号!"
             this.panelShow = true
@@ -118,10 +118,10 @@
       	params.oid = userOid;
 			}else{
 				this.promptboxtextshow = true
-      	let userOid = this.$store.state.userData.sessionId;
+      	let userOid = sessionStorage.getItem('im_token');
       	params.oid = userOid;
 			};
-      this.$http.post(`/SignActivity/doUserSign`, JSON.stringify(params)).then(res =>{
+      this.$http.post(`${getUrl()}/SignActivity/doUserSign`, JSON.stringify(params)).then(res =>{
        	this.successshow=false
        	if (res.data.msg == 4001) { //  1未登陆
             sessionStorage.clear();
@@ -143,8 +143,8 @@
           	this.promptboxshow =false;
           }else if(res.data.msg==2006){
           	this.imghide = false
-						
-        		
+						this.imMoney=this.imMoney+Number(res.data.money)
+        		sessionStorage.setItem('im_money', this.imMoney)
           	this.panelShow = true;       	
           	this.successshow=true
           	if(res.data.money==0){
@@ -209,10 +209,10 @@
 	      	params.oid = userOid;
 				}else{
 					this.promptboxtextshow = true
-	      	let userOid = this.$store.state.userData.sessionId;
+	      	let userOid = sessionStorage.getItem('im_token');
 	      	params.oid = userOid;
 				}
-		   	 this.$http.post(`/SignActivity/getUserSignStauts`, JSON.stringify(params)).then(res =>{
+		   	 this.$http.post(`${getUrl()}/SignActivity/getUserSignStauts`, JSON.stringify(params)).then(res =>{
 		   	 		if (res.data.msg == 4001) { //  1未登陆
 		   	 			this.successshow=false
 		            sessionStorage.clear();

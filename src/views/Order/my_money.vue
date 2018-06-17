@@ -66,9 +66,11 @@
 	</div>
 </template>
 <script>
-import iHeader from '../../components/i-header';
-import promptbox from '../../components/promptbox';
-import { mapActions } from "vuex";
+import iHeader from '../../components/i-header'
+import promptbox from '../../components/promptbox'
+//import {
+//  getOid,getUrl
+//} from '../../api'
 export default {
 	components: {
 		iHeader,
@@ -102,7 +104,6 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(["BIND_BANK"]),
 		blur(){
 			this.bank_code7 = this.bank_code7.replace(/\s/g,'').replace(/\D/g,'').replace(/(\d{4})(?=\d)/g,"$1 ");	
 			let code7= this.bank_code7.replace(/\s/g,"")
@@ -134,7 +135,7 @@ export default {
 		},
 		submitBank(){
 				this.successshow=false
-			if (this.bankCode == "" || this.bankAdress == ""|| this.bank_code1=="") {
+			 if (this.bankCode == "" || this.bankAdress == ""|| this.bank_code1=="") {
 				this.promptboxtext = "填写信息不能为空"
 				this.panelShow = true
 				setTimeout(() => {
@@ -158,16 +159,45 @@ export default {
 					}, 1500)
 			}else {
 				let params = {};
+				let uerInfo = sessionStorage.getItem('im_token');
+				params.oid = uerInfo;
 				let code = this.bankCode.replace(/\s/g,"");
-				params.bankCardNumbers = code;
-				params.bankName = this.bankName;
-				params.bankAddress = this.bankAdress;
-				this.BIND_BANK(params).then(res => {
+				params.bank_code = code;
+				params.bank_name = this.bankName;
+				params.bank_address = this.bankAdress;
+				this.$http.post(`${getUrl()}/user/info`, JSON.stringify(params)).then(res => {
+					if (res.data.msg == "4001") {
+						sessionStorage.clear();
+						this.panelShow = true;
+						this.promptboxtext = "您的账户已失效，请重新登录";
+						setTimeout(() => {
+							this.panelShow = false;
+							this.$router.push({
+								path: '/login'
+							})
+						}, 1000)
+					} else if (res.data.msg == 2006) {
+						this.successshow=true
+						this.promptboxtext = "操作成功"
+						this.panelShow = true
 						setTimeout(() => {
 							this.$router.push({
 								path: '/order:0'
 							})
-						})
+							this.panelShow = false
+							return
+						}, 1200)
+					}else if (res.data.msg == 2003) {
+						this.promptboxtext = "操作失败"
+						this.panelShow = true
+						setTimeout(() => {
+							this.$router.push({
+								path: '/order:0'
+							})
+							this.panelShow = false
+							return
+						}, 1500)
+					}
 				})
 			}
 		}

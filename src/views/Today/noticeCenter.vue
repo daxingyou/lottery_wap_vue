@@ -5,20 +5,19 @@
     	<i-header title="新闻中心"></i-header>
   	</div>
   	<div style="margin-top: 0.4rem;">
-  		<div class="noticeCenter" v-for="(item,index) in announceMents" @click="gotoAddress(item.id)">
-  			<span>{{getLocalTime(item.updatetime)}}</span><i v-if="index==0">NEW</i>
+  		<div class="noticeCenter" v-for="(item,index) in annousments" @click="gotoAddress(index)" >
+  			<span>{{getLocalTime(item.time)}}</span><i v-if="index==0">NEW</i>
   			<p>{{item.content.slice(0,40)}}…</p>
   		</div>
   		</div>
   </div>
 </template>
 <script>
-	import iHeader from '../../components/i-header';
-	import {mapActions} from 'vuex';
+  import iHeader from '../../components/i-header'
   export default {
   	 data: function(){
     		return{
-					announceMents:'',
+					annousments:'',
 					annousmenttime:'',
     		}
     },
@@ -26,16 +25,24 @@
       iHeader
     },
 		created(){
-			this.GET_ANNOUNCEMENT_DATA().then(res=>{
-				this.announceMents = res.response
-			})
+	  	 this.$http.post(`${getUrl()}/user/getIndexContent`).then(res => {
+	  	 	if(res.data.msg=='4003'){
+	        		this.$router.push({
+	            	path: '/weihu'
+	          })
+	        }
+	   				this.annousments = res.data.announcements
+	   				let announcement = res.data.announcements
+	   				console.log(res);
+	   				sessionStorage.setItem('an_announcements', JSON.stringify(announcement))
+	   				// console.log(this.annousments);
+						
+	   		})
 		},
 		methods:{
-			...mapActions(["GET_ANNOUNCEMENT_DATA"]),
-			gotoAddress(id){
-        this.$router.push({
-					path:`noticedetails/${id}`
-				})
+			gotoAddress(path){
+				let i = `/noticedetails:${path}`;
+        this.$router.push(i)
 			},
 			
       //过滤分秒

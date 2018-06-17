@@ -1,42 +1,42 @@
 <template>
   <div style='height:100%'>
-    <dailog-q :gametoken="gametoken" :type_code="typecode > 50 ? 13 : typecode" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
-    <dailog-w :gametoken="gametoken" :type_code="typecode > 50 ? 13 : typecode" :game_code="game_code" :money="money_s" :round="round" :indeT="indexT" :lotteryM="objects" v-if="showDailogW" v-on:listenToChildEvent="showMsgFromChild"></dailog-w>
-    <dailog-s :gametoken="gametoken" :type_code="13" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" :typecode="Number(typecode)" v-if="showDailogS" v-on:listenToChildEvent="showMsgFromChild"></dailog-s>
-    <lotteryHeader :title="title" :game_code="game_code"></lotteryHeader>
+    <dailog-q :gametoken="gametoken" :type_code="activeClassifyId > 50 ? 13 : activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
+    <dailog-w :gametoken="gametoken" :type_code="activeClassifyId > 50 ? 13 : activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :indeT="indexT" :lotteryM="objects" v-if="showDailogW" v-on:listenToChildEvent="showMsgFromChild"></dailog-w>
+    <dailog-s :gametoken="gametoken" :type_code="13" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" :typecode="Number(activeClassifyId)" v-if="showDailogS" v-on:listenToChildEvent="showMsgFromChild"></dailog-s>
+    <lotteryHeader :title="title" :game_code="game_code" @regulation_click="regulation_control=true"></lotteryHeader>
     <div style='position:absolute;top:0;bottom:2.45rem;    overflow: auto; -webkit-overflow-scrolling: touch;width:100%'>
-      <lotteryArea class="game_20" :lotteryObj="body" :endtime="endtime" :fenpan="!!fengpan" :fentime="fentime" v-if="isOk" gameType="201"></lotteryArea>
+      <lotteryArea class="game_20" :zMoney="Number(zMoney)" :lotteryObj="body" :endtime="endtime" :fenpan="fengpan" :fentime="fentime" v-if="isOk" gameType="20"></lotteryArea>
       <div :style='de==true||loadpage==true?"display:none":"display:block"' class="nav_o">
         <ul :class="`${indexF} ${isShowNavf?'isShowNav':''}`" ref="firstNav">
-          <li class="" v-for="(item,index) in markSixData" v-if="index<4" :class="{active8:index==activeTabIndex}" @click="changeTab(item,index)">{{item.name}}
-            <span v-if="activeTabIndex<4" @click.stop='updown()'></span>
+          <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav<4" :class="{active8:itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
+            <span v-if="nav_i<4" @click.stop='updown()'></span>
           </li>
         </ul>
         <ul :class="`${indexS} ${isShowNavs?'isShowNav':''}`" ref="secondNav">
-          <li class="" v-for="(item,index) in markSixData" v-if="index>=4&&index<8" :class="{active8 :index==activeTabIndex}" @click="changeTab(item,index)">{{item.name}}
-            <span v-if="activeTabIndex>=4&&activeTabIndex<8" @click.stop='updown()'></span>
+          <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav>=4&&indexNav<8" :class="{active8 :itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
+            <span v-if="nav_i>=4&&nav_i<8" @click.stop='updown()'></span>
           </li>
         </ul>
         <ul :class="`${indexTh} ${isShowNavt?'isShowNav':''}`" ref="threeNav">
-          <li class="" v-for="(item,index) in markSixData" v-if="index>=8" :class="{active8:index==activeTabIndex}" @click="changeTab(item,index)">{{item.name}}
-            <span v-if="activeTabIndex>=8" @click.stop='updown()'></span>
+          <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav>=8" :class="{active8:itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
+            <span v-if="nav_i>=8" @click.stop='updown()'></span>
           </li>
         </ul>
       </div>
-      <section v-for="(item,index) in markSixData" :class="`cqList${index}`" v-if="de==false&&activeTabIndex==index&&loadpage==false">
-        <div style="width: 100%;" v-if="index!=3&&index!=5&&index!=6&&index!=7">
+      <section v-for="(itemZ,indexZ) in datas" :class="`cqList${indexZ}`" v-if="de==false&&nav_i==indexZ&&loadpage==false">
+        <div style="width: 100%;" v-if="indexZ!=3&&indexZ!=5&&indexZ!=6&&indexZ!=7">
           <ul>
-            <li class="li_4" v-for='(item,index) in item.tabs'>
-              <button :class="{isred: typecode === item.type_code}" @click="changeSecondMenu(item,index)">{{item.name}}</button>
+            <li class="li_4" v-for='(item,index) in itemZ.datasT'>
+              <button :class="{isred: activeClassifyId === item.type_code}" @click="one(item,index,itemZ.datasT)">{{item._name}}</button>
             </li>
           </ul>
         </div>
-        <ul v-if="typecode < 50">
+        <ul v-if="activeClassifyId < 50">
           <li v-for="(item,j) in filteredList" :key="j">
             <span v-if="item.list && item.list.length==49?false:true" class='o_title'>{{item.name}}</span>
             <ul>
               <li v-for="(ite,i) in item.list">
-                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="!!fengpan">
+                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
                   <span v-bind:class="setRoundNumberClass(ite.name)">{{ite.name}}</span>
                   <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
                 </button>
@@ -48,7 +48,7 @@
           <li v-for="j in 1" :key="j">
             <ul>
               <li v-for="(item, i) in evenCodeList" :key="i">
-                <button :class="{active3:item.isCheck}" @click="isCheck(j,i,item)" :disabled="!!fengpan">
+                <button :class="{active3:item.isCheck}" @click="isCheck(j,i,item)" :disabled="fengpan">
                   <span v-bind:class="setRoundNumberClass(item.name)">{{item.name}}</span>
                   <span v-if="item.odds!=''" class="color_money">{{fengpan?"封盘":item.odds}}</span>
                 </button>
@@ -81,11 +81,26 @@
         <mu-circular-progress style="" :size="40" />
       </div>
     </div>
+    <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
+      <div class="loading">
+        <div class="loader-inner line-spin-fade-loader">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    </div>
     <promptbox @panelShow="panelShow=false" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" :promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
 </template>
 <script>
-import { mapGetters, mutations, mapActions } from "vuex";
+import { mapGetters, mutations } from "vuex";
+// import footGuide from '../../components/footer/footGuide'
 import lotteryHeader from "../../components/header/lotteryHeader";
 import lotteryArea from "../../components/lottery-area";
 import dailogQ from "../../components/dailogQ.vue";
@@ -94,18 +109,18 @@ import dailogS from "../../components/dailogS.vue";
 import Loadpage from "../../components/Loadpage.vue";
 import { getEvenCode } from "./marksixe.config";
 import promptbox from "../../components/promptbox";
-
+import api from "@/api";
 import {
   parseOddsList,
   getGamesCache,
   setGamesCache,
   getRoundNumberClass
 } from "@/utils";
-import markSixData from "../../config/markSix.config";
 export default {
   data() {
     return {
       currentGame: [], // 当前游戏
+      activeClassifyId: 2, // typecode
       evencodeId: 617,
       evenCodeList: getEvenCode(),
       isShowNavf: false,
@@ -118,11 +133,12 @@ export default {
       indexS: "nav_o_2",
       indexTh: "nav_o_3",
       classIndex: ["nav_o_1", "nav_o_2", "nav_o_3"],
-      typecode: 2,
+      typecode: 617,
       xshuzi: 0,
+      zMoney: 0,
       updownB: true,
-      activeTabIndex: 0,
-      fentime: 30,
+      nav_i: 0,
+      fentime: 60,
       promptboxtext: "",
       panelShow: false,
       zhanshi: false,
@@ -131,26 +147,433 @@ export default {
       showCurtion: true,
       loadpage: false,
       gametoken: "",
-      markSixData,
+      datas: [
+        {
+          // claaName: "cqList1",
+          name: "特码",
+          isCheck: true,
+          datasT: [
+            {
+              isCheck: true,
+              _name: "特B",
+              _index: "tmb",
+              type_code: 2
+            },
+            {
+              isCheck: false,
+              _name: "特A",
+              _index: "tma",
+              type_code: 1
+            }
+          ]
+        },
+        {
+          name: "正码",
+          isCheck: false,
+          datasT: [
+            {
+              isCheck: true,
+              _name: "正A",
+              _index: "zhma",
+              type_code: 3
+            },
+            {
+              isCheck: false,
+              _name: "正B",
+              _index: "zhmb",
+              type_code: 4
+            }
+          ]
+        },
+        {
+          isCheck: false,
+          name: "正码特",
+          datasT: [
+            {
+              isCheck: true,
+              _name: "正1特",
+              _index: "tm1",
+              type_code: 5
+            },
+            {
+              isCheck: false,
+              _name: "正2特",
+              _index: "tm2",
+              type_code: 6
+            },
+            {
+              isCheck: false,
+              _name: "正3特",
+              _index: "tm3",
+              type_code: 7
+            },
+            {
+              isCheck: false,
+              _name: "正4特",
+              _index: "tm4",
+              type_code: 8
+            },
+            {
+              isCheck: false,
+              _name: "正5特",
+              _index: "tm5",
+              type_code: 9
+            },
+            {
+              isCheck: false,
+              _name: "正6特",
+              _index: "tm6",
+              type_code: 10
+            }
+          ]
+        },
+        {
+          name: "正码1-6",
+          isCheck: false,
+          datasT: [
+            {
+              isCheck: true,
+              _index: "zhydl",
+              type_code: 11
+            }
+          ]
+        },
+        {
+          name: "连码",
+          isCheck: false,
+          type_code: 13,
+          datasT: [
+            {
+              isCheck: true,
+              _name: "三全中(670)",
+              _index: "lianm",
+              type_code: 617,
+              inde: 3,
+              maxIsCheck: 10
+            },
+            {
+              isCheck: false,
+              _name: "三中二,三(20/110)",
+              _index: "lianm",
+              type_code: 619,
+              inde: 3,
+              maxIsCheck: 10
+            },
+            {
+              isCheck: false,
+              _name: "二全中(60)",
+              _index: "lianm",
+              type_code: 613,
+              inde: 2,
+              maxIsCheck: 10
+            },
+            {
+              isCheck: false,
+              _name: "二中特,二(25/50)",
+              _index: "lianm",
+              type_code: 615,
+              inde: 2,
+              maxIsCheck: 10
+            },
+            {
+              isCheck: false,
+              _name: "特串(150)",
+              _index: "lianm",
+              type_code: 616,
+              inde: 2
+            },
+            {
+              isCheck: false,
+              _name: "四中一(1.96)",
+              _index: "lianm",
+              type_code: 808,
+              inde: 4,
+              maxIsCheck: 10
+            }
+          ]
+        },
+        {
+          name: "半波",
+          isCheck: false,
+          datasT: [
+            {
+              isCheck: true,
+              _index: "banbo",
+              type_code: 14
+            }
+          ]
+        },
+        {
+          name: "一肖/尾数",
+          isCheck: false,
+          datasT: [
+            {
+              isCheck: true,
+              _index: "yxiao",
+              type_code: 15
+            }
+          ]
+        },
+        {
+          name: "特码生肖",
+          isCheck: false,
+          datasT: [
+            {
+              isCheck: true,
+              _index: "tex",
+              type_code: 16
+            }
+          ]
+        },
+        {
+          name: "合肖",
+          isCheck: false,
+          datasT: [
+            {
+              isCheck: true,
+              _name: "二肖",
+              _index: "hx2",
+              type_code: 17,
+              inde: 2
+            },
+            {
+              isCheck: false,
+              _name: "三肖",
+              _index: "hx3",
+              type_code: 18,
+              inde: 3
+            },
+            {
+              isCheck: false,
+              _name: "四肖",
+              _index: "hx4",
+              type_code: 19,
+              inde: 4
+            },
+            {
+              isCheck: false,
+              _name: "五肖",
+              _index: "hx5",
+              type_code: 20,
+              inde: 5
+            },
+            {
+              isCheck: false,
+              _name: "六肖",
+              _index: "hx6",
+              type_code: 21,
+              inde: 6
+            }
+          ]
+        },
+        {
+          name: "生肖连",
+          isCheck: false,
+          datasT: [
+            {
+              isCheck: true,
+              _name: "二肖连中",
+              _index: "sxl2zh",
+              type_code: 27,
+              inde: 2,
+              maxIsCheck: 8
+            },
+            {
+              isCheck: false,
+              _name: "三肖连中",
+              _index: "sxl3zh",
+              type_code: 28,
+              inde: 3,
+              maxIsCheck: 8
+            },
+            {
+              isCheck: false,
+              _name: "四肖连中",
+              _index: "sxl4zh",
+              type_code: 29,
+              inde: 4,
+              maxIsCheck: 8
+            },
+            {
+              isCheck: false,
+              _name: "五肖连中",
+              _index: "sxl5zh",
+              type_code: 30,
+              inde: 5,
+              maxIsCheck: 8
+            },
+            {
+              isCheck: false,
+              _name: "二肖连不中",
+              _index: "sx2bzh",
+              type_code: 31,
+              inde: 2,
+              maxIsCheck: 8
+            },
+            {
+              isCheck: false,
+              _name: "三肖连不中",
+              _index: "sx3bzh",
+              type_code: 32,
+              inde: 3,
+              maxIsCheck: 8
+            },
+            {
+              isCheck: false,
+              _name: "四肖连不中",
+              _index: "sx4bzh",
+              type_code: 33,
+              inde: 4,
+              maxIsCheck: 8
+            }
+          ]
+        },
+        {
+          name: "尾数连",
+          isCheck: false,
+          datasT: [
+            {
+              isCheck: true,
+              _name: "二尾连中",
+              _index: "wl2zh",
+              type_code: 34,
+              inde: 2,
+              maxIsCheck: 8
+            },
+            {
+              isCheck: false,
+              _name: "三尾连中",
+              _index: "wl3zh",
+              type_code: 35,
+              inde: 3,
+              maxIsCheck: 8
+            },
+            {
+              isCheck: false,
+              _name: "四尾连中",
+              _index: "wl4zh",
+              type_code: 36,
+              inde: 4,
+              maxIsCheck: 8
+            },
+
+            {
+              isCheck: false,
+              _name: "二尾连不中",
+              _index: "wl2bz",
+              type_code: 37,
+              inde: 2,
+              maxIsCheck: 8
+            },
+            {
+              isCheck: false,
+              _name: "三尾连不中",
+              _index: "wl3bz",
+              type_code: 38,
+              inde: 3,
+              maxIsCheck: 8
+            },
+            {
+              isCheck: false,
+              _name: "四尾连不中",
+              _index: "wl4bz",
+              type_code: 39,
+              inde: 4,
+              maxIsCheck: 8
+            }
+          ]
+        },
+        {
+          name: "全不中",
+          isCheck: false,
+          datasT: [
+            {
+              isCheck: true,
+              _name: "五不中",
+              _index: "bz5",
+              type_code: 40,
+              inde: 5
+            },
+            {
+              isCheck: false,
+              _name: "六不中",
+              _index: "bz6",
+              type_code: 41,
+              inde: 6
+            },
+            {
+              isCheck: false,
+              _name: "七不中",
+              _index: "bz7",
+              type_code: 42,
+              inde: 7
+            },
+
+            {
+              isCheck: false,
+              _name: "八不中",
+              _index: "bz8",
+              type_code: 43,
+              inde: 8
+            },
+            {
+              isCheck: false,
+              _name: "九不中",
+              _index: "bz9",
+              type_code: 44,
+              inde: 9
+            },
+            {
+              isCheck: false,
+              _name: "十不中",
+              _index: "bz10",
+              type_code: 45,
+              inde: 10
+            },
+            {
+              isCheck: false,
+              _name: "十一不中",
+              _index: "bz11",
+              type_code: 46,
+              inde: 11
+            },
+            {
+              isCheck: false,
+              _name: "十二不中",
+              _index: "bz12",
+              type_code: 47,
+              inde: 12
+            }
+          ]
+        }
+      ],
+      game_code: 69,
       type_code: 2,
       title: "香港六合彩",
+      shuju: {},
       isBlue: false,
+      demo: 0,
       body: {},
+      seen: false,
       de: false,
       loading: false,
+      // hotmsgs: {},
+      oid_info: 0,
       isOk: false,
-      endtime: null,
+      endtime: 0,
       isOpen: true,
       lotteryList: {},
       numberList: [],
       dialog: false,
       codeMessage: "",
+      keyValue: null,
       setTime: null,
       fengpan: false,
       object: {},
       objects: [],
       money_s: null,
       round: 0,
+      n_1: false,
       dadiao: "tmb",
       indexT: 2,
       loadpagebol: false,
@@ -159,53 +582,26 @@ export default {
       panelShow: false,
       promptboxshow: true,
       successshow: false,
-      selectedTabName: "",
-      game_code: 69,
-      activeTabIndex: 0,
-      showDailogQ: false,
-      showDailogW: false,
-      showDailogS: false,
-      timerOut: null,
-      timerInterval: null
+      selectedTabName:''
+      // maxIsCheck:null
+      // pcznavc_a:1//二級選項卡，默認顯示兩面盤
     };
   },
 
   methods: {
-    ...mapActions(["GET_LOTTERY_RESULT", "GET_LOTTERY_ODDS"]),
-    updateResult(flag = false) {
-      this.GET_LOTTERY_RESULT({ gameCode: this.game_code, update: true }).then(
-        res => {
-          if(!res[0].next){return}; let needRefresh = res[0].next.round - res[0].last.round !== 1;
-          if (needRefresh) {
-            this.timerOut = setTimeout(() => {
-              this.updateResult(true);
-            }, 2000);
-          }
-          this.isOk = true;
-          let timeStamp = res[0].next.timestamp;
-          this.body = res[0];
-          if (!flag) {
-            // 避免从接口拿到不准确的开奖时间
-            this.endtime = res[0].next.endTime - timeStamp;
-          }
-          this.fengpan = !!res[0].next.isClose;
-          this.round = res[0].next.round;
-        }
-      );
-    },
     sortZodiacArray(data) {
       let ZodiacArray = [
         "鼠",
-        "马",
         "牛",
-        "羊",
         "虎",
-        "猴",
         "兔",
-        "鸡",
         "龙",
-        "狗",
         "蛇",
+        "马",
+        "羊",
+        "猴",
+        "鸡",
+        "狗",
         "猪"
       ];
       let orderedData = [];
@@ -243,10 +639,32 @@ export default {
     },
     showMsgFromChild(data) {
       if (data === true) {
+        let oidInfo = sessionStorage.getItem('im_token');
+        let prams = {
+          oid: oidInfo
+        };
         this.qingkong();
-        this.showDailogQ = false;
-        this.showDailogW = false;
-        this.showDailogS = false;
+        this.$http
+          .post(`${getUrl()}/getinfo/money`, JSON.stringify(prams))
+          .then(res => {
+            if (res.data.msg == "4001") {
+              sessionStorage.clear();
+              this.panelShow = true;
+              this.promptboxtext = "您的账户已失效，请重新登录";
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push({
+                  path: "/login"
+                });
+              }, 1000);
+            } else {
+              this.zMoney = res.data.money;
+              sessionStorage.setItem(
+                "im_money",
+                res.data.money
+              );
+            }
+          });
       }
     },
     updown() {
@@ -261,22 +679,16 @@ export default {
         this.isShowNavs = !this.isShowNavs;
       }
     },
-    changeTab(item, index) {
-      if (item.name != this.selectedTabName) {
-        this.activeTabIndex = index;
-        this.game_code;
-        if (item.type_code !== 13) {
-          this.fetchGames({
-            game_code: this.game_code,
-            type_code: (item.tabs && item.tabs[0].type_code) || item.type_code
-          });
-        }
+    changgeNav(itmek, index) {
+      this.selectedTabName = itmek.name;
+      if (itmek.type_code !== 13) {
+        this.fetchGames({ type_code: itmek.datasT[0].type_code });
       }
-      this.xshuzi = 0;
-      this.object = {};
-      this.selectedTabName = item.name;
-      this.typecode = (item.tabs && item.tabs[0].type_code) || item.type_code;
-      item.isCheck = true;
+      this.activeClassifyId = itmek.datasT[0].type_code;
+      for (let i = 0; i < this.datas.length; i++) {
+        this.datas[i].isCheck = false;
+      }
+      itmek.isCheck = true;
       if (index < 4) {
         this.indexF = this.classIndex[0];
         this.isShowNavf = false;
@@ -299,37 +711,52 @@ export default {
         this.indexTh = this.classIndex[1];
         this.indexF = this.classIndex[2];
       }
-      for (let i = 0; i < item.tabs && item.tabs.length; i++) {
-        if (item.tabs[i].isCheck) {
+      for (let i = 0; i < itmek.datasT.length; i++) {
+        if (itmek.datasT[i].isCheck) {
           if (index == 4) {
             this.type_code = 13;
-            this.typecode = item.tabs[i].type_code;
+            this.typecode = itmek.datasT[i].type_code;
             this.indexT = 3;
           } else {
             this.indexT = 2;
-            this.type_code = item.tabs[i].type_code;
+            this.type_code = itmek.datasT[i].type_code;
           }
         }
       }
       this.xshuzi = 0;
       this.isBlue = false;
-      this.activeTabIndex = index;
+      this.nav_i = index;
       this.object = {};
       if (!this.updownB) {
         this.updownB = !this.updownB;
       }
     },
-    changeSecondMenu(item, index) {
+    one(item, j, k) {
       this.qingkong();
-      if (Number(this.typecode) !== 13) {
-        this.fetchGames({
-          game_code: this.game_code,
-          type_code: item.type_code
-        });
-        this.typecode = item.type_code;
+      if (Number(this.activeClassifyId) !== 13) {
+        this.fetchGames({ type_code: item.type_code });
+        this.activeClassifyId = item.type_code;
         this.object = {};
         this.xshuzi = 0;
+      } else {
+        this.evencodeId = item.type_code;
       }
+
+      item.isCheck = false;
+
+      k.forEach(function(key) {
+        key.isCheck = false;
+      });
+
+      k[j].isCheck = true;
+      this.indexT = k[j].inde;
+
+      if (this.nav_i == 4) {
+        this.typecode = k[j].typecode;
+      } else {
+        this.type_code = k[j].typecode;
+      }
+      this.dadiao = item._index;
     },
     changes_m() {
       this.money_s = this.money_s.replace(/[^0-9]/g, "");
@@ -353,6 +780,14 @@ export default {
       this.object = {};
     },
     subMit() {
+      if (sessionStorage.getItem("im_realname") == "11") {
+        sessionStorage.clear();
+        this.promptboxtext = "请登录正式账号!";
+        this.panelShow = true;
+        this.promptboxshow = false;
+        this.qingkong();
+        return;
+      }
       this.objects = [];
       for (let i in this.object) {
         this.objects.push(this.object[i]);
@@ -367,7 +802,7 @@ export default {
         setTimeout(this.isSHowff, 1200);
         return;
       }
-      if (this.activeTabIndex == 4) {
+      if (this.nav_i == 4) {
         if (this.objects.length < this.indexT || this.objects.length > 10) {
           this.objects.length < this.indexT
             ? (this.promptboxtext = `至少选择${this.indexT}个号码`)
@@ -376,21 +811,20 @@ export default {
           this.objects = [];
           return;
         } else {
-          this.showDailogS = true;
+          this.$store.dispatch("showDailogS");
           return;
         }
-      } else if (this.activeTabIndex == 8) {
+      } else if (this.nav_i == 8) {
         if (this.objects.length != this.indexT) {
           this.promptboxtext = `请您选${this.indexT}号码`;
           this.panelShow = true;
           this.objects = [];
           return;
         } else {
-          this.showDailogW = true;
-          this.showDailogW = true;
+          this.$store.dispatch("showDailogW");
           return;
         }
-      } else if (this.activeTabIndex == 11) {
+      } else if (this.nav_i == 11) {
         if (this.indexT == 2) {
           this.indexT = 5;
         }
@@ -445,10 +879,9 @@ export default {
             return;
           }
         }
-        this.showDailogW = true;
-        this.showDailogW = true;
+        this.$store.dispatch("showDailogW");
         return;
-      } else if (this.activeTabIndex > 8) {
+      } else if (this.nav_i > 8) {
         if (this.objects.length < this.indexT) {
           this.promptboxtext = `至少选择${this.indexT}个号码`;
           this.panelShow = true;
@@ -460,12 +893,17 @@ export default {
           this.objects = [];
           return;
         } else {
-          this.showDailogW = true;
-          this.showDailogW = true;
+          this.$store.dispatch("showDailogW");
           return;
         }
       }
-      this.showDailogQ = true;
+      this.$store.dispatch("showDailogQ");
+    },
+    kadun(m, s) {
+      function factorial(n) {
+        return n <= 1 ? 1 : n * factorial(n - 1);
+      }
+      return factorial(m) / factorial(m - s) / factorial(s);
     },
     isCheck(j, i, item, groupName) {
       let n = `l${j}${i}`;
@@ -488,6 +926,10 @@ export default {
       this.xshuzi = s;
     },
     fetchGames(params) {
+      let options = {
+        oid: sessionStorage.getItem('im_token'),
+        game_code: 69
+      };
       this.de = true;
       setTimeout(() => {
         if (!this.loadpagebol) {
@@ -496,27 +938,60 @@ export default {
           return;
         }
       }, 10000);
-      this.GET_LOTTERY_ODDS({
-        game_code: params.game_code,
-        type_code: params.type_code
-      }).then(res => {
-        this.de = false;
-        this.loadpagebol = true;
-        if (params.type_code === 0 && res.length === 11) {
-          this.currentGame = res.splice(0, 1);
-        }
-        this.currentGame = res;
-      });
+      api
+        .getOddsList(Object.assign({}, options, params))
+        .then(data => {
+          if (data.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
+          if (data.data.msg == "4001") {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            this.de = false;
+            this.loadpagebol = true;
+            this.currentGame = data.data;
+            if (!getGamesCache(`${options.game_code}_${params.type_code}`)) {
+              setGamesCache(`${options.game_code}_${params.type_code}`, data);
+            }
+          }
+        })
+        .catch(err => {
+          this.de = false;
+        });
+    }
+  },
+  filters: {
+    formatTitle(val, typecode) {
+      if (typecode === 13) {
+      }
     }
   },
   computed: {
+    ...mapGetters(["showDailogQ", "showDailogW", "showDailogS"]),
     filteredList() {
-      let ZodiacTabArray = ["一肖/尾数", "特码生肖", "合肖", "生肖连"];
+       let ZodiacTabArray = ["一肖/尾数", "特码生肖", "合肖", "生肖连"];
       // console.log(this.selectedTabName)
       if (ZodiacTabArray.indexOf(this.selectedTabName) != -1) {
-        console.log(1111);
         let list = _.cloneDeep(this.currentGame);
-        list[0].list = this.sortZodiacArray(list[0].list);
+        // 筛选出含有生肖的数据
+        let zodiacArr = _.filter(list[0].list, function(item) {
+          return isNaN(item.name);
+        });
+        let otherArr =
+          _.filter(list[0].list, function(item) {
+            return !isNaN(item.name);
+          }) || [];
+        list[0].list = [...this.sortZodiacArray(zodiacArr), ...otherArr];
         return list;
       }
       return this.currentGame;
@@ -524,31 +999,185 @@ export default {
   },
   //初始化
   created() {
-    // 开奖结果
-    this.updateResult();
-    // 赔率数据
+    let param = {};
+    param.oid = sessionStorage.getItem('im_token');
+    this.$http
+      .post(`${getUrl()}/getinfo/getFirstToken`, JSON.stringify(param))
+      .then(res => {
+        this.gametoken = res.data.token;
+        sessionStorage.setItem("gametoken", JSON.stringify(res.data.token));
+      });
+    this.showCurtion = false;
+    //  this.de = true;
+    let newTime = Date.parse(new Date()) / 1000;
+    let oldTime = localStorage.getItem("xgl_time");
     this.fetchGames({
-      game_code: this.game_code,
       type_code: 2
     });
-  },
-  mounted() {
-    this.timerInterval = setInterval(() => {
-      if (this.endtime === 0) {
-        // 开始拿开奖结果
-        this.updateResult();
-      } else {
-        if (this.endtime <= 30) {
-          // 投注区封盘
-          this.fengpan = true;
+    if (oldTime && newTime <= oldTime) {
+      let bodyS = localStorage.getItem("xgl_body");
+      JSON.parse(bodyS).next.isclose
+        ? (this.fengpan = true)
+        : (this.fengpan = false);
+      let oldTime = localStorage.getItem("xgl_time");
+      let moneyX = sessionStorage.getItem("im_money");
+      this.zMoney = parseFloat(moneyX);
+      this.isOk = true;
+      this.endtime = oldTime - newTime;
+      this.body = JSON.parse(bodyS);
+      this.round = this.body.next.round;
+      //    this.de = false;
+    } else {
+      let oidInfo = sessionStorage.getItem('im_token');
+      this.oid_info = oidInfo;
+      let params = {
+        params: {
+          game_code: 69, //  登录账号
+          oid: oidInfo
         }
+      }; // 获取token配置
+      this.$http
+        .post(`${getUrl()}/getinfo/game`, JSON.stringify(params.params), {
+          timeout: 15000
+        })
+        .then(res => {
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
+          this.isOk = true;
+          if (res.data.msg == "4001") {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            let timeStamp = res.data.next.timestap;
+            this.fengpan = res.data.next.isclose;
+            let l = res.data;
+            l.last.number.splice(6, 0, "+");
+            this.body = l;
+            this.endtime = res.data.next.endtime - timeStamp;
+            this.round = res.data.next.round;
+            let loaclTime = this.endtime + newTime;
+            if (sessionStorage.getItem("im_realname") == "11") {
+              this.zMoney = sessionStorage.getItem("im_money");
+            } else {
+              this.zMoney = res.data.lcurrency;
+              sessionStorage.setItem(
+                "im_money",
+                res.data.lcurrency
+              );
+            }
+            localStorage.setItem("xgl_time", loaclTime);
+            localStorage.setItem("xgl_body", JSON.stringify(res.data));
+            this.numberList = res.data.last.number;
+            this.round = res.data.next.round;
+          }
+        })
+        .catch(function() {
+          this.$router.push({
+            path: "/login"
+          }); // 跳转到登陆
+        });
+    }
+  },
+  reddy() {},
+  mounted() {
+    this.$refs.bet_bar.addEventListener(
+      "touchmove",
+      function name(event) {
+        event.preventDefault();
+      },
+      false
+    );
+    setInterval(() => {
+      if (this.endtime <= 0) {
+        this.isOpen = false;
+        return;
+      } else {
         this.endtime--;
+        let timeStamp = Date.parse(new Date()) / 1000;
       }
     }, 1000);
   },
-  destroyed() {
-    clearTimeout(this.timerOut);
-    clearInterval(this.timerInterval);
+  watch: {
+    endtime: function() {
+      if (
+        this.endtime == 0 ||
+        this.endtime == 200 ||
+        this.endtime == 210 ||
+        this.endtime == 190 ||
+        this.endtime == 220 ||
+        this.endtime == 230 ||
+        this.endtime == 240
+      ) {
+        let newTime = Date.parse(new Date()) / 1000;
+        this.fengpan = false;
+        let oidInfo = sessionStorage.getItem('im_token');
+        this.oid_info = oidInfo;
+        let params = {
+          params: {
+            game_code: 69,
+            oid: oidInfo
+          }
+        };
+        this.$http
+          .post(`${getUrl()}/getinfo/game`, JSON.stringify(params.params))
+          .then(res => {
+            this.isOk = true;
+            let timeStamp = res.data.next.timestap;
+            if (res.data.msg == 4001) {
+              //  1未登陆
+              sessionStorage.clear();
+              this.panelShow = true;
+              this.promptboxtext = "您的账户已失效，请重新登录";
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push({
+                  path: "/login"
+                });
+              }, 1000);
+            } else {
+              let moneyX = sessionStorage.getItem("im_money");
+              this.zMoney = parseFloat(moneyX);
+              let timeStamp = res.data.next.timestap;
+              let l = res.data;
+              l.last.number.splice(-1, 0, "+");
+              this.body = l;
+              this.endtime = res.data.next.endtime - timeStamp;
+              this.fengpan = res.data.next.isclose;
+              let loaclTime = this.endtime + newTime;
+              if (sessionStorage.getItem("im_realname") == "11") {
+                this.zMoney = sessionStorage.getItem("im_money");
+              } else {
+                this.zMoney = res.data.lcurrency;
+                sessionStorage.setItem(
+                  "im_money",
+                  res.data.lcurrency
+                );
+              }
+              localStorage.setItem("xgl_time", loaclTime);
+              localStorage.setItem("xgl_body", JSON.stringify(res.data));
+              this.numberList = res.data.last.number;
+              this.round = res.data.next.round;
+            }
+          });
+      } else if (this.endtime <= 60 && this.endtime > 0) {
+        this.qingkong();
+        this.fengpan = true;
+        this.$store.dispatch("hideDailogS");
+        this.$store.dispatch("hideDailogQ");
+        this.$store.dispatch("hideDailogW");
+      }
+    },
+    $route() {}
   },
   components: {
     lotteryArea,
@@ -558,6 +1187,7 @@ export default {
     dailogS,
     Loadpage,
     promptbox
+    // 'ex-simple': model,
   }
 };
 </script>
@@ -1847,11 +2477,11 @@ button {
             }
 
             .red {
+              // background: #ff3545;
+              // color: white;
               /*background: url("../../../wap/images/lm_red.png") no-repeat;*/
               /*border: 1px solid red;*/
               background: url("../../../wap/images/red_ball.png") no-repeat;
-              // background: #ff3545;
-              // color: white;
               display: inline-block;
               width: 21/20rem !important;
               background-size: contain;

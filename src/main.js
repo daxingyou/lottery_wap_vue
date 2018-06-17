@@ -27,9 +27,20 @@ import "./assets/css/base.less";
 import "muse-ui/dist/muse-ui.css";
 import { getPublicImg } from "@/utils";
 
+// import "./assets/js/mescroll.min.js";
+// import "./assets/js/pdlist1.js";
+// import "./assets/js/vue.min.js";
+
+//touch
 import vueTouch from "vue-plugin-touch";
-import swal from "sweetalert2";
 Vue.use(vueTouch);
+//var VConsole = require('vconsole')
+//new VConsole()
+//手机端点击缓慢问题
+//import fastclick from "fastclick";
+//fastclick.attach(document.body);
+// import jsonp from 'jsonp'
+
 Vue.use(MuseUI);
 Vue.config.productionTip = false;
 Vue.prototype.$http = Axios;
@@ -40,11 +51,12 @@ Vue.prototype.$getPublicImg = path => {
 };
 
 Vue.prototype.$platform = window.is_gd_ali();
+
 router.beforeEach((to, from, next) => {
   if (!to.query.promotionId) {
     if (
       sessionStorage.getItem("promotionId") &&
-      (!this.$store.state.userData.sessionId ||
+      (!sessionStorage.getItem("im_token") ||
         sessionStorage.getItem("im_realname") == "游客")
     ) {
       next({
@@ -58,7 +70,7 @@ router.beforeEach((to, from, next) => {
     }
   } else {
     // 参数上面有推广链接,用户已经登陆
-    if (this.$store.state.userData.sessionId) {
+    if (sessionStorage.getItem("im_token")) {
       // 用户试玩
       if (sessionStorage.getItem("im_realname" == "游客")) {
         next({
@@ -78,10 +90,6 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-// test
-Vue.config.devtools = true;
-Vue.prototype.$swal = swal;
-Vue.prototype.$window = window;
 /* eslint-disable no-new */
 new Vue({
   el: "#app",

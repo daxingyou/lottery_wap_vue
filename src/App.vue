@@ -10,9 +10,7 @@
 </template>
 
 <script>
-import URLParams from "./utils/URLParams";
-import { initWebsocket } from "./api/websocket";
-import { mapActions } from "vuex";
+import URLParams from './utils/URLParams'
 export default {
   data() {
     return {
@@ -25,7 +23,6 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["GET_WEBSITE_CONFIG"]),
     handleChange(val) {
       this.bottomNav = val;
     },
@@ -41,15 +38,10 @@ export default {
     }
   },
   created() {
-    // 请求网站配置数据
-    this.GET_WEBSITE_CONFIG()
     // 有一定概率取不到this.$route.query.promotionId，所以需要用到URLParams
     if (URLParams.promotionId && !sessionStorage.getItem("promotionId")) {
       sessionStorage.setItem("promotionId", URLParams.promotionId);
     }
-    let { sessionId, id } = this.$store.state.userData;
-    let _this = this;
-    initWebsocket({ state: this.$store.state, commit: this.$store.commit });
   },
   watch: {
     $route(to) {
@@ -66,6 +58,9 @@ export default {
 };
 </script>
 
+<style>
+@import "./assets/css/common.css";
+</style>
 
 <style lang="less" rel="stylesheet/less">
 // 动画

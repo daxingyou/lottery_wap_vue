@@ -3,157 +3,381 @@ import Router from "vue-router";
 
 Vue.use(Router);
 
-const myInfo = () => import("../views/My/my-info");
+const myInfo = resolve => {
+  System.import("../views/My/my-info").then(component => {
+    resolve(component);
+  });
+};
 
-const myPassword = () => import("../views/My/my-password");
+const myPassword = resolve => {
+  System.import("../views/My/my-password").then(component => {
+    resolve(component);
+  });
+};
 
-const myCenter = () => import("../views/My/my-center");
+const myCenter = resolve => {
+  System.import("../views/My/my-center").then(component => {
+    resolve(component);
+  });
+};
 
-const ag = () => import("../views/My/my-AG");
+const ag = resolve => {
+  System.import("../views/My/my-AG").then(component => {
+    resolve(component);
+  });
+};
 
-const mg = () => import("../views/My/my-mg");
+const mg = resolve => {
+  System.import("../views/My/my-mg").then(component => {
+    resolve(component);
+  });
+};
 
-const qpHistory = () => import("../views/My/qphistory");
+const qpHistory = resolve => {
+  System.import("../views/My/qphistory").then(component => {
+    resolve(component);
+  });
+};
 
-const dzHistory = () => import("../views/My/dzHistory");
+const dzHistory = resolve => {
+  System.import("../views/My/dzHistory").then(component => {
+    resolve(component);
+  });
+};
 
-const realHistory = () => import("../views/My/realHistory");
+const realHistory = resolve => {
+  System.import("../views/My/realHistory").then(component => {
+    resolve(component);
+  });
+};
 
-const myHistory = () => import("../views/My/my-histroy");
+const myHistory = resolve => {
+  System.import("../views/My/my-histroy").then(component => {
+    resolve(component);
+  });
+};
 
-const sport = () => import("../views/My/my-sport");
+const sport = resolve => {
+  System.import("../views/My/my-sport").then(component => {
+    resolve(component);
+  });
+};
 
-const chess = () => import("../views/My/my-chess");
+const chess = resolve => {
+  System.import("../views/My/my-chess").then(component => {
+    resolve(component);
+  });
+};
 
-const sportHistory = () => import("../views/My/sportHistory");
+const sportHistory = resolve => {
+  System.import("../views/My/sportHistory").then(component => {
+    resolve(component);
+  });
+};
 
-const fish = () => import("../views/My/my-fish");
+const fish = resolve => {
+  System.import("../views/My/my-fish").then(component => {
+    resolve(component);
+  });
+};
 
-const fishHistory = () => import("../views/My/fishHistory");
+const fishHistory = resolve => {
+  System.import("../views/My/fishHistory").then(component => {
+    resolve(component);
+  });
+};
 
-const my = () => import("../views/My/my");
+const my = resolve => {
+  System.import("../views/My/my").then(component => {
+    resolve(component);
+  });
+};
 
-const game99 = () => import("../views/My/game_99");
+const game99 = resolve => {
+  System.import("../views/My/game_99").then(component => {
+    resolve(component);
+  });
+};
 
-const weihu = () => import("../views/My/weihu");
+const weihu = resolve => {
+  System.import("../views/My/weihu").then(component => {
+    resolve(component);
+  });
+};
 
-const order = () => import("../views/Order/order");
+const order = resolve => {
+  System.import("../views/Order/order").then(component => {
+    resolve(component);
+  });
+};
 
-const addbank = () => import("../views/Order/my_money");
+const hahaMoney = resolve => {
+  System.import("../views/Order/my_money").then(component => {
+    resolve(component);
+  });
+};
 
-const aliPay = () => import("../views/Order/aliPay");
+const aliPay = resolve => {
+  System.import("../views/Order/aliPay").then(component => {
+    resolve(component);
+  });
+};
 
-const handPay = () => import("../views/Order/handPay");
+const handPay = resolve => {
+  System.import("../views/Order/handPay").then(component => {
+    resolve(component);
+  });
+};
 
-const zf = () => import("../views/Order/zf");
+const zf = resolve => {
+  System.import("../views/Order/zf").then(component => {
+    resolve(component);
+  });
+};
 
-const todayBuyColor = () => import("../views/today/buy-color");
+const todayBuyColor = resolve => {
+  System.import("../views/today/buy-color").then(component => {
+    resolve(component);
+  });
+};
 
-const todayWinning = () => import("../views/today/winning");
+const todayWinning = resolve => {
+  System.import("../views/today/winning").then(component => {
+    resolve(component);
+  });
+};
 
-const myHistroy = () => import("../views/My/my-histroy");
+const myHistroy = resolve => {
+  System.import("../views/My/my-histroy").then(component => {
+    resolve(component);
+  });
+};
 
-const todayRule = () => import("../views/Today/rule");
+const todayRule = resolve => {
+  System.import("../views/Today/rule").then(component => {
+    resolve(component);
+  });
+};
 
-const noticedetails = () => import("../views/today/noticedetails");
+const noticedetails = resolve => {
+  System.import("../views/today/noticedetails").then(component => {
+    resolve(component);
+  });
+};
 
-const noticeCenter = () => import("../views/today/noticeCenter");
+const noticeCenter = resolve => {
+  System.import("../views/today/noticeCenter").then(component => {
+    resolve(component);
+  });
+};
 
-const noticeCentermys = () => import("../views/today/noticeCentermys");
+const noticeCentermys = resolve => {
+  System.import("../views/today/noticeCentermys").then(component => {
+    resolve(component);
+  });
+};
 
-const noticeCentermy = () => import("../views/today/noticeCentermy");
+const noticeCentermy = resolve => {
+  System.import("../views/today/noticeCentermy").then(component => {
+    resolve(component);
+  });
+};
 
-const kefu = () => import("../views/today/kefu");
+const kefu = resolve => {
+  System.import("../views/today/kefu").then(component => {
+    resolve(component);
+  });
+};
 
-const passwordZ = () => import("../views/password/password-z");
+const passwordZ = resolve => {
+  System.import("../views/password/password-z").then(component => {
+    resolve(component);
+  });
+};
 
-const passwordD = () => import("../views/password/password-d");
-const myService = () => import("../views/My/my-service");
-const changePwd = () => import("../views/My/changePwd");
-const myAbout = () => import("../views/My/my-about");
-const trend = () => import("../views/trend/trend");
-const activityly1 = () => import("../views/activity/activityly1");
-const activityfh1 = () => import("../views/activity/activityfh1");
-const activityfh2 = () => import("../views/activity/activityfh2");
-const Activity2 = () => import("../views/activity/activity2");
-const Activity3 = () => import("../views/activity/activity3");
-const activitylv3 = () => import("../views/activity/activitylv3");
-const activitylv4 = () => import("../views/activity/activitylv4");
-const sdhd = () => import("../views/activity/sdhd");
-const zfbhd = () => import("../views/activity/zfbhd");
-const ucfan = () => import("../views/activity/ucfan");
-const Activity5 = () => import("../views/activity/activity5");
-const newyear = () => import("../views/activity/newyear");
-const newyearuc = () => import("../views/activity/newyearuc");
-const newyearuc2 = () => import("../views/activity/newyearuc2");
-const sevneuc = () => import("../views/activity/sevneuc");
-const hbuc = () => import("../views/activity/hbuc");
-const yuanxiaouc = () => import("../views/activity/yuanxiaouc");
-const yuanxiaoct = () => import("../views/activity/yuanxiaoct");
-const newyearpn = () => import("../views/activity/newyearpn");
-const yuanxiaoly = () => import("../views/activity/yuanxiaoly");
-const newyearlv = () => import("../views/activity/newyearlv");
-const lvlh = () => import("../views/activity/lvlh");
-const lvmqdfs = () => import("../views/activity/lvmqdfs");
-const lvsczs = () => import("../views/activity/lvsczs");
-const wechatuc = () => import("../views/activity/wechatuc");
-const More = () => import("../views/activity/more");
-const lottery = () => import("../views/activity/lottery");
-const Signin = () => import("../views/activity/Signin");
-const newyearsd = () => import("../views/activity/newyearsd");
-const yuanxiaosd = () => import("../views/activity/yuanxiaosd");
-const sdnewyear = () => import("../views/activity/sdnewyear");
-const aliAG = () => import("../views/activity/aliAG");
-const gdAG = () => import("../views/activity/gdAG");
-const aliBuyuw = () => import("../views/activity/ali_buyuw");
-const agcai = () => import("../views/activity/agcai");
-const gdBuyuw = () => import("../views/activity/gd_buyuw");
-const lvlhc = () => import("../views/activity/lvlhc");
+const passwordD = resolve => {
+  System.import("../views/password/password-d").then(component => {
+    resolve(component);
+  });
+};
+const myService = resolve => {
+  System.import("../views/My/my-service").then(component => {
+    resolve(component);
+  });
+};
+const changePwd = resolve => {
+  System.import("../views/My/changePwd").then(component => {
+    resolve(component);
+  });
+};
+const myAbout = resolve => {
+  System.import("../views/My/my-about").then(component => {
+    resolve(component);
+  });
+};
+const trend = resolve => {
+  System.import("../views/trend/trend").then(component => {
+    resolve(component);
+  });
+};
+const activityall = resolve => {
+  System.import("../views/activity/activityall").then(component => {
+    resolve(component);
+  });
+};
+const lvlh = resolve => {
+  System.import("../views/activity/lvlh").then(component => {
+    resolve(component);
+  });
+};
+const duanwu = resolve => {
+  System.import("../views/activity/duanwu").then(component => {
+    resolve(component);
+  });
+};
+const ucfan = resolve => {
+  System.import("../views/activity/ucfan").then(component => {
+    resolve(component);
+  });
+};
+const More = resolve => {
+  System.import("../views/activity/more").then(component => {
+    resolve(component);
+  });
+};
+const lottery = resolve => {
+  System.import("../views/activity/lottery").then(component => {
+    resolve(component);
+  });
+};
+const Signin = resolve => {
+  System.import("../views/activity/Signin").then(component => {
+    resolve(component);
+  });
+};
+const aliAG = resolve => {
+  System.import("../views/activity/aliAG").then(component => {
+    resolve(component);
+  });
+};
 
-const ucagent = () => import("../views/activity/ucagent");
+const gdBuyuw = resolve => {
+  System.import("../views/activity/gd_buyuw").then(component => {
+    resolve(component);
+  });
+};
+const yrsc = resolve => {
+  System.import("../views/activity/yrsc").then(component => {
+    resolve(component);
+  });
+};
 
-const ucwy = () => import("../views/activity/ucwy");
+const Index = resolve => {
+  System.import("../views/Index/index").then(component => {
+    resolve(component);
+  });
+};
 
-const yrsc = () => import("../views/activity/yrsc");
+const Game55 = resolve => {
+  System.import("../views/Games/game_55").then(component => {
+    resolve(component);
+  });
+};
 
-const ttkaihuyouli = () => import("../views/activity/ttkaihu");
+const Game90 = resolve => {
+  System.import("../views/Games/game_90").then(component => {
+    resolve(component);
+  });
+};
 
-const ttlianyinjiajiang = () => import("../views/activity/ttlianyin");
+const Game551 = resolve => {
+  System.import("../views/Games/game_551").then(component => {
+    resolve(component);
+  });
+};
 
-/* const Index = () => import("../views/Index/index") */
-const Index = () => import("../views/Index/index");
+const Game66 = resolve => {
+  System.import("../views/Games/game_66").then(component => {
+    resolve(component);
+  });
+};
 
-const Game55 = () => import("../views/Games/game_55");
+const Game60 = resolve => {
+  System.import("../views/Games/game_60").then(component => {
+    resolve(component);
+  });
+};
 
-const Game90 = () => import("../views/Games/game_90");
+const Game40 = resolve => {
+  System.import("../views/Games/game_40").then(component => {
+    resolve(component);
+  });
+};
 
-const Game551 = () => import("../views/Games/game_551");
+const Game401 = resolve => {
+  System.import("../views/Games/game_401").then(component => {
+    resolve(component);
+  });
+};
 
-const Game66 = () => import("../views/Games/game_66");
+const Game35 = resolve => {
+  System.import("../views/Games/game_35").then(component => {
+    resolve(component);
+  });
+};
 
-const Game60 = () => import("../views/Games/game_60");
+const Game30 = resolve => {
+  System.import("../views/Games/game_30").then(component => {
+    resolve(component);
+  });
+};
 
-const Game40 = () => import("../views/Games/game_40");
+const Game88 = resolve => {
+  System.import("../views/Games/game_88").then(component => {
+    resolve(component);
+  });
+};
 
-const Game401 = () => import("../views/Games/game_401");
+const Game881 = resolve => {
+  System.import("../views/Games/game_881").then(component => {
+    resolve(component)
+  })
+}
 
-const Game35 = () => import("../views/Games/game_35");
+const Game25 = resolve => {
+  System.import("../views/Games/game_25").then(component => {
+    resolve(component);
+  });
+};
 
-const Game30 = () => import("../views/Games/game_30");
+const Game20 = resolve => {
+  System.import("../views/Games/game_20").then(component => {
+    resolve(component);
+  });
+};
 
-const Game88 = () => import("../views/Games/game_88");
+const Game201 = resolve => {
+  System.import("../views/Games/game_201").then(component => {
+    resolve(component);
+  });
+};
 
-const Game881 = () => import("../views/Games/game_881");
+const Game15 = resolve => {
+  System.import("../views/Games/game_15").then(component => {
+    resolve(component);
+  });
+};
 
-const Game25 = () => import("../views/Games/game_25");
-
-const Game20 = () => import("../views/Games/game_20");
-
-const Game201 = () => import("../views/Games/game_201");
-
-const Game15 = () => import("../views/Games/game_15");
-
-const Test = () => import("../components/test");
+const Test = resolve => {
+  System.import("../components/test").then(component => {
+    resolve(component);
+  });
+};
+const Game180 = resolve => {
+  System.import("../views/Games/game_180").then(component => {
+    resolve(component)
+  })
+}
 
 let routes = [
   {
@@ -204,12 +428,12 @@ let routes = [
     path: "/game_88",
     component: Game88
   },
-  /*  {
+  {
     path: '/game_881',
     component: Game881
-  }, */
+  },
   {
-    path: "/game_25",
+    path: '/game_25',
     component: Game25
   },
   {
@@ -225,7 +449,11 @@ let routes = [
     component: Game15
   },
   {
-    path: "/my",
+    path: '/game_180',
+    component: Game180
+  },
+  {
+    path: '/my',
     component: my
   },
   {
@@ -272,11 +500,11 @@ let routes = [
     path: "/chess",
     component: chess
   },
-  {
-    path: "/agcai",
-    component: agcai,
-    query: "id"
-  },
+  // {
+  //   path: "/agcai",
+  //   component: agcai,
+  //   query: "id"
+  // },
   {
     path: "/sportHistory",
     component: sportHistory
@@ -310,7 +538,7 @@ let routes = [
   },
   {
     //公告详情
-    path: "/noticedetails/:id",
+    path: "/noticedetails:index",
     component: noticedetails
   },
   {
@@ -363,8 +591,8 @@ let routes = [
   },
   {
     //修改银行卡
-    path: "/addbank",
-    component: addbank
+    path: "/hahaMoney",
+    component: hahaMoney
   },
   {
     //修改登录密码
@@ -391,48 +619,20 @@ let routes = [
     component: trend
   },
   {
-    path: "/activityly1",
-    component: activityly1
+    path: "/activityall",
+    component: activityall
   },
   {
-    path: "/activityfh1",
-    component: activityfh1
+    path: "/lvlh",
+    component: lvlh
   },
   {
-    path: "/activityfh2",
-    component: activityfh2
-  },
-  {
-    path: "/activitylv3",
-    component: activitylv3
-  },
-  {
-    path: "/activitylv4",
-    component: activitylv4
-  },
-  {
-    path: "/activity2",
-    component: Activity2
-  },
-  {
-    path: "/activity3",
-    component: Activity3
-  },
-  {
-    path: "/activity5",
-    component: Activity5
-  },
-  {
-    path: "/zfbhd",
-    component: zfbhd
+    path: "/duanwu",
+    component: duanwu
   },
   {
     path: "/ucfan",
     component: ucfan
-  },
-  {
-    path: "/sdhd",
-    component: sdhd
   },
   {
     path: "/lottery",
@@ -443,92 +643,12 @@ let routes = [
     component: Signin
   },
   {
-    path: "/newyearsd",
-    component: newyearsd
-  },
-  {
-    path: "/yuanxiaosd",
-    component: yuanxiaosd
-  },
-  {
-    path: "/sdnewyear",
-    component: sdnewyear
-  },
-  {
     path: "/aliAG",
     component: aliAG
   },
   {
-    path: "/aliBuyuw",
-    component: aliBuyuw
-  },
-  {
     path: "/gdBuyuw",
     component: gdBuyuw
-  },
-  {
-    path: "/gdAG",
-    component: gdAG
-  },
-  {
-    path: "/newyear",
-    component: newyear
-  },
-  {
-    path: "/lvlh",
-    component: lvlh
-  },
-  {
-    path: "/lvmqdfs",
-    component: lvmqdfs
-  },
-  {
-    path: "/lvsczs",
-    component: lvsczs
-  },
-  {
-    path: "/lvlhc",
-    component: lvlhc
-  },
-  {
-    path: "/wechatuc",
-    component: wechatuc
-  },
-  {
-    path: "/newyearuc",
-    component: newyearuc
-  },
-  {
-    path: "/newyearuc2",
-    component: newyearuc2
-  },
-  {
-    path: "/sevneuc",
-    component: sevneuc
-  },
-  {
-    path: "/hbuc",
-    component: hbuc
-  },
-  {
-    path: "/yuanxiaouc",
-    component: yuanxiaouc
-  },
-  {
-    path: "/yuanxiaoct",
-    component: yuanxiaoct
-  },
-  {
-    path: "/newyearlv:index",
-    component: newyearlv
-  },
-  {
-    path: "/newyearpn",
-    component: newyearpn
-  },
-  {
-    path: "/yuanxiaoly",
-    component: yuanxiaoly
   },
   {
     path: "/more",
@@ -537,22 +657,6 @@ let routes = [
   {
     path: "/kefu",
     component: kefu
-  },
-  {
-    path: "/ucagent",
-    component: ucagent
-  },
-  {
-    path: "/ucwy",
-    component: ucwy
-  },
-  {
-    path: "/ttkaihu",
-    component: ttkaihuyouli
-  },
-  {
-    path: "/ttlianyin",
-    component: ttlianyinjiajiang
   },
   {
     path: "/yrsc",
@@ -572,7 +676,7 @@ let routes = [
     redirect: "/index"
   }
 ];
-export default new Router({
-  mode: 'history',
+export default new VueRouter({
+  // mode: 'history',
   routes
 });

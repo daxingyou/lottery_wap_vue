@@ -14,24 +14,23 @@
         {{contents}}
       </p>
     </div>
-    <div class="foot_bbh" >
-      {{copy}} 
-       <a href="https://want-gaming.com" target="_blank" >万游科技提供技术支持</a>
+    <div class="foot_bbh">
+      {{copy}} <br/>
+      <a v-show="isAli != '618cp'" href="https://want-gaming.com" target="_blank" >万游科技提供技术支持</a>
     </div>
-    	<promptbox  @panelShow="panelShow=false" :successshow="successshow" :promptsystem="promptsystem" :promptboxshow="promptboxshow" :panelShow="panelShow" 
+      <promptbox  @panelShow="panelShow=false" :successshow="successshow" :promptsystem="promptsystem" :promptboxshow="promptboxshow" :panelShow="panelShow" 
    	:promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
 
 </template>
 <script>
-  import iHeader from '../../components/i-header';
-  import promptbox from '../../components/promptbox';
-  import { mapActions } from "vuex";
+  import iHeader from '../../components/i-header'
+  import promptbox from '../../components/promptbox'
   export default {
     data() {
       return {
       	isAndroidWebview: location.href.indexOf('?') > -1 ? true : false,
-        erreocode:'',
+         erreocode:'',
         promptboxtext:'',
         panelShow:false,
         promptboxshow:true,
@@ -40,9 +39,7 @@
         isAli: is_gd_ali(),
         num:'',
         tel:'',
-        email:'',
-        contents:null,
-        copy:null
+        email:''
       }
     },
     components: {
@@ -50,16 +47,21 @@
       promptbox
     },
     created(){
-      this.site();    	
+      this.site();
     },
     methods:{
-      ...mapActions(["SITEBASIC_INFO"]),
       site(){
-        this.SITEBASIC_INFO().then(res => {
-          this.tel = res.tel;
-          this.email = res.email
-          this.contents = res.description
-          this.copy = res.copyright
+        this.$http.post(`${getUrl()}/Systems/getSiteBasicInfo`).then(res => {
+          console.log(res)
+          this.tel = res.data.tel;
+          this.email = res.data.email
+          this.contents = res.data.description
+          if (res.data.copyright.length > 6) {
+            this.copy = res.data.copyright
+          } else {
+            let year = new Date().getFullYear();
+            this.copy = 'Copyright © ' + res.data.copyright + '-' + year + '  All Right Reserved';
+          }
         })
       }
     }
@@ -68,6 +70,9 @@
 </script>
 <style lang="less" scoped>
 @import '../../assets/less/variable.less';
+  .trone {
+
+  }
   .foot_bbh{
     font-size:12px;
     margin:auto;

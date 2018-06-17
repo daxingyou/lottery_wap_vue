@@ -8,7 +8,7 @@
       		<img :src="$getPublicImg('/images/backing_out.png')" alt=""/>
       	</span>
         <span>个人中心</span>
-        <span class="log-out-btn" @click="log_out()">退出</span>
+        <span class="log-out-btn" @click="log_out">退出</span>
       </div>
     </header>
     <div class="my_header my_bg">
@@ -18,7 +18,7 @@
         {{time}},{{im_username}}
       </div>
       <div>
-        用户余额: <i>￥{{Number($store.state.userData.balance).toFixed(2)}}</i>
+        用户余额: <i>￥{{Number(im_money).toFixed(2)}}</i>
         <img :style="{transition:transition,transform:transform}" @click="refresh_money"   :src="$getPublicImg('/images/refresh.png')"/>
       </div>
     </div>
@@ -45,7 +45,7 @@
           </div>
           <span>资金管理</span>
         </li>
-        <li @click="gotoAddress('/addbank')">
+        <li @click="gotoAddress('/hahaMoney')">
           <div class="lock_money">
           </div>
           <span>银行卡</span>
@@ -75,8 +75,8 @@
       </ul>
     </div>
     <div class="foot_bbh" >
-      Copyright ©2012-2018 All Right Reserved 
-      <a href="https://want-gaming.com" target="_blank" >万游科技提供技术支持</a>
+      Copyright ©2012-2018 All Right Reserved <br/>
+      <a v-show="is_gd_ali != '618cp'" href="https://want-gaming.com" target="_blank" >万游科技提供技术支持</a>
     </div>
 
     <!--弹出框-->
@@ -102,6 +102,7 @@
         isIosWebview: isIosWebview,
         panelShow: false,
         im_username: "",
+        im_money: "",
         logout: false,
         serviec_url: "",
         window: null,
@@ -119,9 +120,9 @@
     },
     methods: {
       gotoAddress(path) {
-        this.isWan = this.$store.state.userData.username;
+        this.isWan = sessionStorage.getItem('im_username')
         if (this.isWan == '游客'){
-          if (/^\/Order*/.test(path) || /^\/changePwd*/.test(path) || /^\/addbank*/.test(path) ) {
+          if (/^\/Order*/.test(path) || /^\/changePwd*/.test(path) || /^\/hahaMoney*/.test(path) ) {
             this.promptboxtext = "请登陆正式会员账号！"
             this.panelShow = true
             this.successshow=false
@@ -133,22 +134,35 @@
       refresh_money(){
       	this.transition = "all 3s"
       	this.transform = 'rotate(1080deg)'
-        let oidInfo = this.$store.state.userData.sessionId;
+        let oidInfo = sessionStorage.getItem('im_token');
         let odd = {};
         odd.oid = oidInfo;
+        this.$http.post(`${getUrl()}/getinfo/money`, JSON.stringify(odd)).then(res => {
+        	if(res.data.msg==4003){
+	        		this.$router.push({
+	            	path: '/weihu'
+	          })
+	        }
+        	setTimeout(() => {
+              this.transition = ""
+      				this.transform = 'rotate(0deg)'
+            }, 3000);
+        	
+          sessionStorage.setItem('im_money', res.data.money)
+          this.im_money = res.data.money
+        })
       },
       quxiao(){
         this.logout = false;
       },
       goback() {
-         // 发送后退的状态
+        this.$store.dispatch('goBack') // 发送后退的状态
         // 后退
         this.$router.go(-1)
       },
       log_out(){
         sessionStorage.clear()
-        location.href="/index";
-       // this.$router.push("/index")
+        this.$router.push("/index")
       },
       open_serviec(){
         this.$router.push("/kefu")
@@ -181,13 +195,17 @@
         }
       }
       this.time = Get_Greetings()
-  
+      if (sessionStorage.getItem('im_money')) {
+        this.im_username = sessionStorage.getItem('im_username')
+        this.im_money = sessionStorage.getItem('im_money')
+      }
+      else {
+        this.$router.push("/login")
+      }
     },
     components:{
 	    promptbox
 	  }
-
-
   }
 
 </script>
@@ -208,7 +226,6 @@
     position: relative;
     height:3rem;
     top: 2rem;
-    line-height: 3rem;
     background:#fff;
     > a{
       color:#4975ca;

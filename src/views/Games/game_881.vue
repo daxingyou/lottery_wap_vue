@@ -1,9 +1,9 @@
 <template>
   <div style='height:100%'>
     <dailog-q :type_code="type_code" :gametoken="gametoken" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
-    <lotteryHeader :title="title" :game_code="game_code"></lotteryHeader>
+    <lotteryHeader :title="title" :game_code="game_code" @regulation_click="regulation_control=true"></lotteryHeader>
     <div style='position:absolute;top:0;bottom:2rem;    overflow: auto; -webkit-overflow-scrolling: touch;width:100%'>
-      <lotteryArea class="game_88" :lotteryObj="body" :endtime="endtime" :fenpan="!!fengpan" :fentime="fentime" v-if="isOk" gameType="881"></lotteryArea>
+      <lotteryArea class="game_88" :lotteryObj="body" :endtime="endtime" :zMoney="zMoney" :fenpan="fengpan" :fentime="fentime" v-if="isOk" gameType="881"></lotteryArea>
       <div class="lottery_nav_bar" :style='de==true||loadpage==true?"display:none":"display:block"'>
         <ul>
           <button class="trapezoid color1" style='width:100%'>
@@ -70,36 +70,36 @@ export default {
     return {
       roundCha: null,
       xshuzi: 0,
-
+      zMoney: 0,
       fentime: 180,
-      game_code: 280,
+      game_code:280,
       type_code: 0,
       title: "吉林快3",
       shuju: {},
       isBlue: false,
-
+      demo: 0,
       listjs: [],
       body: {},
       promptboxtext: "",
-
+      seen: false,
       de: false,
       loading: false,
-
+      oid_info: 0,
       isOk: false,
-      endtime: null,
+      endtime: 0,
       isOpen: true,
       lotteryList: {},
       numberList: [],
       dialog: false,
       codeMessage: "",
-
+      keyValue: null,
       setTime: null,
       fengpan: false,
       object: {},
       objects: [],
       money_s: null,
       round: 0,
-
+      n_1: false,
       dadiao: "lmp",
       panelShow: false,
       tzsz: "",
@@ -132,7 +132,32 @@ export default {
     showMsgFromChild(data) {
       if (data === true) {
         this.qingkong();
-        this.showDailogQ = false;
+        let oidInfo = sessionStorage.getItem('im_token');
+        let prams = {
+          oid: oidInfo
+        };
+        this.$http
+          .post(`${getUrl()}/getinfo/money`, JSON.stringify(prams))
+          .then(res => {
+            if (res.data.msg == "4001") {
+              sessionStorage.clear();
+              this.panelShow = true;
+              this.promptboxtext = "您的账户已失效，请重新登录";
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push({
+                  path: "/login"
+                });
+              }, 1000);
+            } else {
+              this.zMoney = res.data.money;
+              sessionStorage.setItem(
+                "im_money",
+                res.data.money
+              );
+              this.xshuzi = 0;
+            }
+          });
       }
     },
     changes_m() {
@@ -157,6 +182,14 @@ export default {
       this.object = {};
     },
     subMit() {
+      if (sessionStorage.getItem("im_realname") == "11") {
+        sessionStorage.clear();
+        this.promptboxtext = "请登录正式账号!";
+        this.panelShow = true;
+        this.promptboxshow = false;
+        this.qingkong();
+        return;
+      }
       this.objects = [];
       for (let i in this.object) {
         this.objects.push(this.object[i]);
@@ -172,7 +205,7 @@ export default {
         setTimeout(this.isSHowff, 1200);
         return;
       }
-      this.showDailogQ = true;
+      this.$store.dispatch("showDailogQ");
     },
     isSHowff() {
       this.panelShow = false;
@@ -201,7 +234,7 @@ export default {
   //初始化
   created() {
     let param = {};
-    param.oid = this.$store.state.userData.sessionId;
+    param.oid = sessionStorage.getItem('im_token');
     this.$http
       .post(`${getUrl()}/getinfo/getFirstToken`, JSON.stringify(param))
       .then(res => {
@@ -212,6 +245,8 @@ export default {
     let oldTime = localStorage.getItem("k3_time");
     let roundCha = localStorage.getItem("k3_roundCha");
     if (oldTime && newTime <= oldTime && roundCha == !1) {
+      let moneyX = sessionStorage.getItem("im_money");
+      this.zMoney = parseFloat(moneyX);
       let bodyS = localStorage.getItem("k3_body");
       JSON.parse(bodyS).next.isclose
         ? (this.fengpan = true)
@@ -223,6 +258,14 @@ export default {
       this.round = this.body.next.round;
       //    this.de = false;
     } else {
+      let oidInfo = sessionStorage.getItem('im_token');
+      this.oid_info = oidInfo;
+      let params = {
+        params: {
+          game_code: 280, //  登录账号
+          oid: oidInfo
+        }
+      }; // 获取token配置
       let params1 = {};
       params1.oid = oidInfo;
       params1.game_code = 172;
@@ -239,6 +282,11 @@ export default {
         .post(`${getUrl()}/getinfo/getallodds`, JSON.stringify(params1))
         .then(res => {
           this.de = false;
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
           this.loadpagebol = true;
           this.shuju = res.data;
           for (var a in this.shuju) {
@@ -269,19 +317,30 @@ export default {
               });
             }, 1000);
           } else {
-            let timeStamp = res.data.response[0].next.timestap;
-            this.fengpan = res.data.response[0].next.isclose;
+            let moneyX = sessionStorage.getItem("im_money");
+            this.zMoney = parseFloat(moneyX);
+            if (sessionStorage.getItem("im_realname") == "11") {
+              this.zMoney = sessionStorage.getItem("im_money");
+            } else {
+              this.zMoney = res.data.lcurrency;
+              sessionStorage.setItem(
+                "im_money",
+                res.data.lcurrency
+              );
+            }
+            let timeStamp = res.data.next.timestap;
+            this.fengpan = res.data.next.isclose;
             this.body = res.data;
-            this.endtime = res.data.response[0].next.endtime - timeStamp;
-            this.round = res.data.response[0].next.round;
+            this.endtime = res.data.next.endtime - timeStamp;
+            this.round = res.data.next.round;
             let loaclTime = this.endtime + newTime;
             localStorage.setItem("k3_time", loaclTime);
             localStorage.setItem("k3_body", JSON.stringify(res.data));
-            this.numberList = res.data.response[0].last.number;
-            this.round = res.data.response[0].next.round;
+            this.numberList = res.data.last.number;
+            this.round = res.data.next.round;
             this.roundCha =
-              Number(res.data.response[0].next.round.split("-")[1]) -
-              Number(res.data.response[0].last.round.split("-")[1]);
+              Number(res.data.next.round.split("-")[1]) -
+              Number(res.data.last.round.split("-")[1]);
             localStorage.setItem("k3_roundCha", JSON.stringify(this.roundCha));
           }
         })
@@ -292,7 +351,7 @@ export default {
         });
     }
   },
-  
+  reddy() {},
   mounted() {
     this.$refs.bet_bar.addEventListener(
       "touchmove",
@@ -327,12 +386,20 @@ export default {
       ) {
         let newTime = Date.parse(new Date()) / 1000;
         this.fengpan = false;
+        let oidInfo = sessionStorage.getItem('im_token');
+        this.oid_info = oidInfo;
+        let params = {
+          params: {
+            game_code: 280,
+            oid: oidInfo
+          }
+        };
         this.$http
           .post(`${getUrl()}/getinfo/game`, JSON.stringify(params.params))
           .then(res => {
             this.de = false;
             this.isOk = true;
-            let timeStamp = res.data.response[0].next.timestap;
+            let timeStamp = res.data.next.timestap;
             if (res.data.msg == 4001) {
               //  1未登陆
               sessionStorage.clear();
@@ -345,19 +412,28 @@ export default {
                 });
               }, 1000);
             } else {
-              let timeStamp = res.data.response[0].next.timestap;
+              let timeStamp = res.data.next.timestap;
               this.body = res.data;
-              this.endtime = res.data.response[0].next.endtime - timeStamp;
-              this.fengpan = res.data.response[0].next.isclose;
+              this.endtime = res.data.next.endtime - timeStamp;
+              this.fengpan = res.data.next.isclose;
               let loaclTime = this.endtime + newTime;
               localStorage.setItem("k3_time", loaclTime);
               localStorage.setItem("k3_body", JSON.stringify(res.data));
-              this.numberList = res.data.response[0].last.number;
-              this.round = res.data.response[0].next.round;
-              this.round = res.data.response[0].next.round;
+              this.numberList = res.data.last.number;
+              this.round = res.data.next.round;
+              if (sessionStorage.getItem("im_realname") == "11") {
+                this.zMoney = sessionStorage.getItem("im_money");
+              } else {
+                this.zMoney = res.data.lcurrency;
+                sessionStorage.setItem(
+                  "im_money",
+                  res.data.lcurrency
+                );
+              }
+              this.round = res.data.next.round;
               this.roundCha =
-                Number(res.data.response[0].next.round.split("-")[1]) -
-                Number(res.data.response[0].last.round.split("-")[1]);
+                Number(res.data.next.round.split("-")[1]) -
+                Number(res.data.last.round.split("-")[1]);
               localStorage.setItem(
                 "k3_roundCha",
                 JSON.stringify(this.roundCha)
@@ -791,7 +867,7 @@ export default {
                 line-height: 1.6rem;
                 display: inline-block;
                 font-size: 0;
-                background: url("../../../wap/images/sia1.png") no-repeat;
+                background: url("../../../wap/images/sia1.png")no-repeat;
                 background-size: 100% 100%;
                 color: #fff;
               }
@@ -801,7 +877,7 @@ export default {
                 line-height: 1.6rem;
                 display: inline-block;
                 font-size: 0;
-                background: url("../../../wap/images/sia2.png") no-repeat;
+                background: url("../../../wap/images/sia2.png")no-repeat;
                 background-size: 100% 100%;
                 color: #fff;
               }
@@ -811,7 +887,7 @@ export default {
                 line-height: 1.6rem;
                 display: inline-block;
                 font-size: 0;
-                background: url("../../../wap/images/sia3.png") no-repeat;
+                background: url("../../../wap/images/sia3.png")no-repeat;
                 background-size: 100% 100%;
                 color: #fff;
                 background-color: none !important;
@@ -822,7 +898,7 @@ export default {
                 line-height: 1.6rem;
                 display: inline-block;
                 font-size: 0;
-                background: url("../../../wap/images/sia4.png") no-repeat;
+                background: url("../../../wap/images/sia4.png")no-repeat;
                 background-size: 100% 100%;
                 color: #fff;
               }
@@ -832,7 +908,7 @@ export default {
                 line-height: 1.6rem;
                 display: inline-block;
                 font-size: 0;
-                background: url("../../../wap/images/sia5.png") no-repeat;
+                background: url("../../../wap/images/sia5.png")no-repeat;
                 background-size: 100% 100%;
                 color: #fff;
               }
@@ -842,7 +918,7 @@ export default {
                 line-height: 1.6rem;
                 display: inline-block;
                 font-size: 0;
-                background: url("../../../wap/images/sia6.png") no-repeat;
+                background: url("../../../wap/images/sia6.png")no-repeat;
                 background-size: 100% 100%;
                 color: #fff;
               }

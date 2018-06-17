@@ -2,11 +2,10 @@
   <div class="container" id="contain">
     <div class="title color1" v-if='!isAndroidWebview'>
       <i @click="goBack()"></i>
-      <span>返水活动</span>
+      <span>粽情端午</span>
     </div>
     <div id="nowyear" :style="{'margin-top':isAndroidWebview ? '0rem':'1.92rem'}">
       <div class="intermediately" @click="ljlq"></div>
-      <div class="liushui" @click="flowing"></div>
     </div>
     <promptbox @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" :promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
@@ -25,9 +24,7 @@ export default {
       isAndroidWebview: location.href.indexOf("?") > -1 ? true : false,
       panelShow: false,
       imMoney: sessionStorage.getItem("im_money"),
-      title: "",
       isWan: "",
-      titleshow: true,
       isGetBonusesone: "",
       erreocode: "",
       promptboxtext: "",
@@ -57,15 +54,15 @@ export default {
         let userOid = sessionStorage.getItem('im_token');
         params.oid = userOid;
       }
-      if (this.isGetBonusesone == 1) {
-        this.panelShow = true;
-        this.promptboxtext = "今天已经领取过";
-        this.promptboxshow = false;
-        return;
-      }
+      // if (this.isGetBonusesone == 1) {
+      //   this.panelShow = true;
+      //   this.promptboxtext = "今天已经领取过";
+      //   this.promptboxshow = false;
+      //   return;
+      // }
       this.$http
         .post(
-          `${getUrl()}/DepositActivity/getTodaySingleDepositCashBack`,
+          `${getUrl()}/DepositActivity/getBonusesYesterday`,
           JSON.stringify(params)
         )
         .then(res => {
@@ -94,11 +91,6 @@ export default {
         .catch(err => {
           console.log(err);
         });
-    },
-    flowing() {
-      this.panelShow = true;
-      this.promptboxtext = "请您联系客服彩金专员领取";
-      this.promptboxshow = true;
     },
   },
   created() {
@@ -156,18 +148,17 @@ export default {
 }
 #nowyear {
   width: 100%;
-  height: 1244/46.875rem;
-  background: url(/wap/images/uc/fanshui.png) no-repeat;
+  height: 2124/46.875rem;
+  background: url(http://i1.bvimg.com/649341/31a589e1138a035c.jpg) no-repeat;
   background-size: 100% 100%;
   position: relative;
   > .intermediately {
     position: absolute;
     left: 64%;
-    margin-left: -7.04rem;
-    width: 4.2rem;
-    bottom: 8.5rem;
-    height: 1.3rem;
-    border-radius: 20px !important;
+    margin-left: -5.3rem;
+    width: 6.8rem;
+    bottom: 1.5rem;
+    height: 1.5rem;
   }
   > .liushui {
     position: absolute;

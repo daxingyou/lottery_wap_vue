@@ -11,7 +11,7 @@
       </div>
       <div>
         <span>账户余额：</span>
-        <span  class="colorbie" style="color:#196fde;">{{$store.state.userData.balance}}</span>
+        <span  class="colorbie" style="color:#196fde;">{{Number(money).toFixed(2)}}</span>
       <div style="float: right;color:#260161;width:4.5rem;height: 2.1rem;margin-right: 0.1rem;">
 	        <span  class="colorbie" @click="gotoAddress('/Order:0')" style="color:#196fde">充值</span>
 	        <span class="colorbie" style='padding: 0 0.2rem;color:#196fde'>|</span>
@@ -57,7 +57,7 @@
     methods: {
 			gotoAddress(path){
         //试玩账号权限限制
-	        this.isWan = this.$store.state.userData.username
+	        this.isWan = sessionStorage.getItem('im_username')
 	        if (this.isWan == '游客') {
 	            this.promptboxtext = "请登录正式会员账号!"
 	            this.panelShow = true
@@ -70,10 +70,12 @@
 	      }
     },
     created() {
-        this.money=this.$store.state.userData.balance;
-        this.realname=this.$store.state.userData.realname;
-        this.usename=this.$store.state.userData.username;
-        this.email=this.$store.state.userData.emailaddress;
+        this.money=sessionStorage.getItem("im_money");
+        this.realname=sessionStorage.getItem("im_realname");
+        this.usename=sessionStorage.getItem("im_username");
+        this.email=JSON.parse(sessionStorage.getItem("im_email"));
+   
+  
     },
     components: {
       iHeader,

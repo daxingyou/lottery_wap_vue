@@ -24,7 +24,7 @@
     },
     methods:{
       weihu(){
-        this.$http.post(`/getinfo/getMissedOrHasClosedBet`).then(res => {
+        this.$http.post(`${getUrl()}/getinfo/getMissedOrHasClosedBet`).then(res => {
           this.tex = res.data.info;
           this.stat = res.data.begin;
           this.end = res.data.end

@@ -30,7 +30,6 @@
 <script>
   import iHeader from '../../components/i-header'
   import promptbox from '../../components/promptbox'
-  import { mapActions } from "vuex";
   //  import {getOid,getUrl} from '../../api'
   export default {
     data() {
@@ -50,9 +49,6 @@
       }
     },
     methods: {
-      ...mapActions([
-        "UPDATA_PAY_PASSWORD",
-      ]),
       submit(){
 //    	this.successshow=false
         if(this.old_password == ''){
@@ -75,19 +71,58 @@
           return;
         }
         let prams = {};
-        prams.payPassWord = this.new_password;
-        prams.oldPayPassWord = this.old_password;
+        prams.oid = sessionStorage.getItem('im_token');
+        prams.paypasswd = this.new_password;
+        prams.oldpaypasswd = this.old_password;
         if (this.new_password_again == this.new_password && this.new_password.length == 4) {
-          this.UPDATA_PAY_PASSWORD(prams).then(res=>{
-            this.promptboxtext = "修改成功"
-            this.panelShow = true
-            this.successshow = true
-            setTimeout(() => {
-              this.panelShow = false
-              this.$router.go(-2)
-            }, 1200);
-          });
-        }         
+          this.$http.post(`${getUrl()}/user/info`, JSON.stringify(prams)).then(res => {
+            if (res.data.msg == "4001") {
+              sessionStorage.clear();
+              this.panelShow = true;
+              this.promptboxtext = "您的账户已失效，请重新登录";
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push({
+                  path: '/login'
+                })
+              }, 1000)
+            }
+            else if (res.data.msg == "3003") {
+              	this.erreocode='3003'
+								this.panelShow = true
+				        this.promptsystem = "因网络原因，您登录未成功，请重试!"
+				        this.successshow = false
+				        this.promptboxshow = false
+            }
+            else if (res.data.msg == "2003") {
+              this.promptboxtext = "新密码不能与旧密码相同"
+              this.panelShow = true
+              setTimeout(() => {
+                this.panelShow = false
+              }, 1500);
+            }
+            else if (res.data.msg == "2006") {
+              this.promptboxtext = "修改成功"
+              this.panelShow = true
+              this.successshow = true
+              setTimeout(() => {
+                this.panelShow = false
+                this.$router.go(-2)
+              }, 1200);
+            }
+            else if (res.data.msg == "2001") {
+              this.promptboxtext = "旧密码错误"
+              this.panelShow = true
+              setTimeout(() => {
+                this.panelShow = false
+              }, 1200);
+            }else if(res.data.msg == "8008"){
+            	this.erreocode='8008'
+							this.panelShow = true
+				      this.promptsystem = "您的支付密码修改不成功，请重试！" 
+            }
+          })
+        }
         else {
           this.promptboxtext = "新密码两次输入不相同或不符合规范"
             if(this.old_password.length == 0){

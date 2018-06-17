@@ -36,10 +36,10 @@
             listGame:{
                 'myHistroy':"彩票记录",
                 'realHistory':"真人记录",
-                // 'dzHistory':"电子记录",
-                // // 'qpHistory':"棋牌记录",
-                // 'sportHistory':"体育记录",
-                // 'fishHistory':"捕鱼记录",  
+                'dzHistory':"电子记录",
+                // 'qpHistory':"棋牌记录",
+                'sportHistory':"体育记录",
+                'fishHistory':"捕鱼记录",  
             },
         }
     },
@@ -49,7 +49,7 @@
     ],
     methods: {
       goback() {
-         // 发送后退的状态
+        this.$store.dispatch('goBack') // 发送后退的状态
         // 后退
         this.$router.go(-1)
       },
@@ -67,10 +67,17 @@
         }
     },
     created(){
-      if(this.is_gd_ali != 'ali' && this.is_gd_ali != 'gd'){
+      if(this.is_gd_ali == 'yile' && this.is_gd_ali == 'crow'){
         this.listGame.dzHistory = '电子记录';
-        this.listGame.sportHistory = '体育游戏';
-        this.listGame.fishHistory = '捕鱼游戏';
+      }
+      if(this.is_gd_ali == 'fulicai' || this.is_gd_ali == 'ali' || this.is_gd_ali == 'gd'){
+        // delete this.listGame.sportHistory;
+        delete this.listGame.realHistory;
+        delete this.listGame.dzHistory;
+        delete this.listGame.fishHistory;
+      }
+      if(this.is_gd_ali == 'fulicai'){
+         delete this.listGame.sportHistory;
       }
         if (typeof(location.href.split('?')[1]) != 'undefined')
         {

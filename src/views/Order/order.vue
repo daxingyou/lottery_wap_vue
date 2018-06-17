@@ -6,11 +6,11 @@
     <div class="bank">
       <div>
         <span>用户:</span>
-        <i>{{$store.state.userData.username}}</i>
+        <i>{{gameUsername}}</i>
       </div>
       <div>
         <span>余额:</span>
-        <i>￥{{$store.state.userData.balance}}</i>
+        <i>￥{{gameUsermoney}}</i>
       </div>
     </div>
     <div>
@@ -81,8 +81,8 @@
         </div>
         <div v-if="isBank">
           <div class="js" @click='tiaozhuan'>
-            <img :src="findBankListUrl(resDate.bankname)" style="width:1.5rem;float:left;position:relative;top:0.2rem;" alt="" />
-            <p>{{resDate.bankname}}</p>
+            <img :src="findBankListUrl(resDate.bank_name)" style="width:1.5rem;float:left;position:relative;top:0.2rem;" alt="" />
+            <p>{{resDate.bank_name}}</p>
             <p>{{str}}</p>
             <a style="width: 1rem;display: inline-block;float: right;margin-top: -0.2rem;">
               <img style="width: 100%;" :src="$getPublicImg('/images/bangka.png')" alt="" />
@@ -91,7 +91,7 @@
           <div class="js1">
             <p>提现金额
               <!-- <span>({{nameMoney}}{{resDate.money}})</span> -->
-              <span>({{$store.state.userData.balance}})</span>
+              <span>({{resDate.money}})</span>
             </p>
             <p style="font-size:0.9rem">
               <span>¥</span><input type="number" placeholder="金额" v-model="payMoney" min="100" pattern="\d*" />
@@ -116,7 +116,8 @@
       <div class="cun_qu_list" v-if="activeTab ==='paid'" ref="historyM">
         <div class="demo-infinite-container" style="border:none;">
           <div class="cz_list" style="border-bottom:1px solid #E4E4E4">
-            <span @click="game" style="color:#196fde">{{daywen}}</span>
+            <span v-if="is_gd_ali != 'fulicai'" @click="game" style="color:#196fde">{{daywen}}</span>
+            <span v-else style="color:#196fde">{{daywen}}</span>
             <span>{{nowday}}</span>
             <span><img :src="$getPublicImg('/images/data.png')" alt="" @click="datashow" class="img_data" style="filter:brightness(.2)" /></span>
             <ul>
@@ -127,7 +128,7 @@
           <mu-list>
             <template v-if="item" v-for="item in list">
               <div class="js2" @click="isShowMoney1(item)">
-                <p style="font-size:0.65rem;">{{getLocalTime(item.createdTime)}}</p>
+                <p style="font-size:0.65rem;">{{getLocalTime(item.addtime)}}</p>
                 <p style="color:#666" class="">{{getState(item)}}：{{item.money}}</p>
                 <a>
                   <img :src="$getPublicImg('/images/28.png')" alt="" />
@@ -234,7 +235,9 @@
 <script>
 import iHeader from "../../components/i-header";
 import promptbox from "../../components/promptbox";
-import { mapActions } from "vuex";
+//import {
+//  getOid,getUrl
+//} from '../../api'
 export default {
   components: {
     iHeader,
@@ -317,7 +320,7 @@ export default {
       transtiononlinePay: false,
       transtionCftPay: false,
       currentBankListImageUrl: "",
-      showCurtion: false,
+      showCurtion: true,
       erreocode: "",
       promptboxtext: "",
       panelShow: false,
@@ -413,74 +416,77 @@ export default {
   mounted() {
     this.scroller = this.$refs.historyM;
   },
-  created() {
-    this.USER_BANK().then(res => {
-      this.str = res.data.response[0].bankaccount;
-      sessionStorage.setItem("im_bankcode", res.data.response[0].bankaccount);
-      var reg = /^(\d{4})(\d*)(\d{4})$/;
-      this.str = this.str.replace(reg, function(a, b, c, d) {
-        return b + c.replace(/\d/g, "*") + d;
+  beforeCreate() {
+    let params = {};
+    let userOid = sessionStorage.getItem('im_token');
+    params.oid = userOid;
+    this.$http
+      .post(`${getUrl()}/getinfo/money`, JSON.stringify(params))
+      .then(res => {
+        this.gameUsername = res.data.username;
+        this.str = res.data.bank_code;
+        sessionStorage.setItem(
+          "im_bankcode",
+          JSON.stringify(res.data.bank_code)
+        );
+        var reg = /^(\d{4})(\d*)(\d{4})$/;
+        this.str = this.str.replace(reg, function(a, b, c, d) {
+          return b + c.replace(/\d/g, "*") + d;
+        });
+        if (res.data.msg == "4001") {
+          sessionStorage.clear();
+          this.panelShow = true;
+          this.promptboxtext = "您的账户已失效，请重新登录";
+          setTimeout(() => {
+            this.panelShow = false;
+            this.$router.push({
+              path: "/login"
+            });
+          }, 1000);
+        } else {
+          this.gameUsername = res.data.username;
+          this.resDate = res.data;
+          this.resDate.money = res.data.money;
+          if (this.resDate.bank_code) {
+            this.isBank = true;
+          }
+        }
       });
-      if (res.data.response[0].bankaccount) {
-        this.resDate = res.data.response[0];
-        this.isBank = true;
-      }
-    });
-    this.PAY_TYPE().then(res => {
-      let offlinepay = res.data.response[0].offlinepay;
-      let onlinepay = res.data.response[0].onlinepay;
-      offlinepay.forEach((res, i)=>{
-        if(res.paymentClass == 7){
-          this.lineCftisCunzai = res.channel;
-        }else if(res.paymentClass == 3){
-          this.lineBankisCunzai = res.channel;
-        }else if(res.paymentClass == 4){
-          this.lineAliisCunzai = res.channel;
-        }else if(res.paymentClass == 5){
-          this.lineWechatisCunzai = res.channel;
-        }else if(res.paymentClass == 6){
-          
-        }
-      })
-      onlinepay.forEach((res, i)=>{
-        if(res.paymentClass == 0){
-          this.BankisCunzai = res.channel;
-        }else if(res.paymentClass == 1){
-          this.AliisCunzai = res.channel;
-        }else if(res.paymentClass == 2){
-          this.WechatisCunzai = res.channel;
-        }else if(res.paymentClass == 3){
-          this.CftisCunzai = res.channel;
-        }else if(res.paymentClass == 4){
-          this.ZjzfisCunzai = res.channel;
-        }else if(res.paymentClass == 5){
-          
-        }else if(res.paymentClass == 6){
-          
-        }
-      })
-      console.log(res);
-    })
 
-    // this.$http.post(`/user/payin`, JSON.stringify(params)).then(res => {
-    //   this.showCurtion = false;
-    //   this.successshow = false;
-    //   this.lineAliisCunzai = res.data.alipay_array;
-    //   this.lineWechatisCunzai = res.data.wechat_array;
-    //   this.lineBankisCunzai = res.data.bankpay_array;
-    //   this.lineCftisCunzai = res.data.cft_array;
-    //   this.resDateBank = res.data.online_bank;
-    //   this.resDateAli = res.data.online_alipay;
-    //   this.resDateWechat = res.data.online_wechat;
-    //   this.BankisCunzai = res.data.online_bank;
-    //   this.AliisCunzai = res.data.online_alipay;
-    //   this.CftisCunzai = res.data.online_cft;
-    //   this.WechatisCunzai = res.data.online_wechat;
-    //   this.ZjzfisCunzai = res.data.online_quickpay;
-    //   this.bankmin = Number(res.data.moneylimit.bankmin);
-    //   this.bankmax = Number(res.data.moneylimit.bankmax);
-    // });
-    
+    this.$http
+      .post(`${getUrl()}/user/payin`, JSON.stringify(params))
+      .then(res => {
+        this.showCurtion = false;
+        this.successshow = false;
+        if (res.data.msg == "4001") {
+          sessionStorage.clear();
+          this.panelShow = true;
+          this.promptboxtext = "您的账户已失效，请重新登录";
+          setTimeout(() => {
+            this.panelShow = false;
+            this.$router.push({
+              path: "/login"
+            });
+          }, 1000);
+        } else {
+          this.lineAliisCunzai = res.data.alipay_array;
+          this.lineWechatisCunzai = res.data.wechat_array;
+          this.lineBankisCunzai = res.data.bankpay_array;
+          this.lineCftisCunzai = res.data.cft_array;
+          this.resDateBank = res.data.online_bank;
+          this.resDateAli = res.data.online_alipay;
+          this.resDateWechat = res.data.online_wechat;
+          this.BankisCunzai = res.data.online_bank;
+          this.AliisCunzai = res.data.online_alipay;
+          this.CftisCunzai = res.data.online_cft;
+          this.WechatisCunzai = res.data.online_wechat;
+          this.ZjzfisCunzai = res.data.online_quickpay;
+          this.bankmin = Number(res.data.moneylimit.bankmin);
+          this.bankmax = Number(res.data.moneylimit.bankmax);
+        }
+      });
+  },
+  created() {
     let myDate = new Date();
     myDate.getYear(); //获取当前年份(2位)
     myDate.getFullYear(); //获取完整的年份(4位,1970-????)
@@ -536,31 +542,76 @@ export default {
     this.yearyue = this.daynian + "年" + this.dayyue + "月";
     this.isChOrRu = this.$route.params.id.split(":")[1];
     let params = {};
-
+    params.oid = sessionStorage.getItem('im_token');
     if (this.isAG) {
       this.daywen = "真人视讯";
-      this.$http.post(`/aginfo/getAgInfo`, JSON.stringify(params)).then(res => {
-        this.successshow = false;
-        this.showCurtion = false;
-        if (res.data.balance.agBalance < 0) {
-          that.title = "AG余额不足";
-          that.panelShow = true;
-          setTimeout(() => {
-            this.panelShow = false;
-            this.$router.push("/index");
-          }, 1200);
-        }
-        this.gameUsermoney = Number(res.data.balance.agBalance).toFixed(2);
-        this.resDate.money = Number(res.data.balance.agBalance).toFixed(2);
-      });
+      this.$http
+        .post(`${getUrl()}/aginfo/getAgInfo`, JSON.stringify(params))
+        .then(res => {
+          this.successshow = false;
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
+          this.showCurtion = false;
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else if (res.data.msg == 2006) {
+            if (res.data.balance.agBalance < 0) {
+              that.title = "AG余额不足";
+              that.panelShow = true;
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push("/index");
+              }, 1200);
+            }
+            this.gameUsermoney = Number(res.data.balance.agBalance).toFixed(2);
+            this.resDate.money = Number(res.data.balance.agBalance).toFixed(2);
+          } else if (res.data.msg == 7001) {
+            this.erreocode = "7001";
+            this.panelShow = true;
+            this.promptsystem = res.data.info;
+          } else {
+            this.promptboxtext = "获取真人游戏额度失败";
+            this.panelShow = true;
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push("/index");
+            }, 1200);
+          }
+        });
     } else if (this.issport) {
       this.daywen = "体育游戏";
       this.$http
-        .post(`/user/getSportsBalance`, JSON.stringify(params))
+        .post(`${getUrl()}/user/getSportsBalance`, JSON.stringify(params))
         .then(res => {
           this.successshow = false;
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
           this.showCurtion = false;
-          if (res.data.msg == 2006) {
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else if (res.data.msg == 2006) {
             this.gameUsermoney = Number(res.data.balance).toFixed(2);
             this.resDate.money = Number(res.data.balance).toFixed(2);
           } else if (res.data.msg == 7001) {
@@ -570,64 +621,127 @@ export default {
           }
         });
     } else if (this.isfish) {
+      // else if(this.ischess){
+      //   this.daywen = "棋牌游戏"
+      //   this.$http.post(`${getUrl()}/Wh_H5_Api/getWhInfo`, JSON.stringify(params)).then(res => {
+      //     console.log(res)
+      //     this.successshow=false
+      // 			if(res.data.msg=='4003'){
+      //       		this.$router.push({
+      //           	path: '/weihu'
+      //         })
+      //      }
+      //      this.showCurtion = false;
+      // 		 if(res.data.msg == 4001){
+      // 	          sessionStorage.clear();
+      // 	          this.panelShow = true;
+      // 	          this.promptboxtext = "您的账户已失效，请重新登录";
+      // 	          setTimeout(() => {
+      // 	            this.panelShow = false;
+      // 	            this.$router.push({
+      // 	              path: '/login'
+      // 	            })
+      // 	          },1000);
+      //         } else if(res.data.msg == 2006){
+      // 	          this.gameUsermoney = Number(res.data.balance.whBalance).toFixed(2);
+      // 	          this.resDate.money = Number(res.data.balance.serBalance).toFixed(2);
+      //         }else if(res.data.msg == 7001){
+      //         		this.erreocode='7001'
+      // 						this.panelShow = true
+      // 						this.promptsystem = res.data.info;
+      //         }
+      //   })
+      // }
       this.daywen = "捕鱼游戏";
-      this.$http.post(`/aginfo/getAgInfo`, JSON.stringify(params)).then(res => {
-        this.successshow = false;
-        this.showCurtion = false;
-        if (res.data.msg == 2006) {
-          if (res.data.balance.agBalance < 0) {
-            that.title = "AG余额不足";
-            that.panelShow = true;
+      this.$http
+        .post(`${getUrl()}/aginfo/getAgInfo`, JSON.stringify(params))
+        .then(res => {
+          this.successshow = false;
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
+          this.showCurtion = false;
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else if (res.data.msg == 2006) {
+            if (res.data.balance.agBalance < 0) {
+              that.title = "AG余额不足";
+              that.panelShow = true;
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push("/index");
+              }, 1200);
+            }
+            this.gameUsermoney = Number(res.data.balance.agBalance).toFixed(2);
+            this.resDate.money = Number(res.data.balance.agBalance).toFixed(2);
+          } else if (res.data.msg == 7001) {
+            this.erreocode = "7001";
+            this.panelShow = true;
+            this.promptsystem = res.data.info;
+          } else {
+            this.promptboxtext = "获取真人游戏额度失败";
+            this.panelShow = true;
             setTimeout(() => {
               this.panelShow = false;
               this.$router.push("/index");
             }, 1200);
           }
-          this.gameUsermoney = Number(res.data.balance.agBalance).toFixed(2);
-          this.resDate.money = Number(res.data.balance.agBalance).toFixed(2);
-        } else if (res.data.msg == 7001) {
-          this.erreocode = "7001";
-          this.panelShow = true;
-          this.promptsystem = res.data.info;
-        } else {
-          this.promptboxtext = "获取真人游戏额度失败";
-          this.panelShow = true;
-          setTimeout(() => {
-            this.panelShow = false;
-            this.$router.push("/index");
-          }, 1200);
-        }
-      });
+        });
     } else {
-      // let params = {};
-      // let userOid = this.$store.state.userData.sessionId;
-      // params.oid = userOid;
-      // this.$http.post(`/getinfo/money`, JSON.stringify(params)).then(res => {
-      //   this.gameUsername = res.data.username;
-      //   this.gameUsermoney = Number(res.data.user_balance).toFixed(2);
+      let params = {};
+      let userOid = sessionStorage.getItem('im_token');
+      params.oid = userOid;
+      this.$http
+        .post(`${getUrl()}/getinfo/money`, JSON.stringify(params))
+        .then(res => {
+          console.log(res);
+          if (res.data.msg == "4001") {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            this.gameUsername = res.data.username;
+            this.gameUsermoney = Number(res.data.user_balance).toFixed(2);
+            sessionStorage.setItem("im_money", res.data.money);
+            this.resDate = res.data;
 
-      //   this.resDate = res.data;
-
-      //   this.resDate.money = res.data.money;
-      //   if (this.resDate.bank_code) {
-      //     this.isBank = true;
-      //   }
-      // });
+            this.resDate.money = res.data.money;
+            if (this.resDate.bank_code) {
+              this.isBank = true;
+            }
+          }
+        });
     }
     if (Number(this.isChOrRu) == 1) {
+      //  debugger
       this.handleTabChange("obligation");
     } else if (Number(this.isChOrRu) == 2) {
       this.handleTabChange("paid");
     }
 
     let param = {};
-    let userOid = this.$store.state.userData.sessionId;
+    let userOid = sessionStorage.getItem('im_token');
     param.oid = userOid;
     param.page = this.page;
     param.number = this.number;
   },
   methods: {
-    ...mapActions(["USER_BANK", "RAW_AMOUNT", "RAWAL_SAVEDETAIL", "PAY_TYPE"]),
     pasgedayshow() {
       this.pageshow = !this.pageshow;
       if (this.pageshow) {
@@ -662,10 +776,12 @@ export default {
       params.number = this.pageNumber;
       params.date = this.dateyes;
       this.$refs.pagecolor[this.pagenum - 1].style = "color:#196fde;";
-      this.$http.post(`/user/getResult`, JSON.stringify(params)).then(res => {
-        this.lotteryList = res.data.result;
-        this.isReady = true;
-      });
+      this.$http
+        .post(`${getUrl()}/user/getResult`, JSON.stringify(params))
+        .then(res => {
+          this.lotteryList = res.data.result;
+          this.isReady = true;
+        });
     },
     //上一页
     lastpage() {
@@ -695,10 +811,12 @@ export default {
       params.number = this.pageNumber;
       params.date = this.dateyes;
       this.$refs.pagecolor[this.pagenum - 1].style = "color:#196fde;";
-      this.$http.post(`/user/getResult`, JSON.stringify(params)).then(res => {
-        this.lotteryList = res.data.result;
-        this.isReady = true;
-      });
+      this.$http
+        .post(`${getUrl()}/user/getResult`, JSON.stringify(params))
+        .then(res => {
+          this.lotteryList = res.data.result;
+          this.isReady = true;
+        });
     },
     nextpage() {
       if (this.dateyes == "") {
@@ -727,10 +845,12 @@ export default {
       params.number = this.pageNumber;
       params.date = this.dateyes;
       this.$refs.pagecolor[this.pagenum - 1].style = "color:#196fde;";
-      this.$http.post(`/user/getResult`, JSON.stringify(params)).then(res => {
-        this.lotteryList = res.data.result;
-        this.isReady = true;
-      });
+      this.$http
+        .post(`${getUrl()}/user/getResult`, JSON.stringify(params))
+        .then(res => {
+          this.lotteryList = res.data.result;
+          this.isReady = true;
+        });
     },
     postjl(index) {
       for (var i = 0; i < this.l; i++) {
@@ -788,17 +908,19 @@ export default {
       params.date = this.dateyes;
       params.number = this.pageNumber;
       this.nowday = this.dateyes;
-      this.$http.post(`/user/getResult`, JSON.stringify(params)).then(res => {
-        this.isday = false;
-        this.lotteryList = res.data.result;
-        if (Number(res.data.allnumb) > Number(this.pageNumber)) {
-          this.pagenmb = true;
-          this.pagenmblength = Math.ceil(res.data.allnumb / this.pageNumber);
-        }
-        this.isday = false;
-        this.isReady = true;
-        this.datatrueq = true;
-      });
+      this.$http
+        .post(`${getUrl()}/user/getResult`, JSON.stringify(params))
+        .then(res => {
+          this.isday = false;
+          this.lotteryList = res.data.result;
+          if (Number(res.data.allnumb) > Number(this.pageNumber)) {
+            this.pagenmb = true;
+            this.pagenmblength = Math.ceil(res.data.allnumb / this.pageNumber);
+          }
+          this.isday = false;
+          this.isReady = true;
+          this.datatrueq = true;
+        });
     },
     datashow() {
       this.isday = !this.isday;
@@ -992,10 +1114,11 @@ export default {
           return item.bank_account;
         } else {
           if (item.type_code == "0") {
-            return this.$route.query.GameName == "Lo" ? "存入" : "转入";
+            return this.$route.query.GameName=='Lo'?"存入":"转入";
           } else {
-            return this.$route.query.GameName == "Lo" ? "取出" : "转出";
+            return this.$route.query.GameName=='Lo'?"取出":"转出";
           }
+         
         }
       } else if (item.transfer == "1") {
         if (item.type_code == "0") {
@@ -1060,20 +1183,34 @@ export default {
         this.loading = true;
         this.page++;
         let param = {};
-        let userOid = this.$store.state.userData.sessionId;
+        let userOid = sessionStorage.getItem('im_token');
         param.oid = userOid;
         param.page = this.page;
         param.number = this.number;
         let _this = this;
-        this.RAWAL_SAVEDETAIL(param).then(res => {
-          this.successshow = false;
-          for (let i = 0; i < res.data.response.length; i++) {
-            // this.list.push(res.data.res[i]);
-            _this.list = res.data.response;
-          }
-          this.num += 10;
-          this.loading = false;
-        });
+        this.$http
+          .post(`${getUrl()}/getinfo/record`, JSON.stringify(param))
+          .then(res => {
+            this.successshow = false;
+            if (res.data.msg == "4001") {
+              sessionStorage.clear();
+              this.panelShow = true;
+              this.promptboxtext = "您的账户已失效，请重新登录";
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push({
+                  path: "/login"
+                });
+              }, 1000);
+            } else {
+              for (let i = 0; i < res.data.res.length; i++) {
+                // this.list.push(res.data.res[i]);
+                _this.list = res.data.res;
+              }
+              this.num += 10;
+              this.loading = false;
+            }
+          });
       } else {
         return null;
       }
@@ -1089,8 +1226,8 @@ export default {
         }, 1200);
         return false;
       }
-      if (parseFloat(this.payMoney) > parseFloat(this.$store.state.userData.balance)) {
-        this.promptboxtext = `取款金额不能大于${this.$store.state.userData.balance}`;
+      if (parseFloat(this.payMoney) > parseFloat(this.gameUsermoney)) {
+        this.promptboxtext = `取款金额不能大于${this.gameUsermoney}`;
         this.panelShow = true;
         setTimeout(() => {
           this.panelShow = false;
@@ -1100,26 +1237,93 @@ export default {
 
       if (this.payMoney >= 100) {
         let params = {};
-        params.withdrawalAmount = this.payMoney;
-        params.payPassword = this.paypassWd;
-        params.bankname = this.resDate.bankname;
-        params.bankaddress = this.resDate.bankaddress;
-        params.bankCardNumbers = this.resDate.bankaccount;
+        let userOid = sessionStorage.getItem('im_token');
+        params.oid = userOid;
+        params.money = this.payMoney;
+        params.paypasswd = this.paypassWd;
+        params.bankname = this.resDate.bank_name;
+        params.bankaddress = this.resDate.bank_address;
+        params.bankcode = this.resDate.bank_code;
         let _params = location.href.split("?")[1];
         if (_params == "GameName=AG") {
           params.GameName = "AG";
         }
         let postKind = this.$http;
         let _this = this;
-        this.RAW_AMOUNT(params).then(res => {
+        this.$http
+          .post(`${getUrl()}/user/online_get`, JSON.stringify(params))
+          .then(res => {
+            console.log(res.data);
             _this.chongzhi();
             _this.showCurtion = false;
-            if (res.data.msg == 2006) {
-              _this.resDate.money -= _this.payMoney;
-              _this.gameUsermoney -= _this.payMoney;
-              _this.successshow = true;
-              _this.promptboxtext = "取款信息提交成功";
+            if (res.data.msg == "4001") {
+              sessionStorage.clear();
               _this.panelShow = true;
+              _this.promptboxtext = "您的账户已失效，请重新登录";
+              setTimeout(() => {
+                _this.panelShow = false;
+                _this.$router.push({
+                  path: "/login"
+                });
+              }, 1000);
+            } else {
+              if (res.data.msg == 3003) {
+                _this.erreocode = "3003";
+                _this.panelShow = true;
+                _this.promptsystem = "因网络原因，提款失败，请重试!";
+                _this.promptboxshow = false;
+              } else if (res.data.msg == 2007) {
+                _this.promptboxtext = "提现密码错误";
+                _this.panelShow = true;
+              } else if (res.data.msg == 5006) {
+                _this.promptboxtext = "操作频繁，请稍后重试";
+                _this.panelShow = true;
+              } else if (res.data.msg == 2006) {
+                _this.resDate.money -= _this.payMoney;
+                _this.gameUsermoney -= _this.payMoney;
+                _this.successshow = true;
+                _this.promptboxtext = "取款信息提交成功";
+                _this.panelShow = true;
+              } else {
+                if (res.data.msg == 3003) {
+                  _this.erreocode = "3003";
+                  _this.panelShow = true;
+                  _this.promptsystem = "因网络原因，提款失败，请重试!";
+                  _this.promptboxshow = false;
+                } else if (res.data.msg == 2007) {
+                  _this.promptboxtext = "提现密码错误";
+                  _this.panelShow = true;
+                } else if (res.data.msg == 5006) {
+                  _this.promptboxtext = "操作频繁，请稍后重试";
+                  _this.panelShow = true;
+                } else if (res.data.msg == 2006) {
+                  _this.resDate.money -= _this.payMoney;
+                  _this.gameUsermoney -= _this.payMoney;
+                  _this.successshow = true;
+                  _this.promptboxtext = "取款信息提交成功";
+                  _this.panelShow = true;
+                  (_this.paypassWd = ""),
+                    (_this.payMoney = null),
+                    setTimeout(() => {
+                      _this.panelShow = false;
+                    }, 1200);
+                } else if (res.data.msg == 5004) {
+                  _this.promptboxtext = "金额不足";
+                  _this.panelShow = true;
+                } else if (res.data.msg == 6003) {
+                  _this.promptboxtext = "金额数量少于最低限制100元";
+                  _this.panelShow = true;
+                } else if (res.data.msg == 20061) {
+                  _this.promptboxtext = "余额不足，提款失败";
+                  _this.panelShow = true;
+                } else if (res.data.msg == 60041) {
+                  _this.promptboxtext = "存在未审核订单,请耐心等待";
+                  _this.panelShow = true;
+                } else if (res.data.msg == 6004) {
+                  _this.promptboxtext = "提款次数达到上限";
+                  _this.panelShow = true;
+                }
+              }
             }
           });
         if (_params == "GameName=sport") {
@@ -1146,7 +1350,7 @@ export default {
     },
     tiaozhuan() {
       this.$router.push({
-        path: "/addbank"
+        path: "/hahaMoney"
       });
     },
     handleTabChange(val, flag) {
@@ -1159,7 +1363,7 @@ export default {
         }
 
         let param = {};
-        let userOid = this.$store.state.userData.sessionId;
+        let userOid = sessionStorage.getItem('im_token');
         param.oid = userOid;
         param.page = this.page;
         param.number = this.number;
@@ -1172,18 +1376,30 @@ export default {
           param.GameName = "AG";
           let _this = this;
           this.$http
-            .post(`/getinfo/ag_record`, JSON.stringify(param))
+            .post(`${getUrl()}/getinfo/ag_record`, JSON.stringify(param))
             .then(res => {
               let item = res.data.res;
-              this.$router.replace("/order");
-              this.list = res.data.data || [];
-              for (let i in item) {
-                this.list[i] = item[i] || [];
-                this.list = this.list[i].filter((value, index) => {
-                  return value.transfer == "0";
-                });
+              if (res.data.msg == 4001) {
+                sessionStorage.clear();
+                this.panelShow = true;
+                this.promptboxtext = "您的账户已失效，请重新登录";
+                setTimeout(() => {
+                  this.panelShow = false;
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1000);
+              } else if (res.data.msg == 2006) {
+                this.$router.replace("/order");
+                this.list = res.data.data || [];
+                for (let i in item) {
+                  this.list[i] = item[i] || [];
+                  this.list = this.list[i].filter((value, index) => {
+                    return value.transfer == "0";
+                  });
+                }
+                this.zongshu = Number(res.data.page.allnmb);
               }
-              this.zongshu = Number(res.data.page.allnmb);
               _this.list = res.data.res;
             });
         }
@@ -1191,13 +1407,25 @@ export default {
           let _this = this;
           param.GameName = "sport";
           this.$http
-            .post(`/getinfo/ty_record`, JSON.stringify(param))
+            .post(`${getUrl()}/getinfo/ty_record`, JSON.stringify(param))
             .then(res => {
-              this.list = res.data.res || [];
-              this.list = this.list.filter((value, index) => {
-                return value.transfer == "0";
-              });
-              this.zongshu = Number(res.data.page.allnmb);
+              if (res.data.msg == 4001) {
+                sessionStorage.clear();
+                this.panelShow = true;
+                this.promptboxtext = "您的账户已失效，请重新登录";
+                setTimeout(() => {
+                  this.panelShow = false;
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1000);
+              } else if (res.data.msg == 2006) {
+                this.list = res.data.res || [];
+                this.list = this.list.filter((value, index) => {
+                  return value.transfer == "0";
+                });
+                this.zongshu = Number(res.data.page.allnmb);
+              }
               _this.list = res.data.res;
             });
         }
@@ -1205,29 +1433,56 @@ export default {
         if (_param == "GameName=chess") {
           param.GameName = "chess";
           this.$http
-            .post(`/Wh_H5_Api/SearchCreditBill`, JSON.stringify(param))
+            .post(
+              `${getUrl()}/Wh_H5_Api/SearchCreditBill`,
+              JSON.stringify(param)
+            )
             .then(res => {
               let item = res.data.data;
-              this.list = res.data.data || [];
-              for (let i in item) {
-                this.list[i] = item[i] || [];
-                this.list = this.list[i].filter((value, index) => {
-                  return value.transfer == "2";
-                });
+              if (res.data.msg == 4001) {
+                sessionStorage.clear();
+                this.panelShow = true;
+                this.promptboxtext = "您的账户已失效，请重新登录";
+                setTimeout(() => {
+                  this.panelShow = false;
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1000);
+              } else if (res.data.msg == 2006) {
+                this.list = res.data.data || [];
+                for (let i in item) {
+                  this.list[i] = item[i] || [];
+                  this.list = this.list[i].filter((value, index) => {
+                    return value.transfer == "2";
+                  });
+                }
+                this.zongshu = Number(res.data.page.allnmb);
               }
-              this.zongshu = Number(res.data.page.allnmb);
             });
         } else if (_param == "GameName=fish") {
           this.$http
-            .post(`/getinfo/ag_record`, JSON.stringify(param))
+            .post(`${getUrl()}/getinfo/ag_record`, JSON.stringify(param))
             .then(res => {
               this.successshow = false;
-              for (let i = 0; i < res.data.res.length; i++) {
-                this.list.push(res.data.res[i]);
-                console.log(this.list);
+              if (res.data.msg == "4001") {
+                sessionStorage.clear();
+                this.panelShow = true;
+                this.promptboxtext = "您的账户已失效，请重新登录";
+                setTimeout(() => {
+                  this.panelShow = false;
+                  this.$router.push({
+                    path: "/login"
+                  });
+                }, 1000);
+              } else {
+                for (let i = 0; i < res.data.res.length; i++) {
+                  this.list.push(res.data.res[i]);
+                  console.log(this.list);
+                }
+                this.num += 10;
+                this.loading = false;
               }
-              this.num += 10;
-              this.loading = false;
             });
         }
         if (_param == "Lo") {
@@ -1429,14 +1684,14 @@ export default {
   > div {
     line-height: 1.5rem;
 
-    li > {
+    li >  {
       display: inline-block;
-      width: 200 / @zoom;
-      height: 55 / @zoom;
+      width: 200/@zoom;
+      height: 55/@zoom;
       background: #f2f2f2;
       border: 1px solid #eaeaea;
       text-align: center;
-      line-height: 55 / @zoom;
+      line-height: 55/@zoom;
       margin-left: 0.2rem;
       margin-top: -0.5rem;
       border-radius: 0.1rem;
@@ -1553,7 +1808,7 @@ export default {
   display: inline-block;
   color: #666666;
   font-size: 0.6rem;
-  text-indent: 26 / @zoom;
+  text-indent: 26/@zoom;
 }
 
 .ban a {
@@ -1584,7 +1839,7 @@ export default {
 
 .ban img {
   width: 1.2rem;
-  margin-top: 10 / @zoom;
+  margin-top: 10/@zoom;
 }
 
 .order-list {
@@ -1603,19 +1858,19 @@ export default {
 
 .btn2-container {
   background-color: #f5f5f5;
-  padding-top: 85 / @zoom;
+  padding-top: 85/@zoom;
 }
 
 .btn2,
 .btn1 {
   text-align: center;
-  margin-bottom: 25 / @zoom;
+  margin-bottom: 25/@zoom;
 }
 
 .btn2 button,
 .btn1 button {
-  width: 690 / @zoom;
-  height: 90 / @zoom;
+  width: 690/@zoom;
+  height: 90/@zoom;
   line-height: 2rem;
   border-radius: 5px;
   outline: none;
@@ -1681,11 +1936,11 @@ span.mu-tab-link-highlight {
     }
   }
   button {
-    width: 300 / @zoom;
-    height: 90 / @zoom;
+    width: 300/@zoom;
+    height: 90/@zoom;
     display: block;
     margin: 0 auto;
-    margin-top: 30 / @zoom;
+    margin-top: 30/@zoom;
     border-radius: 5px 5px 5px 5px;
     -moz-border-radius: 5px 5px 5px 5px;
     -webkit-border-radius: 5px 5px 5px 5px;
@@ -1701,7 +1956,7 @@ span.mu-tab-link-highlight {
     right: 0;
     top: -15px;
     img {
-      width: 66 / @zoom;
+      width: 66/@zoom;
     }
   }
 }
@@ -1715,7 +1970,7 @@ span.mu-tab-link-highlight {
 
 .cun_qu_list {
   overflow-y: scroll;
-  height: 1008 / @zoom;
+  height: 1008/@zoom;
 }
 
 .cun_qu_list_b {
@@ -1740,7 +1995,7 @@ span.mu-tab-link-highlight {
 .payTab,
 .take_class,
 .mu-list {
-  margin-top: 21 / @zoom;
+  margin-top: 21/@zoom;
   border-top: 1px solid #e4e4e4;
   padding-top: 0 !important;
   margin-bottom: 0.5rem;
@@ -1748,10 +2003,10 @@ span.mu-tab-link-highlight {
 
 .pay-arrow-right-icon {
   position: absolute;
-  right: 45 / @zoom;
-  top: 25 / @zoom;
-  width: 46.875 / @zoom;
-  height: 46.875 / @zoom;
+  right: 45/@zoom;
+  top: 25/@zoom;
+  width: 46.875/@zoom;
+  height: 46.875/@zoom;
   background: url("@{public_img}/images/28.png") no-repeat;
   width: 0.7rem;
   height: 1rem;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="index-view">
     <div class="ggHeader" v-if="closeGG">
       <div>
         <div @click="closeGb"><img src="../../../static/images/icon/headerOut.png" /></div>
@@ -11,22 +11,22 @@
       <div @click='gotoAddress("app")' class="gdcolor">立即下载</div>
     </div>
     <!--位置-->
-    <header class="color1 clearfix" :style="{'top': isIosWebview ? 40/40+'rem':headerTop}">
-      <h1><img :src="$store.state.website.response[0].logo" alt=""></h1>
-      <div v-if="$store.state.userData.username" class="header_login">
+    <header class="color1 clearfix index-header" :style="{'top': isIosWebview ? 40/40+'rem':headerTop}">
+      <h1 class="logo"></h1>
+      <div v-if="title_control" class="header_login">
         <div :style="{'padding-top': '0.25rem'}">
           <i style="width: 1rem;height: 1rem;font-size:16px;margin: 0.2rem 0.4rem;float: right;" class="" @click="isShow">
             <img style="width: 1rem; height: 0.75rem; margin-top: -0.3rem;" :src="$getPublicImg('/images/menumoney.png')" alt="" />
           </i>
           <span class="username gdusername" style="background: none!important;border: none!important;" @click="gotoMy">
             <img :src="$getPublicImg('/images/indexuser.png')" alt="" />
-            <i style="float: right;margin-top: -0.2rem;;">{{$store.state.userData.username}}</i>
+            <i style="float: right;margin-top: -0.2rem;;">{{(username == "demo") ? "游客" : username}}</i>
           </span>
-          <span v-if="$store.state.userData.username == '游客'" class="username gdusername" style="line-height: 0.658rem;float: right;margin-left: 0.2rem;"  @click.prevent="gotoPayAddressone">注册</span>
+          <span class="username gdusername" style="line-height: 0.658rem;float: right;margin-left: 0.2rem;" v-if="logoxian==true" @click.prevent="gotoPayAddressone">注册</span>
           <ul class="alert_right" v-show="isOpen">
             <li @click='gotoAddress("/my");'>个人中心<img :src="$getPublicImg('/images/jiantou.png')" alt="" /></li>
             <li class="money"> 账户余额
-              <span style="color:#0b76fa;">￥{{$store.state.userData.balance}}</span>
+              <span style="color:#0b76fa;">￥{{Number(money).toFixed(2)}}</span>
             </li>
             <li @click='gotoAddress("/Order:0")'>我要充值<img :src="$getPublicImg('/images/jiantou.png')" alt="" /></li>
             <li @click='gotoAddress("/Order:1")'>我要提现<img :src="$getPublicImg('/images/jiantou.png')" alt="" /></li>
@@ -42,8 +42,8 @@
           </ul>
         </div>
       </div>
-      <div v-else class="header_login">
-        <button class="test login_border login" @click='loginAsTourists'>
+      <div v-if="!title_control" class="header_login ">
+        <button class="test login_border login" @click='isShiwan'>
           <span>
             试玩
           </span>
@@ -66,7 +66,6 @@
           <swiper-slide v-for='(item,i) in msgs.data' :key='i'>
             <a :href="item.href">
               <img :src="item.pic" class="banner-item" :alt="item.name">
-              <span>asdf</span>
             </a>
           </swiper-slide>
           <div v-if='msgs' class="swiper-pagination" slot="pagination"></div>
@@ -86,33 +85,39 @@
     </div>
     <div class="gameClass inde_bg">
       <ul class="game_list clearfix">
-        <li v-for="(item, index) in lotteryLists" @click="gotoAddress(`game_${item.lotteryGameId}`)">
-          <button>
-            <img :src='item.imageurl' />
-            <h5>{{item.gamesName}}</h5>
-            <img class="hot-games" v-if="item.lotteryGameId==17" src="../../../wap/images/hot.png" alt="">
+        <li v-for="(item, index) in lists">
+          <button @click='gotoAddress(lists[index].game)'>
+            <img :src='lists[index].img' />
+            <h5>{{lists[index].title}}</h5>
+            <img class="hot-games" v-if="lists[index].title == '真人视讯' || lists[index].title == '体育游戏'" src="../../../wap/images/hot.png" alt="">
           </button>
         </li>
       </ul>
       <ul v-show="is_gd_ali == 'ly'" class="recom">
-        <li v-for="(item, index) in lotteryListsTj">
-          <img :src='lotteryListsTj[index].tjImg' @click='gotoAddress(lotteryListsTj[index].game)' />
+        <li v-for="(item, index) in listsTj">
+          <img :src='listsTj[index].tjImg' @click='gotoAddress(listsTj[index].game)' />
         </li>
       </ul>
     </div>
     <div class="foot_swiper">
-      <!-- <h4  v-show="is_gd_ali!='uc'"> -->
-      <h4 v-show="activityList.length != 0">
+      <h4 v-show="activet.length != 0">
         优惠活动
         <i @click="gotoAddress('More')" style="float: right;margin-right: 0.5rem;color: #666666;font-size:0.5rem;margin-top:0.2rem;">更多<img :src="$getPublicImg('/images/moneyindex.png')" alt="" style="width: 0.5rem;height: 0.5rem;margin-top: -0.2rem;margin-left: 0.2rem;" /></i>
       </h4>
-      <div style="height:160px;width:100%;" class="swiper-box swiper-box_b" v-show="activityList.length != 0">
-        <!-- <div style="height:160px" class="swiper-box swiper-box_b"  v-show="is_gd_ali!='uc'"> -->
+      <div style="height:160px;width:100%;" class="swiper-box swiper-box_b" v-show="activet.length != 0">
         <swiper :options="swiperOption_b">
-          <swiper-slide class="twoswiper" v-for='(item,index) in activityList' :key="index">
-            <a :href="item.weburl">
+          <swiper-slide class="twoswiper" v-for='(item,index) in activet' :key="index">
+            <!-- 只是图片的展示 -->
+            <a v-if="item.ptype == 0" @click="goPath(item)" style="height:auto!important">
               <div class="img_swiper">
-                <img :src="item.imageurl" alt="aa">
+                <img :src="item.wap_titleImg" alt="">
+              </div>
+              <span style="color: #333333!important;">{{item.title}}</span>
+            </a>
+            <!-- push自定义的路由 -->
+            <a v-else-if="item.ptype == 1 || item.ptype == 4|| item.ptype == 3" @click="gotoAddress(item.route_path)" style="height:auto!important">
+              <div class="img_swiper">
+                <img :src="item.wap_titleImg" alt="">
               </div>
               <span style="color: #333333!important;">{{item.title}}</span>
             </a>
@@ -149,8 +154,17 @@
         </div>
       </div>
     </div>
-
-    <div class="jin_qin_qi_dai" v-show="$store.state.showRechargeBox">
+    <!--弹出框-->
+    <div v-show="expectation" class="jin_qin_qi_dai">
+      <div class="centerwen">
+        <div class="color1">公告
+          <span @click="downappw"><img :src="$getPublicImg('/images/agsw.png')" /></span>
+        </div>
+        <div>{{usertitle.slice(0,60)}}.....</div>
+        <div class="color1" @click='xunzxq(1)'>查看详情</div>
+      </div>
+    </div>
+    <div class="jin_qin_qi_dai" v-show="firstuser">
       <div class="centerwen">
         <div class="color1">通知
           <span @click="nexttk"><img :src="$getPublicImg('/images/agsw.png')" /></span>
@@ -177,12 +191,13 @@
 </template>
 
 <script>
+// import { mapGetters } from 'vuex'
 import footGuide from "../../components/footer/footGuide";
 import promptbox from "../../components/promptbox";
 import { setStore } from "../../utils/mUtils.js";
 import { swiper, swiperSlide } from "vue-awesome-swiper";
-import { mapActions, mapMutations } from "vuex";
-import _ from "lodash";
+// import ScrollNews from "../../utils/scrollNews";
+// import sliceStrToArr from "../../utils/sliceStrToArr";
 export default {
   data() {
     return {
@@ -193,14 +208,28 @@ export default {
       expectation: false,
       firstuser: false,
       usertitle: "",
+      interval: "",
+      isWan: "",
       kuan: "",
+      ZDnam:'',
       getPclink: location.origin.replace(/wap/, "www") + "/login",
       checkboxmodel: false,
       more: false,
       announcementArr: [],
-      activityList: [],
+      activet: [
+        {
+          link: "#/activity1",
+          cls: "adsInfo1",
+          text: "回馈新老客户"
+        },
+        {
+          link: "#/activity2",
+          cls: "adsInfo2",
+          text: "签到送豪礼"
+        }
+      ],
       isApps: typeof window.isApps === "undefined" ? false : window.isApps,
-      closeGG: this.$store.state.userData.sessionId ? false : true,
+      closeGG: sessionStorage.getItem("im_token") ? false : true,
       headerTop: "2.1rem",
       swiperMajgin: "4rem",
       url: "",
@@ -245,15 +274,29 @@ export default {
       logout: false,
       money: "",
       mask: false,
+      _window: {},
       indexNav_i: null,
       list_name: [],
-      lotteryLists: [],
-      lotteryListsTj: [],
+      lists: [],
+      listsTj: [],
       username_pc: "",
-      scrollNews: [],
-      alertNews: []
+      oid_pc: "",
+      activet:'',
     };
   },
+  mounted() {
+    /*  let scrollNews = new ScrollNews({
+      scrollDom: document
+        .querySelector(".scrollNews")
+        .querySelector(".scroll-list"),
+      list: this.announcements,
+      itemHeight: 25,
+      delay: 2
+    });
+    window.scrollNews = scrollNews;
+    scrollNews.start(); */
+  },
+  //：开奖读缓存
   computed: {
     setCheckboxmodel: {
       get() {
@@ -265,100 +308,44 @@ export default {
       }
     }
   },
-
   methods: {
-    ...mapActions([
-      "GET_SWIPER_DATA",
-      "GET_ANNOUNCEMENT_DATA",
-      "GET_LOTTERYTYPELIST_DATA",
-      "GET_ACTIVITY_DATA",
-      "LOGIN_AS_TOURIST",
-      "GET_WEBSITE_CONFIG"
-    ]),
-    ...mapMutations(["setUserData", "alertNotifications", "toggleRechageBox"]),
-    setSwiper() {
-      this.GET_SWIPER_DATA().then(res => {
-        //获取轮播图
-        let swiperArray = res.response;
-        for (let i = 0; i < swiperArray.length; i++) {
-          this.msgs.data.push({ pic: swiperArray[i].imageUrl });
+    goPath(path){
+      this.$router.push({path:'activityall',query:{title:path.title,bg:path.wap_bgimg}})
+    },
+    oid_all() {
+      this.$http.post(`${getUrl()}/user/signdemo`).then(res => {
+        sessionStorage.setItem("im_token", res.data.oid);
+        sessionStorage.setItem("im_money", "0");
+        sessionStorage.setItem("im_realname", "11");
+      });
+    },
+    setSort(data) {
+      let lists = [];
+      let listsTj = [];
+      for (let j in data.tj_sort) {
+        if (typeof this.lis_nam[data.tj_sort[j]] != "undefined") {
+          listsTj.push(this.lis_nam[data.tj_sort[j]]);
         }
-      });
-    },
-    setAnnouncement() {
-      this.GET_ANNOUNCEMENT_DATA().then(res => {
-        // type:0代表滚动消息 type:1代表弹出的提示 type:2代表其他
-        this.scrollNews = _.map(
-          _.filter(res.response, item => item.type === 0),
-          "content"
-        );
-
-        this.alertNews = _.map(
-          _.filter(res.response, item => item.type === 1),
-          "content"
-        );
-        this.announcements = this.scrollNews.join(
-          "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-        );
-        if (this.$store.state.alertNotifications) {
-          this.infiniteAlert(this.alertNews, 0);
-          this.alertNotifications(false);
+      }
+      for (let i in data.sort) {
+        if (typeof this.lis_nam[data.sort[i]] != "undefined") {
+          let flag = true;
+          for (let k in listsTj) {
+            if (listsTj[k] == this.lis_nam[data.sort[i]]) {
+              flag = false;
+              break;
+            }
+          }
+          flag && lists.push(this.lis_nam[data.sort[i]]);
         }
-      });
-    },
-    setLotteryEntry() {
-      this.GET_LOTTERYTYPELIST_DATA().then(res => {
-        this.lotteryLists = res.response;
-      });
-    },
-    setActivity() {
-      this.GET_ACTIVITY_DATA().then(res => {
-        this.activityList = res.response;
-      });
-    },
-    infiniteAlert(arr, index) {
-      let _this = this;
-      //如果大于一个弹出提示，并且不是最后一个，那么需要自己调用自己
-      if (arr.length > 1 && index < arr.length - 1) {
-        this.$swal({
-          confirmButtonText: "查看详情",
-          text: arr[index],
-          showCloseButton: true,
-          callback: action => {
-            _this.infiniteAlert(arr, index + 1);
-          }
-        }).then(result => {
-          if (result.value) {
-            _this.$router.push({
-              path: "/noticeCenter"
-            });
-          }
-        });
       }
-      //如果只有一个或者如果是弹出最后一个，那么就没有回调函数
-      if (arr.length == 1 || index == arr.length - 1) {
-        this.$swal(
-          {
-            confirmButtonText: "查看详情",
-            text: arr[index],
-            showCloseButton: true
-          },
-          cb => {
-            _this.alertNotifications(false);
-          }
-        ).then(result => {
-          if (result.value) {
-            _this.$router.push({
-              path: "/noticeCenter"
-            });
-          }
-        });
-      }
+      this.lists = lists;
+      this.listsTj = listsTj;
     },
     getPclinks() {
-      let oid = this.$store.state.userData.sessionId;
+      let oid = sessionStorage.getItem('im_token');
 
-      let username = this.$store.state.userData.username;
+      let username = sessionStorage.getItem("im_username");
       if (this.is_gd_ali == "ali" || this.is_gd_ali == "gd") {
         location.href =
           location.origin.replace(/wap/, "www") +
@@ -394,30 +381,36 @@ export default {
           oid;
       }
     },
+    moreran() {
+      this.more = !this.more;
+    },
     xunzxq(push) {
+      sessionStorage.setItem("xqdown", JSON.stringify("123"));
       if (push == 1) {
         this.$router.push({
           path: "/noticeCenter"
         });
       } else {
-        // 隐藏充值框
-        this.toggleRechageBox(false);
         this.$router.push({
           path: "/Order:0"
         });
       }
     },
     nexttk() {
-      // 隐藏充值框
-      this.toggleRechageBox(false);
       this.firstuser = false;
       //获取弹窗信息
       if (sessionStorage.getItem("im_tan")) {
         let params = {};
-
+        params.oid = sessionStorage.getItem('im_token');
         this.$http
-          .post(`/user/getLoginNotice`, JSON.stringify(params))
+          .post(`${getUrl()}/user/getLoginNotice`, JSON.stringify(params))
           .then(res => {
+            if (res.data.msg == "4003") {
+              this.$router.push({
+                path: "/weihu"
+              });
+              return;
+            }
             if (res.data.isAlert == 1) {
               this.expectation = true;
               this.usertitle = res.data.msg;
@@ -480,84 +473,94 @@ export default {
       return numberList.split(" ");
     },
     exit() {
-      this.$swal({
-        text: "确定退出?",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
-      }).then(result => {
-        if (result.value) {
-          this.setUserData({});
-          this.mask = !this.mask;
-        }
-      });
+      this.logout = !this.logout;
+      this.mask = false;
+      this.isOpen = false;
     },
     isShow() {
       this.isOpen = !this.isOpen;
       this.mask = !this.mask;
+      this.money = sessionStorage.getItem("im_money");
     },
-    loginAsTourists() {
-      this.LOGIN_AS_TOURIST().then(res => {
-        this.title_control = true;
-        this.isOpen = false;
-        this.username = this.$store.state.userData.username;
-      });
-    },
-    gotoAddress(path) {
-      let game_path = "";
-      switch (path) {
-        case "game_260":
-          game_path = 90;
-          break;
-        case "game_240":
-          game_path = 551;
-          break;
-        case "game_250":
-          game_path = 60;
-          break;
-        case "game_210":
-          game_path = 66;
-          break;
-        case "game_46":
-          game_path = 401;
-          break;
-        case "game_51":
-          game_path = 55;
-          break;
-        case "game_2":
-          game_path = 40;
-          break;
-        case "game_69":
-          game_path = 20;
-          break;
-        case "game_160":
-          game_path = 15;
-          break;
-        case "game_171":
-          game_path = 35;
-          break;
-        case "game_3":
-          game_path = 30;
-          break;
-        case "game_47":
-          game_path = 25;
-          break;
-        case "game_172":
-          game_path = 88;
-          break;
-        case "game_270":
-          game_path = 201;
-          break;
-      }
-      if (game_path) {
-        this.$router.push({
-          path: `game_${game_path}`
+    isShiwan() {
+      this.logoxian = true;
+      this.isOpen = false;
+      this.$http
+        .post(`${getUrl()}/user/signdemo`)
+        .then(res => {
+          if (res.data.oid) {
+            this.promptboxtext = "试玩账号登陆成功";
+            this.panelShow = true;
+            this.successshow = true;
+            sessionStorage.setItem("im_token", res.data.oid);
+            sessionStorage.setItem("im_money", res.data.money);
+            sessionStorage.setItem("im_username", res.data.username);
+            sessionStorage.setItem("im_realname", res.data.realname);
+            setTimeout(() => {
+              if (sessionStorage.getItem("im_username")) {
+                this.title_control = true;
+                this.username = sessionStorage.getItem("im_username");
+              } else {
+                this.title_control = false;
+              }
+            }, 0);
+          } else {
+            this.promptboxtext = "试玩账号登录失败";
+            this.panelShow = true;
+            this.successshow = false;
+          }
+        })
+        .catch(err => {
+          console.log(err);
         });
-        return;
+    },
+    gotoAddress(path,type,typeI) {
+      // this.$router.push('/order:2?GameName=fish')
+      let pathinfo = this.titleL;
+      let game_code = "";
+      switch (path) {
+        case "game_66":
+          game_code = 210;
+          break;
+        case "game_551":
+          game_code = 240;
+          break;
+        case "game_60":
+          game_code = 250;
+          break;
+        case "game_401":
+          game_code = 46;
+          break;
+        case "game_55":
+          game_code = 51;
+          break;
+        case "game_20":
+          game_code = 69;
+          break;
+        case "game_15":
+          game_code = 160;
+          break;
+        case "game_30":
+          game_code = 3;
+          break;
+        case "game_40":
+          game_code = 2;
+          break;
+        case "game_25":
+          game_code = 47;
+          break;
+        case "game_35":
+          game_code = 171;
+          break;
+        case "game_88":
+          game_code = 172;
+          break;
+        default:
       }
-      if (this.$store.state.userData.username == "游客") {
+      this.game_code = game_code;
+      //试玩账号权限限制
+      this.isWan = sessionStorage.getItem("im_username");
+      if (this.isWan == "游客") {
         this.mask = false;
         this.isOpen = false;
         if (/^\/Order*/.test(path)) {
@@ -567,26 +570,43 @@ export default {
           return;
         }
       }
-      //试玩账号权限限制
       if (path == "app") {
-        this.$window.location.href = this.appdown;
+        this._window.location.href = this.appdown;
       } else if (/activity*/.test(path)) {
         this.$router.push(path);
       } else {
-        if (!this.$store.state.userData.sessionId) {
+        if (!sessionStorage.getItem('im_token')) {
           this.$router.push("/login");
         } else {
           this.$router.push(path);
         }
       }
-      let oidInfo = this.$store.state.userData.sessionId;
+      let oidInfo = sessionStorage.getItem('im_token');
       let odd = {};
       odd.oid = oidInfo;
+      this.$http
+        .post(`${getUrl()}/getinfo/money`, JSON.stringify(odd))
+        .then(res => {
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
+          if (res.data.msg == "4002") {
+            this.$router.push({
+              path: "/login"
+            });
+          }
+          this.money = res.data.money;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     log_out() {
-      Object.keys(sessionStorage).forEach((item, index) => {
-        if (item != "promotionId") {
-          sessionStorage.removeItem(item);
+      Object.keys(sessionStorage).forEach((item, index)=> {
+        if(item!='promotionId'){
+          sessionStorage.removeItem(item)
         }
       });
       this.logout = false;
@@ -597,7 +617,7 @@ export default {
     gotoPayAddress() {
       this.$router.push("/kefu");
     },
-    gotoPayAddresschangeSecondMenu() {
+    gotoPayAddressone() {
       this.$router.push("/regist");
     },
     gotoMy() {
@@ -631,16 +651,19 @@ export default {
     swiperSlide,
     promptbox
   },
+  beforeCreate() {
+    this._window = window;
+  },
   created() {
-    // 设置轮播
-    this.setSwiper();
-    // 设置滚动信息
-    this.setAnnouncement();
-    // 彩票游戏入口
-    this.setLotteryEntry();
-    // 优惠活动
-    this.setActivity();
-
+    //各家活动接口
+    let params = {}
+    params.client = 2;
+    this.$http.post(`${getUrl()}/Promotion/getPromotionList`,JSON.stringify(params)).then(res => {
+      this.activet = res.data;
+    })
+    // 处理pc端token格式和wap端不一样的问题
+    // pc端存的是'token'，wap端存的'"token"'
+    
     this.is_gd_ali == "ali" || this.is_gd_ali == "gd"
       ? (this.closeGG = true)
       : (this.closeGG = false);
@@ -655,18 +678,165 @@ export default {
     } else if (this.is_gd_ali == "ali") {
       this.kuan = "20rem";
     }
+    let lis_nam = [];
+    lis_nam[270] = {
+      title: "极速六合彩",
+      img: require("../../../wap/images/game_201_icon.png"),
+      game: "/game_201"
+    };
+    lis_nam[260] = {
+      title: "88赛马",
+      img: require("../../../wap/images/game_90_icon.png"),
+      game: "/game_90"
+    };
+    lis_nam[250] = {
+      title: "极速时时彩",
+      img: require("../../../wap/images/game_60_icon.png"),
+      game: "/game_60"
+    };
+    lis_nam[240] = {
+      title: "极速赛车",
+      img: require("../../../wap/images/game_551_icon.png"),
+      game: "/game_551"
+    };
+    lis_nam[3] = {
+      title: "广东快乐十分",
+      img: require("../../../wap/images/game_30_icon.png"),
+      game: "/game_30"
+    };
+    lis_nam[47] = {
+      title: "重庆幸运农场",
+      img: require("../../../wap/images/game_25_icon.png"),
+      game: "/game_25"
+    };
+    lis_nam[2] = {
+      title: "重庆时时彩",
+      img: require("../../../wap/images/game_40_icon.png"),
+      game: "/game_40"
+    };
+    lis_nam[46] = {
+      title: "罗马时时彩",
+      img: require("../../../wap/images/game_401_icon.png"),
+      game: "/game_401"
+    };
+    lis_nam[51] = {
+      title: "北京赛车",
+      img: require("../../../wap/images/game_55_icon.png"),
+      game: "/game_55"
+    };
+    lis_nam[69] = {
+      title: "香港六合彩",
+      img: require("../../../wap/images/game_20_icon.png"),
+      game: "/game_20"
+    };
+    lis_nam[160] = {
+      title: "PC蛋蛋",
+      img: require("../../../wap/images/game_15_icon.png"),
+      game: "/game_15"
+    };
+    lis_nam[171] = {
+      title: "幸运飞艇",
+      img: require("../../../wap/images/game_35_icon.png"),
+      game: "/game_35"
+    };
+    lis_nam[172] = {
+      title: "江苏骰宝(快3)",
+      img: require("../../../wap/images/game_88_icon.png"),
+      game: "/game_88"
+    };
+    lis_nam[210] = {
+      title: "威尼斯赛艇",
+      img: require("../../../wap/images/game_66_icon.png"),
+      game: "/game_66"
+    };
+    lis_nam[1] = {
+      title: "真人视讯",
+      img: require("../../../wap/images/ag_icon.png"),
+      game: "/ag"
+    };
+    lis_nam[180] = {
+      title: "北京快乐8",
+      img: require("../../../wap/images/game_180_icon.png"),
+      game: "/game_180"
+    };
+    lis_nam[0] = {
+      title: "在线客服",
+      img: require("../../../wap/images/kefu_icon.png"),
+      game: "/kefu"
+    };
+    lis_nam[280] = {
+      title: "吉林快3",
+      img: require("../../../wap/images/k3_icon.png"),
+      game: "/game_881"
+    };
+    // if (this.is_gd_ali !== "ali" && this.is_gd_ali !== "gd") {
+      lis_nam[4] = {
+        title: "体育游戏",
+        img: require("../../../wap/images/sportgame.png"),
+        game: "/sport"
+      };
+    // }
+    if (this.is_gd_ali !== "ali" && this.is_gd_ali !== "gd") {
+      lis_nam[5] = {
+        title: "捕鱼游戏",
+        img: require("../../../wap/images/game_by_icon.png"),
+        tjImg: require("../../../wap/images/tj_by.png"),
+        game: "/fish"
+      };
+    }
+    //  lis_nam[6] = {
+    //   title: "棋牌游戏",
+    //   img:require("../../../wap/images/game_chess_icon.png"),
+    //   game: "/chess"
+    // };
+    
+    if (
+      this.is_gd_ali !== "agcai" &&
+      
+      this.is_gd_ali !== "yiren" &&
+      this.is_gd_ali !== "ali" &&
+      this.is_gd_ali !== "gd"
+    ) {
+      lis_nam[7] = {
+        title: "电子游艺",
+        img: require("../../../wap/images/game_mg_icon.png"),
+        game: "/mg"
+      };
+    }
+
+    this.lis_nam = lis_nam;
 
     // 彩种列表循环
     let prams = {
       oid: oidInfo
     };
 
+    // 缓存接口的时候
+    let game_sort = sessionStorage.getItem("gamesort");
+    game_sort && this.setSort(JSON.parse(game_sort));
+    // 请求接口的时候
+    !game_sort &&
+      this.$http
+        .post(`${getUrl()}/systems/game_sort`, JSON.stringify(prams))
+        .then(res => {
+          res.data &&
+            sessionStorage.setItem("gamesort", JSON.stringify(res.data));
+          this.setSort(res.data);
+        });
     //判断开奖声音的状态
     if (sessionStorage.getItem("musicswitch")) {
       // .setItem('musicswitch', JSON.stringify(this.checkboxmodel))
       this.checkboxmodel = JSON.parse(sessionStorage.getItem("musicswitch"));
     } else {
       this.checkboxmodel = false;
+    }
+    //下载弹框
+    if (
+      sessionStorage.getItem("xqdown") &&
+      sessionStorage.getItem("im_updown") == 1
+    ) {
+      this.firstdown = true;
+      sessionStorage.setItem("im_updown", 0);
     }
     //用户注册成功的弹框
     if (sessionStorage.getItem("im_firstr")) {
@@ -675,10 +845,16 @@ export default {
     }
     if (!this.firstuser && sessionStorage.getItem("im_tan")) {
       let params = {};
-
+      params.oid = sessionStorage.getItem('im_token');
       this.$http
-        .post(`/user/getLoginNotice`, JSON.stringify(params))
+        .post(`${getUrl()}/user/getLoginNotice`, JSON.stringify(params))
         .then(res => {
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+            return;
+          }
           sessionStorage.setItem(
             "im_updown",
             JSON.stringify(res.data.alert_download)
@@ -697,7 +873,7 @@ export default {
       this.getPclink = location.origin.replace(/wap/, "www") + "?toPC=1";
     } else if (this.is_gd_ali == "ly") {
       this.closeGG = false;
-      this.getPclink = location.origin.replace(/wap/, "vip") + "?toPC=1";
+      this.getPclink = location.origin + "?toPC=1";
     } else if (
       this.is_gd_ali == "uc" ||
       this.is_gd_ali == "ct" ||
@@ -711,11 +887,38 @@ export default {
       this.getPclink = location.origin.replace(/m\./, "www") + "?toPC=1";
     }
 
+    this.api = getUrl();
+    //各家活动
+
+    // if (sessionStorage.getItem("im_promotions")) {
+    //   this.activet = JSON.parse(sessionStorage.getItem("im_promotions"));
+    // } else {
+    //   this.$http
+    //     .post(`${getUrl()}/movable/promotions`)
+    //     .then(res => {
+    //       if (res.data.msg == "4003") {
+    //         this.$router.push({
+    //           path: "/weihu"
+    //         });
+    //         return;
+    //       }
+    //       this.activet = res.data.promotions;
+
+    //       sessionStorage.setItem(
+    //         "im_promotions",
+    //         JSON.stringify(res.data.promotions)
+    //       );
+    //     })
+    //     .catch(err => {
+    //       console.log(err);
+    //     });
+    // }
+
     // 如果session 里面存了登录信息, 或者是app的话
     if (!this.closeGG || this.isApps) {
       this.closeGb();
     }
-    if (this.$store.state.userData.username == "游客") {
+    if (sessionStorage.getItem("im_username") == "游客") {
       this.logoxian = true;
     } else {
       this.logoxian = false;
@@ -733,15 +936,69 @@ export default {
     //    截取电脑端链接
     this.pcUrl = `//${getUrl().substring(6)}/login`;
     //       验证用户是否登录
-    if (this.$store.state.userData.username) {
+    if (sessionStorage.getItem("im_username")) {
       this.title_control = true;
-      this.username = this.$store.state.userData.username;
+      this.username = sessionStorage.getItem("im_username");
     } else {
       this.title_control = false;
     }
     //获取轮播图和公告（图片地址)
+    let swiper = localStorage.getItem("swiper");
+    let announcements = localStorage.getItem("announcements") || ['欢迎您的到来,祝您游戏愉快'];
 
-    let oidInfo = this.$store.state.userData.sessionId;
+    swiper = swiper != null && JSON.parse(swiper) ? JSON.parse(swiper) : false;
+    if (swiper && announcements) {
+      this.msgs.data = swiper;
+      this.announcements = announcements;
+    } else {
+      this.$http
+        .post(`${getUrl()}/user/getPicturesAndAnnouncements`)
+        .then(res => {
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+            return;
+          }
+          if (res.data.code == 200) {
+            //获取轮播图
+            let img_url = res.data.rotations;
+            for (let i = 0; i < img_url.length; i++) {
+              let url = {
+                pic: img_url[i]
+              };
+              this.msgs.data.push(url);
+            }
+            localStorage.setItem("swiper", JSON.stringify(this.msgs.data));
+            //获取公告
+            let announcement = res.data.pageShow;
+            for (let i in announcement) {
+              announcement[i] = i * 1 + 1 + "." + announcement[i];
+            }
+            this.announcements = announcement.join(
+              "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+            );
+
+            // if (announcement.length >= 1) {
+            //   this.announcements = announcement[announcement.length - 1];
+            // } else if (res.data.alertShow.length >= 1) {
+            //   this.announcements =
+            //     res.data.alertShow[announcement.length - 1];
+            // }
+            localStorage.setItem("announcements", this.announcements);
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+    let oidInfo = sessionStorage.getItem('im_token');
+  },
+  watch: {
+    getPclinks() {}
+  },
+  destroyed() {
+    clearInterval(this.interval);
   }
 };
 </script>
@@ -800,7 +1057,8 @@ export default {
     display: block;
     height: 150px;
     img {
-      width: 100%;
+      height: 100%;
+      width:100%;
     }
   }
 }
@@ -903,11 +1161,10 @@ export default {
   // box-shadow:0 0.1rem 32px 0px #aaa;
   color: #000;
   background: #f2f2f2;
-
+  padding-right: 10/20rem;
   > div:nth-of-type(2) {
     /* padding: 0.2rem 0 2/20rem;*/
     width: 100%;
-    overflow: hidden;
     display: flex;
     align-items: center;
     p {
@@ -917,17 +1174,19 @@ export default {
 }
 
 .announcement .text {
-  width: 270/20rem;
+  /* width: 270/20rem; */
+  overflow: hidden;
   margin-left: 0.5rem;
   font-size: 12/20rem;
 }
 
 .announcement .manly {
-  width: 0.5rem;
-  height: 0.5rem;
+  // width: 0.5rem;
+  // height: 0.5rem;
   border-bottom: 1px solid #a39898;
   border-left: 1px solid #a39898;
   transform: rotate(-135deg);
+  padding: 0 0 .5rem .5rem;
   /*	margin-top: 0.1rem;*/
 }
 
@@ -1411,6 +1670,7 @@ button {
     /*width: 140/20rem;
       height: 98/20rem;*/
     width: 330/46.875rem;
+    height: 220/46.875rem;
     background-size: contain;
     // overflow: hidden;
     border-top-left-radius: 5/20rem;
@@ -1769,9 +2029,10 @@ button {
 .raw-checkbox:disabled + label:after {
   background: #bcbdbc;
 }
-.hot-games {
+.gameClass .game_list li img.hot-games {
   position: absolute;
-  width: 28px !important;
+  width: 28px;
+  height: 30px;
   top: -15px;
   right: -6px;
 }

@@ -7,11 +7,11 @@
       </div>
     </div>
     <div class="aisle">
-      <div v-for="(j,i) in aliPayId" @click.stop="payonline(j,i)" :class="`${(navIndex == i)?'active':''}`">
-        通道{{i+1}}
-      </div>
-      <span style="display: inline-block;color:#9a9a9a;width: 90%;font-size: 0.5rem;margin-top: 0.3rem;margin-left: 0.5rem;">若充值失败，请更换其他通道</span>
-    </div>
+	    <div v-for = "(j,i) in aliPayId" @click.stop= "payonline(j,i)" :class="`${(navIndex == i)?'active':''}`">
+	     	 通道{{i+1}}
+	    </div>
+	    <span style="display: inline-block;color:#9a9a9a;width: 90%;font-size: 0.5rem;margin-top: 0.3rem;margin-left: 0.5rem;">若充值失败，请更换其他通道</span>
+	  </div>
     <div class="seach" v-if="isShowBank">
       <span>银行：</span>
       <div>
@@ -40,9 +40,10 @@
       <button class="color1" @click="chongzhi()">重置金额</button>
       <!--<button class="color_money" @click.stop='chongzhi'>重置充值</button>-->
     </div>
-    <promptbox @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" :promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
-    <!--遮罩层结束-->
-    <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
+    <promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" 
+   	:promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
+		<!--遮罩层结束-->
+     <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
       <div class="loading">
         <div class="loader-inner line-spin-fade-loader">
           <div></div>
@@ -63,8 +64,8 @@
 //  getOid,
 //  getUrl
 //} from '../../api'
-import iHeader from "../../components/i-header";
-import promptbox from "../../components/promptbox";
+import iHeader from '../../components/i-header'
+import promptbox from '../../components/promptbox'
 export default {
   components: {
     iHeader,
@@ -77,29 +78,7 @@ export default {
       moneyMin: 0,
       moneyMax: 0,
       arrayMap: ["22", "55", "166"],
-      options: [
-        "农业银行",
-        "中国银行",
-        "招商银行",
-        "建设银行",
-        "交通银行",
-        "工商银行",
-        "渤海银行",
-        "光大银行",
-        "兴业银行",
-        "民生银行",
-        "中信银行",
-        "广发银行",
-        "华夏银行",
-        "平安银行",
-        "邮政储蓄银行",
-        "浦发银行",
-        "中国银行",
-        "华夏银行",
-        "北京农商",
-        "上海银行",
-        "银联支付"
-      ],
+      options: ["农业银行", "中国银行", "招商银行", "建设银行", "交通银行", "工商银行", "渤海银行", "光大银行", "兴业银行", "民生银行", "中信银行", "广发银行", "华夏银行", "平安银行", "邮政储蓄银行", "浦发银行", "中国银行", "华夏银行", "北京农商", "上海银行", "银联支付"],
       bankName: "工商银行",
       titleH: "",
       isBlue: false,
@@ -107,12 +86,12 @@ export default {
       isEnd: false,
       blank: "",
       aliPayId: [],
-      data: ["", "", "", "", "", "", "", ""],
-      shu: "",
-      payUrl: "",
+      data: ['','','','','','','',''],
+      shu: '',
+      payUrl: '',
       panelShow: false,
       promptboxtext: "",
-      iframe: null,
+      iframe:null,
       urlId: "",
       pay_img_url: "",
       paramsL: "",
@@ -120,72 +99,71 @@ export default {
       isShowBank: false,
       canSubmit: true,
       canSubmitMax: true,
-      payurls: "",
-      showCurtion: false,
-      erreocode: "",
-      promptboxtext: "",
-      panelShow: false,
-      promptboxshow: true,
-      successshow: false,
-      promptsystem: "",
-      moneyMin: "",
-      moneyMax: "",
-      min_text: "",
-      max_text: "",
-      minmax_info: ""
-    };
+      payurls:'',
+      showCurtion:false,
+      erreocode:'',
+      promptboxtext:'',
+      panelShow:false,
+      promptboxshow:true,
+      successshow:false,
+      promptsystem:'',
+      moneyMin:"",
+      moneyMax:"",
+      min_text:"",
+      max_text:"",
+      minmax_info:"",
+    }
   },
   methods: {
     payonline(j, i) {
-      if (i == undefined) {
-        i = 0;
+      if (i == undefined){
+        i = 0
       }
       this.navIndex = i;
       this.isShowBank = Number(j.split("isShowBank=")[1]);
       this.paramsL = j;
     },
-    submitM() {
-      if (this.isShowBank) {
-        this.successshow = false;
+    submitM(){
+  
+      if (this.isShowBank){
+      	this.successshow=false
         if (Number(this.shu) < Number(this.moneyMin)) {
-          this.promptboxtext = `存款金额不能少于${this.moneyMin}`;
-          this.panelShow = true;
-          this.canSumbit = false;
+          this.promptboxtext = `存款金额不能少于${this.moneyMin}`
+          this.panelShow = true
+          this.canSumbit = false
           setTimeout(() => {
-            this.panelShow = false;
-            return;
-          }, 1200);
+            this.panelShow = false
+            return
+          }, 1200)
         } else {
-          this.canSumbit = true;
-        }
-        if (Number(this.shu) > Number(this.moneyMax)) {
-          if (this.moneyMax != 0) {
-            this.canSubmitMax = false;
-            this.promptboxtext = `存款金额不能大于${this.moneyMax}`;
-            this.panelShow = true;
-            return;
+          this.canSumbit = true
+        };
+        if(Number(this.shu) > Number(this.moneyMax)) {
+          if(this.moneyMax != 0) {
+            this.canSubmitMax = false
+            this.promptboxtext = `存款金额不能大于${this.moneyMax}`
+            this.panelShow = true
+      		  return
           }
         } else {
-          this.canSubmitMax = true;
+          this.canSubmitMax = true
         }
         if (this.shu < this.alipaymin) {
-          this.promptboxtext = `取款金额不能少于${this.alipaymin}`;
-          this.panelShow = true;
-          return;
+          this.promptboxtext = `取款金额不能少于${this.alipaymin}`
+          this.panelShow = true
+          return
         } else if (this.isEnd == false) {
-          this.promptboxtext = "支付信息获取中";
-          this.panelShow = true;
-          return;
+          this.promptboxtext = "支付信息获取中"
+          this.panelShow = true
+          return
         } else if (this.shu >= this.alipaymin && this.isEnd == true) {
-          this.showCurtion = true;
+        	this.showCurtion = true;
           let t = this.paramsL;
           this.payUrl = `${t}&money=${this.shu}`;
-          let payUrl = `/user/payTheTransfer2?transfer=${this.payUrl}&PayID=${
-            this.bankName
-          }&is_json=yes`;
-          console.log(payUrl);
-          if (location.href.split("?")[1] == "GameName=AG") {
-            payUrl += "&GameName=AG";
+          let payUrl = `${getUrl()}/user/payTheTransfer2?transfer=${this.payUrl}&PayID=${this.bankName}&is_json=yes`;
+          console.log(payUrl)
+          if(location.href.split('?')[1]=='GameName=AG'){
+          	payUrl+='&GameName=AG';
           }
           // this.$http.post(`${payUrl}&is_json=yes`).then(res => {
           //   return 0;
@@ -199,23 +177,22 @@ export default {
           // }).catch(err => {
           // 	window.location.href = payUrl;
           // })
-          window.location.href =
-            this.payUrl + "&PayID=" + this.bankName + "&is_json=yes";
+          window.location.href = this.payUrl+"&PayID="+this.bankName+"&is_json=yes";
         } else {
-          this.promptboxtext = "操作异常，请重试";
+          this.promptboxtext = "操作异常，请重试"
           this.panelShow = true;
           setTimeout(() => {
             this.panelShow = false;
             return;
-          }, 600);
-          return;
+          }, 600)
+          return
         }
       } else {
         if (Number(this.shu) < Number(this.moneyMin)) {
           this.promptboxtext = `存款金额不能少于${this.moneyMin}`;
           this.panelShow = true;
           this.canSumbit = false;
-          return;
+          return
         } else {
           this.canSumbit = true;
         }
@@ -230,18 +207,18 @@ export default {
         if (this.shu < this.alipaymin) {
           this.promptboxtext = `取款金额不能少于${this.alipaymin}`;
           this.panelShow = true;
-          return;
+          return
         } else if (this.isEnd == false) {
-          this.promptboxtext = "支付信息获取中";
+          this.promptboxtext = "支付信息获取中"
           this.panelShow = true;
-          return;
+          return
         } else if (this.shu >= this.alipaymin && this.isEnd == true) {
-          this.showCurtion = true;
+        	this.showCurtion = true;
           let t = this.paramsL;
-          this.payUrl = `${t}&money=${this.shu}`;
-          let payUrl = `/user/payTheTransfer2?transfer=${this.payUrl}`;
-          if (location.href.split("?")[1] == "GameName=AG") {
-            payUrl += "&GameName=AG";
+          this.payUrl = `${t}&money=${this.shu}` ;
+          let payUrl = `${getUrl()}/user/payTheTransfer2?transfer=${this.payUrl}`;
+          if(location.href.split('?')[1]=='GameName=AG'){
+          	payUrl+='&GameName=AG';
           }
           //  this.$http.post(`${payUrl}&is_json=yes`).then(res => {
           //    console.log(res);
@@ -250,7 +227,7 @@ export default {
           // 		sessionStorage.setItem('zfurl', JSON.stringify(res.data));
           // 			this.$router.push({
           // 				path:`/zf:${this.urlId}`
-          // 			})
+          // 			})          			
           // 	}else{
           // 			window.location.href = payUrl;
           // 		}
@@ -268,173 +245,156 @@ export default {
     dianji(item, index) {
       this.shu = item;
       for (var i = 0; i < this.$refs.amount.children.length; i++) {
-        this.$refs.amount.children[i].style.border = "1px solid #aaa";
+        this.$refs.amount.children[i].style.border = '1px solid #aaa';
       }
-      this.$refs.amount.children[index].style.border = "2px solid #3B6BD6";
+      this.$refs.amount.children[index].style.border = '2px solid #3B6BD6'
     },
     chongzhi() {
-      this.shu = "";
+      this.shu = '';
       for (var i = 0; i < this.$refs.amount.children.length; i++) {
-        this.$refs.amount.children[i].style.border = "1px solid #aaa";
+        this.$refs.amount.children[i].style.border = '1px solid #aaa';
       }
     },
     hui() {
       this.$router.push({
-        path: "/order:0"
-      });
+        path: '/order:0'
+      })
     }
   },
   created() {
-    this.urlId = this.$route.params.id.split(":")[1];
-    this.pay_img_url = this.$getPublicImg(`/images/pay_${this.urlId}.png`);
+    this.urlId = this.$route.params.id.split(':')[1];
+    this.pay_img_url = this.$getPublicImg(`/images/pay_${this.urlId}.png`)
     let urlId = "";
     let urlIds = "";
     switch (this.urlId) {
-      case "55":
-        urlId = "online_bankU";
-        urlIds = "online_bank";
-        this.titleH = "在线支付";
+      case '55':
+        urlId = 'online_bankU';
+        urlIds = 'online_bank';
+        this.titleH = "在线支付"
         break;
-      case "66":
-        urlId = "online_wechatU";
-        urlIds = "online_wechat";
-        this.titleH = "微信支付";
+      case '66':
+        urlId = 'online_wechatU';
+        urlIds = 'online_wechat';
+        this.titleH = "微信支付"
         break;
-      case "77":
-        urlId = "online_alipayU";
-        urlIds = "online_alipay";
-        this.titleH = "支付宝支付";
+      case '77':
+        urlId = 'online_alipayU';
+        urlIds = 'online_alipay';
+        this.titleH = "支付宝支付"
         break;
-      case "88":
-        urlId = "online_cftU";
-        urlIds = "online_cft";
-        this.titleH = "财付通支付";
+      case '88':
+        urlId = 'online_cftU';
+        urlIds = 'online_cft';
+        this.titleH = "财付通支付"
         break;
-      case "99":
-        urlId = "online_quickpayU";
-        urlIds = "online_quickpay";
-        this.titleH = "快捷支付";
+      case '99':
+        urlId = 'online_quickpayU';
+        urlIds = 'online_quickpay';
+        this.titleH = "快捷支付"
         break;
       default:
     }
     let params = {};
-    let userOid = this.$store.state.userData.sessionId;
+    let userOid = sessionStorage.getItem('im_token');
     params.oid = userOid;
-    this.$http.post(`/user/payin`, JSON.stringify(params)).then(res => {
-      switch (this.urlId) {
-        case "55":
-          this.iframe = res.data.online_iframe[0];
-          break;
-        case "66":
-          this.iframe = res.data.online_iframe[1];
-
-          break;
-        case "77":
-          this.iframe = res.data.online_iframe[2];
-          break;
-        case "88":
-          this.iframe = res.data.online_iframe[3];
-
-          break;
-        case "99":
-          this.iframe = res.data.online_iframe[4];
-          break;
-        default:
-      }
-      this.resDate = eval("res.data.online_limit[res.data." + urlIds + "[0]]");
-      this.moneyMin = this.resDate.min;
-      this.moneyMax = this.resDate.max;
-      this.min_text = "最少输入" + this.moneyMin + "元,";
-      this.max_text = "最多输入" + this.moneyMax + "元,";
-      if (this.moneyMin) {
-        this.minmax_info +=
-          '单笔下限<span class="color_money">' + this.moneyMin + ".00</span>";
-      }
-      if (this.moneyMax) {
-        this.minmax_info +=
-          '单笔上限<span class="color_money">' + this.moneyMax + ".00</span>";
-      }
-      if (this.moneyMin == 0) {
-        this.min_text = "";
-      }
-      if (this.moneyMax == 0) {
-        this.max_text = "";
-      }
-      if (this.moneyMin == 0 && this.moneyMax == 0) {
-        this.min_text = "请输入充值金额";
-      }
-
-      this.aliPayId = res.data[urlId];
-      this.payonline(this.aliPayId[0]);
-      this.isBlue = true;
-      this.isEnd = true;
-      if (this.is_gd_ali == "agcai") {
-        this.moneyMin = Number(this.moneyMin);
-        if (this.moneyMin <= 50) {
-          this.data = [50, 100, 300, 500, 800, 1000, 2000, 3000];
-        } else if (this.moneyMin > 50 && this.moneyMin < 500) {
-          this.data = [100, 200, 300, 500, 800, 1000, 2000, 3000];
-        } else if (this.moneyMin >= 500 && this.moneyMin <= 600) {
-          this.data = [
-            this.moneyMin,
-            this.moneyMin + 100,
-            this.moneyMin + 200,
-            this.moneyMin + 300,
-            1000,
-            2000,
-            3000,
-            5000
-          ];
-        } else {
-          this.data = [
-            this.moneyMin + 500,
-            this.moneyMin + 1000,
-            this.moneyMin + 1500,
-            this.moneyMin + 2000,
-            this.moneyMin + 2500,
-            this.moneyMin + 3000,
-            this.moneyMin + 3500,
-            this.moneyMin + 4000
-          ];
-        }
+    this.$http.post(`${getUrl()}/user/payin`, JSON.stringify(params)).then(res => {
+    	if(res.data.msg=='4003'){
+	        		this.$router.push({
+	            	path: '/weihu'
+	          })
+	        }
+      if (res.data.msg == "4001") {
+        sessionStorage.clear();
+        this.panelShow = true;
+        this.promptboxtext = "您的账户已失效，请重新登录";
+        setTimeout(() => {
+          this.panelShow = false;
+          this.$router.push({
+            path: '/login'
+          })
+        }, 1000)
       } else {
+        switch (this.urlId) {
+          case '55':
+            this.iframe = res.data.online_iframe[0];
+            break;
+          case '66':
+            this.iframe = res.data.online_iframe[1];
+	
+            break;
+          case '77':
+            this.iframe = res.data.online_iframe[2];
+            break;
+          case '88':
+            this.iframe = res.data.online_iframe[3];
+
+          	 break;
+           case '99':
+            this.iframe = res.data.online_iframe[4];
+            break;
+          default:
+        }; 
+        this.resDate = eval("res.data.online_limit[res.data."+urlIds+"[0]]");
+        this.moneyMin = this.resDate.min;
+        this.moneyMax = this.resDate.max;
+        this.min_text = "最少输入"+this.moneyMin+"元,";
+        this.max_text = "最多输入"+this.moneyMax+"元,";
+        if (this.moneyMin) {
+          this.minmax_info += '单笔下限<span class="color_money">'+this.moneyMin+'.00</span>';
+        }
+        if (this.moneyMax)
+        {
+          this.minmax_info += '单笔上限<span class="color_money">'+this.moneyMax+'.00</span>';
+        }
+        if(this.moneyMin == 0){
+          this.min_text = "";
+        }
+        if(this.moneyMax == 0){
+          this.max_text = "";
+        }
+        if(this.moneyMin == 0 && this.moneyMax == 0){
+          this.min_text = "请输入充值金额";
+        }
+
+        this.aliPayId = res.data[urlId];
+        this.payonline(this.aliPayId[0])
+        this.isBlue = true;
+        this.isEnd = true;
+      }
+      if(this.is_gd_ali == 'agcai'){
         this.moneyMin = Number(this.moneyMin);
         if (this.moneyMin <= 50) {
-          this.data = [51, 102, 304, 502, 801, 1005, 2002, 3003];
+          this.data = [50, 100, 300, 500, 800, 1000, 2000, 3000]
         } else if (this.moneyMin > 50 && this.moneyMin < 500) {
-          this.data = [102, 201, 301, 502, 801, 1002, 2003, 3004];
+          this.data = [100, 200, 300, 500, 800, 1000, 2000, 3000]
         } else if (this.moneyMin >= 500 && this.moneyMin <= 600) {
-          this.data = [
-            this.moneyMin,
-            this.moneyMin + 101,
-            this.moneyMin + 202,
-            this.moneyMin + 304,
-            1001,
-            2002,
-            3004,
-            5001
-          ];
-        } else {
-          this.data = [
-            this.moneyMin + 501,
-            this.moneyMin + 1002,
-            this.moneyMin + 1503,
-            this.moneyMin + 2001,
-            this.moneyMin + 2504,
-            this.moneyMin + 3004,
-            this.moneyMin + 3504,
-            this.moneyMin + 4001
-          ];
+          this.data = [this.moneyMin, this.moneyMin + 100, this.moneyMin + 200, this.moneyMin + 300, 1000, 2000, 3000, 5000]
+        } else { 
+          this.data = [this.moneyMin + 500, this.moneyMin + 1000, this.moneyMin + 1500, this.moneyMin + 2000, this.moneyMin + 2500, this.moneyMin + 3000, this.moneyMin + 3500, this.moneyMin + 4000]
+        }
+      }else{
+        this.moneyMin = Number(this.moneyMin);
+        if (this.moneyMin <= 50) {
+          this.data = [51, 102, 304, 502, 801, 1005, 2002, 3003]
+        } else if (this.moneyMin > 50 && this.moneyMin < 500) {
+          this.data = [102, 201, 301, 502, 801, 1002, 2003, 3004]
+        } else if (this.moneyMin >= 500 && this.moneyMin <= 600) {
+          this.data = [this.moneyMin, this.moneyMin + 101, this.moneyMin + 202, this.moneyMin + 304, 1001, 2002, 3004, 5001]
+        } else { 
+          this.data = [this.moneyMin + 501, this.moneyMin + 1002, this.moneyMin + 1503, this.moneyMin + 2001, this.moneyMin + 2504, this.moneyMin + 3004, this.moneyMin + 3504, this.moneyMin + 4001]
         }
       }
-    });
+      
+    })
+
+
   }
-};
+}
 </script>
 
 
 <style lang='less' ref="stylesheet/less" scoped>
-@import "../../assets/less/variable.less";
+@import '../../assets/less/variable.less';
 @zoom: 46.875rem;
 .bank-select {
   line-height: 2rem;
@@ -478,24 +438,24 @@ export default {
   text-align: center;
   label {
     background-color: #fff;
-    height: 120 / @zoom;
+    height: 120/@zoom;
     display: inline-block;
     border-radius: 0.25rem;
-    margin-top: 23.4375 / @zoom;
-    width: 694 / @zoom;
-    > div {
+    margin-top: 23.4375/@zoom;
+    width: 694/@zoom;
+    >div {
       color: #9b9b9b;
-      width: 90 / @zoom;
-      height: 120 / @zoom;
+      width: 90/@zoom;
+      height: 120/@zoom;
       text-align: center;
       float: left;
-      background-size: 40 / @zoom 50 / @zoom;
+      background-size: 40/@zoom 50/@zoom;
       background-position: center;
     }
   }
   input {
-    width: 604 / @zoom;
-    height: 120 / @zoom;
+    width: 604/@zoom;
+    height: 120/@zoom;
     border: none;
     outline: none;
     background-color: #fff;
@@ -503,11 +463,11 @@ export default {
     float: left;
   }
   ul {
-    margin-top: 15 / @zoom;
+    margin-top: 15/@zoom;
     li {
       display: inline-block;
-      width: 160 / @zoom;
-      height: 80 / @zoom;
+      width: 160/@zoom;
+      height: 80/@zoom;
       line-height: 70/40rem;
       border-radius: 10/40rem;
       background-color: #fff;
@@ -521,11 +481,11 @@ export default {
 }
 p {
   line-height: 1.025rem;
-  padding-left: 32 / @zoom;
+  padding-left: 32/@zoom;
   color: #9a9a9a;
   text-align: left;
   span {
-    color: #002ed5 !important;
+    color: #002ed5!important;
     font-family: arial;
   }
 }
@@ -534,8 +494,8 @@ p {
   text-align: center;
 }
 button {
-  width: 693 / @zoom;
-  height: 90 / @zoom;
+  width: 693/@zoom;
+  height: 90/@zoom;
   border: none;
   outline: none;
   margin: 0 auto 22/40rem;
@@ -552,7 +512,7 @@ button:nth-child(2) {
 }
 .submit_div_a {
   text-align: center;
-  margin-top: 50 / @zoom;
+  margin-top: 50/@zoom;
 }
 .zzc {
   position: fixed;
@@ -569,31 +529,31 @@ button:nth-child(2) {
   width: 8rem;
   margin: 10rem auto;
   text-align: center;
-  padding: 0.3rem 0.5rem;
+  padding: .3rem .5rem;
 }
 
 .contain_m p {
-  color: #2e6ec9;
-  font-size: 0.75rem;
+  color: #2E6EC9;
+  font-size: .75rem;
 }
 
 .contain_m div {
   color: #fff;
   border-bottom: 1px solid #ddd;
-  padding: 0.5rem;
-  font-size: 0.75rem;
+  padding: .5rem;
+  font-size: .75rem;
 }
 
 .pay_header {
   font-size: 0;
   height: 210/46.875rem;
-  > div {
+  >div {
     width: 100%;
-    height: 210 / @zoom;
+    height: 210/@zoom;
     img {
-      width: 374 / @zoom;
-      height: 100 / @zoom;
-      margin: 55 / @zoom 188 / @zoom;
+      width: 374/@zoom;
+      height: 100/@zoom;
+      margin: 55/@zoom 188/@zoom;
     }
   }
 }
@@ -601,26 +561,26 @@ button:nth-child(2) {
 .aisle {
   font-size: 0;
   margin-top: 12/20rem;
-  > div {
+  >div {
     height: 29/20rem;
-    /* background-image: url(../../../wap/images/pay_aisle.png);*/
-    background-color: #e4e4e4;
-    /*  box-shadow: 0 1/20rem 2/20rem #a0a0a0;*/
-
+   /* background-image: url(../../../wap/images/pay_aisle.png);*/
+    background-color:#E4E4E4;
+  /*  box-shadow: 0 1/20rem 2/20rem #a0a0a0;*/
+    
     margin-left: 8/20rem;
     margin-top: 6/20rem;
     display: inline-block;
     font-size: 14/20rem;
     width: 95/20rem;
     border-radius: 3/20rem 3/20rem 3/20rem 3/20rem;
-
-    color: #9c9c9c;
+   
+    color: #9C9C9C;
     font-weight: 600;
     text-align: center;
     line-height: 29/20rem;
   }
   .active {
-    background-color: #2f64d4;
+    background-color: #2F64D4;
     color: white;
     /*background-image: url(../../../wap/images/pay_aisle_active.png);*/
   }
@@ -628,33 +588,34 @@ button:nth-child(2) {
 
 .seach {
   width: 100%;
-  height: 100 / @zoom;
+  height: 100/@zoom;
   background: #fff;
   box-sizing: border-box;
-  border-top: 1px solid #e4e4e4;
-  border-bottom: 1px solid #e4e4e4;
+  border-top: 1px solid #E4E4E4;
+  border-bottom: 1px solid #E4E4E4;
   overflow: hidden;
-  > * {
+  >* {
     display: inline-block;
   }
   span {
-    width: 110 / @zoom;
-    height: 100 / @zoom;
-    line-height: 100 / @zoom;
+    width: 110/@zoom;
+    height: 100/@zoom;
+    line-height: 100/@zoom;
     text-align: center;
-    font-size: 30 / @zoom;
+    font-size: 30/@zoom;
     float: left;
-    margin-left: 30 / @zoom;
+    margin-left: 30/@zoom;
   }
   select {
-    width: 610 / @zoom;
-    height: 100 / @zoom;
-    line-height: 100 / @zoom;
+
+    width: 610/@zoom;
+    height: 100/@zoom;
+    line-height: 100/@zoom;
     border: none;
     outline: none;
-    text-indent: 20 / @zoom;
+    text-indent: 20/@zoom;
     option {
-      padding-left: 20 / @zoom;
+      padding-left: 20/@zoom;
       box-sizing: border-box;
     }
   }

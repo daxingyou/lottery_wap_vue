@@ -60,11 +60,15 @@ export default {
   },
   methods:{
      getFishBalance() {
+      let oid_info = sessionStorage.getItem("im_token");
+      let params = {};
+      params.oid = oid_info;
       //获取捕鱼游戏额度
       this.$http.post("/aginfo/getAgInfo", JSON.stringify(params)).then(res => {
         if (res.status === 200) {
           if (res.data.msg === 2006) {
             this.fishBalance = res.data.balance.fishBalance.toFixed(2)||'0.00';
+            sessionStorage.setItem("im_money", res.data.balance.userBalance);
           }
         }
       });

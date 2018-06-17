@@ -23,6 +23,8 @@
     ],
     methods: {
       goback() {
+        this.$store.dispatch('goBack') // 发送后退的状态
+        // 后退
         this.$router.go(-1)
       }
     }

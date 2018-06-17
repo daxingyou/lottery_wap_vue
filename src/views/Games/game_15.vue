@@ -1,16 +1,19 @@
 <template>
   <div style='height:100%'>
-    <dailog-q :type_code="activeTabIndex" :gametoken="gametoken" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
-    <lotteryHeader :title="title" :game_code="game_code"></lotteryHeader>
+    <dailog-q :type_code="type_code" :gametoken="gametoken" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
+    <lotteryHeader :title="title" :game_code="game_code" @regulation_click="regulation_control=true"></lotteryHeader>
+    <!-- <drawer v-show="showDrawer"></drawer> -->
+    <!-- <dailog-q v-if="showDailogQ" :titleDate="titleDate" v-on:listenToChildEvent="changeDate"></dailog-q> -->
+
     <div id="mescroll" class="mescroll" style='position:absolute;top:0;bottom:2.45rem;overflow: auto; -webkit-overflow-scrolling: touch;width:100%;'>
       <div id="dataList" class="data-list" v-cloak>
         <!-- <iframe data-v-7e6a6fe1="" src="//kj.kai861.com/view/video/PK10/video.html?10001?1682011.cn" scrolling="no" frameborder="0" style="width: 100%; height: 270px;margin-top:1.91rem;">暂无开奖视频</iframe> -->
       </div>
 
-      <lotteryArea :lotteryObj="body" class='game_15' :fenpan="!!fengpan" :endtime="endtime" :fentime="fentime" v-if="isOk" gameType="15"></lotteryArea>
+      <lotteryArea :lotteryObj="body" class='game_15' :zMoney="zMoney" :fenpan="fengpan" :endtime="endtime" :fentime="fentime" v-if="isOk" gameType="15"></lotteryArea>
       <div class="lottery_nav_bar" :style='de==true||loadpage==true?"display:none":"display:block"'>
         <ul>
-          <button class="trapezoid color1" v-for="(item,i) in pcddClassify" :class="{active8: activeTabIndex === item.type_code}" @click="changeTab(item,i)">
+          <button class="trapezoid color1" v-for="(item,i) in pcddClassify" :class="{active8: activeClassifyId === item.type_code}" @click="changeDate(item,i)">
             <span>{{item.name}}</span>
           </button>
         </ul>
@@ -57,10 +60,11 @@
   </div>
 </template>
 <script>
-import { mapGetters, mutations, mapActions } from "vuex";
+import { mapGetters, mutations } from "vuex";
 import lotteryHeader from "../../components/header/lotteryHeader";
 import lotteryArea from "../../components/lottery-area";
 import dailogQ from "../../components/dailogQ.vue";
+import dailogS from "../../components/dailogS.vue";
 import { pcddClassify } from "@/config/classify.config";
 import Loadpage from "../../components/Loadpage.vue";
 import promptbox from "../../components/promptbox";
@@ -70,32 +74,40 @@ export default {
   data() {
     return {
       currentGame: [],
-      activeTabIndex: 0,
+      activeClassifyId: 0,
       pcddClassify,
       roundCha: null,
       xshuzi: 0,
+      zMoney: 0,
       fentime: 30,
       game_code: 160,
       type_code: 0,
       title: "PC蛋蛋",
+      shuju: {},
       promptboxtext: "",
       isBlue: false,
+      demo: 0,
       body: {},
+      seen: false,
       de: false,
       loading: false,
+      // hotmsgs: {},
+      oid_info: 0,
       isOk: false,
-      endtime: null,
+      endtime: 0,
       isOpen: true,
       lotteryList: {},
       numberList: [],
       dialog: false,
       codeMessage: "",
+      keyValue: null,
       setTime: null,
       fengpan: false,
       object: {},
       objects: [],
       money_s: null,
       round: 0,
+      n_1: false,
       dadiao: "hh",
       onoff: true,
       regulation_control: false,
@@ -112,37 +124,37 @@ export default {
       mescroll: null,
       mescroll: null,
       pdlist: [],
-      pdlist1: ["1"],
-      showDailogQ: false,
-      timerOut: null,
-      timerInterval: null
+      pdlist1: ["1"]
+      // pcznavc_a:1//二級選項卡，默認顯示兩面盤
     };
   },
   methods: {
-    ...mapActions(["GET_LOTTERY_RESULT", "GET_LOTTERY_ODDS"]),
-    updateResult(flag = false) {
-      this.GET_LOTTERY_RESULT({ gameCode: this.game_code, update: true }).then(
-        res => {
-          if(!res[0].next){return}; let needRefresh = res[0].next.round - res[0].last.round !== 1;
-          if (needRefresh) {
-            this.timerOut = setTimeout(() => {
-              this.updateResult(true);
-            }, 2000);
-          }
-          this.isOk = true;
-          let timeStamp = res[0].next.timestamp;
-          this.body = res[0];
-          if (!flag) {
-            // 避免从接口拿到不准确的开奖时间
-            this.endtime = res[0].next.endTime - timeStamp;
-          }
-          this.fengpan = !!res[0].next.isClose;
-          this.round = res[0].next.round;
+    upCallback: function(page) {
+      var self = this;
+      getListDataFromNet(
+        page.num,
+        page.size,
+        function(curPageData) {
+          if (page.num == 1) self.pdlist = [];
+
+          self.pdlist = self.pdlist.concat(curPageData);
+
+          console.log(
+            "page.num=" +
+              page.num +
+              ", page.size=" +
+              page.size +
+              ", curPageData.length=" +
+              curPageData.length +
+              ", self.pdlist.length==" +
+              self.pdlist.length
+          );
+          self.mescroll.endSuccess(curPageData.length);
+        },
+        function() {
+          self.mescroll.endErr();
         }
       );
-    },
-    banmove(evt) {
-      banOverFlow(document.getElementById("cont_main"));
     },
     cleanmoney() {
       this.money_s = null;
@@ -161,7 +173,35 @@ export default {
     showMsgFromChild(data) {
       if (data === true) {
         this.qingkong();
-        this.showDailogQ = false;
+        let oidInfo = sessionStorage.getItem('im_token');
+        let prams = {
+          oid: oidInfo
+        };
+        this.$http
+          .post(`${getUrl()}/getinfo/money`, JSON.stringify(prams))
+          .then(res => {
+            if (res.data.msg == "4001") {
+              sessionStorage.clear();
+              this.promptboxtext = "您的账户已失效，请重新登录!";
+              this.panelShow = true;
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push({
+                  path: "/login"
+                });
+              }, 1000);
+            } else {
+              this.zMoney = res.data.money;
+              sessionStorage.setItem(
+                "im_money",
+                res.data.money
+              );
+              this.xshuzi = 0;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
       }
     },
     changes_m() {
@@ -186,6 +226,14 @@ export default {
       this.object = {};
     },
     subMit() {
+      if (sessionStorage.getItem("im_realname") == "11") {
+        sessionStorage.clear();
+            this.promptboxtext = "请登录正式账号!";
+            this.panelShow = true;
+            this.promptboxshow = false;
+            this.qingkong();
+            return;
+      }
       this.objects = [];
       for (let i in this.object) {
         this.objects.push(this.object[i]);
@@ -201,7 +249,7 @@ export default {
         setTimeout(this.isSHowff, 1200);
         return;
       }
-      this.showDailogQ = true;
+      this.$store.dispatch("showDailogQ");
     },
     isSHowff() {
       this.panelShow = false;
@@ -269,33 +317,58 @@ export default {
         if (!this.loadpagebol) {
           this.de = false;
           this.loadpage = true;
+          return;
         }
-        return;
       }, 10000);
-      this.GET_LOTTERY_ODDS({
-        game_code: params.game_code,
-        type_code: params.type_code
-      }).then(res => {
-        this.de = false;
-        this.loadpagebol = true;
-        this.currentGame = res;
-      });
+      api
+        .getOddsList(params)
+        .then(data => {
+          if (data.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
+          if (data.data.msg == "4001") {
+            sessionStorage.clear();
+            this.promptboxtext = "您的账户已失效,请重新登录!";
+            this.panelShow = true;
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            this.de = false;
+            this.loadpagebol = true;
+            this.currentGame = data.data;
+            if (!getGamesCache(`${params.game_code}_${params.type_code}`)) {
+              setGamesCache(`${params.game_code}_${params.type_code}`, data);
+            }
+          }
+        })
+        .catch(err => {
+          this.de = false;
+        });
     },
-    changeTab(item, i) {
-      if (item.type_code !== this.activeTabIndex) {
-        this.activeTabIndex = item.type_code;
+    changeDate(item, i) {
+      if (item.type_code !== this.activeClassifyId) {
+        this.activeClassifyId = item.type_code;
         this.fetchGames({
+          oid: sessionStorage.getItem('im_token'),
           game_code: item.game_code,
           type_code: item.type_code
         });
+        this.xshuzi = 0;
+
+        this.object = {};
       }
-      this.xshuzi = 0;
-      this.object = {};
     }
   },
   computed: {
+    ...mapGetters(["showDailogQ"]),
     setSectionClass() {
-      if (this.activeTabIndex === 1) {
+      if (this.activeClassifyId === 1) {
         return "pcdd bet";
       }
       return "pcdd_hh bet pcdd";
@@ -303,40 +376,259 @@ export default {
   },
   //初始化
   created() {
-    // 开奖结果
-    this.updateResult();
-    // 赔率数据
+    let param = {};
+    param.oid = sessionStorage.getItem('im_token');
+    this.$http
+      .post(`${getUrl()}/getinfo/getFirstToken`, JSON.stringify(param))
+      .then(res => {
+        this.gametoken = res.data.token;
+        sessionStorage.setItem("gametoken", JSON.stringify(res.data.token));
+      });
+    //  this.fetchGames().then(() =>{
+    this.de = true;
+    let newTime = Date.parse(new Date()) / 1000;
+    let oldTime = localStorage.getItem("pc_time");
+    let roundCha = localStorage.getItem("pc_roundCha");
     this.fetchGames({
-      game_code: this.game_code,
+      oid: sessionStorage.getItem('im_token'),
+      game_code: 160,
       type_code: 0
     });
-  },
-  mounted() {
-    this.timerInterval = setInterval(() => {
-      if (this.endtime === 0) {
-        // 开始拿开奖结果
-        this.updateResult();
-      } else {
-        if (this.endtime <= 30) {
-          // 投注区封盘
-          this.fengpan = true;
+    if (oldTime && newTime <= oldTime && roundCha == 1) {
+      let bodyS = localStorage.getItem("pc_body");
+      let oldTime = localStorage.getItem("pc_time");
+      let moneyX = sessionStorage.getItem("im_money");
+      JSON.parse(bodyS).next.isclose
+        ? (this.fengpan = true)
+        : (this.fengpan = false);
+      this.zMoney = parseFloat(moneyX);
+      this.isOk = true;
+      this.endtime = oldTime - newTime;
+      this.body = JSON.parse(bodyS);
+      this.round = this.body.next.round;
+    } else {
+      let oidInfo = sessionStorage.getItem('im_token');
+      this.oid_info = oidInfo;
+      let params = {
+        params: {
+          game_code: 160, //  登录账号
+          oid: oidInfo
         }
+      }; // 获取token配置
+      this.$http
+        .post(`${getUrl()}/getinfo/game`, JSON.stringify(params.params))
+        .then(res => {
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
+          if (res.data.msg == "4001") {
+            sessionStorage.clear();
+            this.promptboxtext = "您的账户已失效,请重新登录!";
+            this.panelShow = true;
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            let moneyX = sessionStorage.getItem("im_money");
+            let l = res.data;
+            l.last.number.splice(1, 0, "+");
+            l.last.number.splice(3, 0, "+");
+            l.last.number.splice(5, 0, "=");
+            l.last.number.splice(
+              6,
+              0,
+              Number(l.last.number[0]) +
+                Number(l.last.number[2]) +
+                Number(l.last.number[4])
+            );
+            this.zMoney = parseFloat(moneyX);
+            let timeStamp = res.data.next.timestap;
+            this.fengpan = res.data.next.isclose;
+            this.body = l;
+            this.endtime = res.data.next.endtime - timeStamp;
+            this.round = res.data.next.round;
+            let loaclTime = this.endtime + newTime;
+            if (sessionStorage.getItem("im_realname") == "11") {
+              this.zMoney = sessionStorage.getItem("im_money");
+            }else{
+              this.zMoney = res.data.lcurrency;
+              sessionStorage.setItem(
+                "im_money",
+                res.data.lcurrency
+              );
+            }
+            localStorage.setItem("pc_time", loaclTime);
+            localStorage.setItem("pc_body", JSON.stringify(res.data));
+            this.numberList = res.data.last.number;
+            this.round = res.data.next.round;
+            this.roundCha =
+              Number(res.data.next.round) - Number(res.data.last.round);
+            localStorage.setItem("pc_roundCha", JSON.stringify(this.roundCha));
+            this.isOk = true;
+          }
+        })
+        .catch(function() {
+          this.$router.push({
+            path: "/login"
+          }); // 跳转到登陆
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  },
+  reddy() {},
+  mounted() {
+    this.$refs.bet_bar.addEventListener(
+      "touchmove",
+      function name(event) {
+        event.preventDefault();
+      },
+      false
+    );
+    setInterval(() => {
+      if (this.endtime <= 0) {
+        this.isOpen = false;
+        return;
+      } else {
         this.endtime--;
+        let timeStamp = Date.parse(new Date()) / 1000;
       }
     }, 1000);
   },
-  destroyed() {
-    clearTimeout(this.timerOut);
-    clearInterval(this.timerInterval);
+  watch: {
+    endtime: function() {
+      if (
+        this.endtime == 0 ||
+        this.endtime == 200 ||
+        this.endtime == 50 ||
+        this.endtime == 285 ||
+        this.endtime == 190 ||
+        this.endtime == 220 ||
+        this.endtime == 250 ||
+        this.endtime == 240
+      ) {
+        let newTime = Date.parse(new Date()) / 1000;
+        this.fengpan = false;
+        let oidInfo = sessionStorage.getItem('im_token');
+        this.oid_info = oidInfo;
+        let params = {
+          params: {
+            game_code: 160,
+            // type_code: 0,
+            oid: oidInfo
+          }
+        };
+        this.$http
+          .post(`${getUrl()}/getinfo/game`, JSON.stringify(params.params))
+          .then(res => {
+            this.isOk = true;
+            let timeStamp = res.data.next.timestap;
+            if (res.data.msg == 4001) {
+              //  1未登陆
+              sessionStorage.clear();
+              this.promptboxtext = "您的账户已失效,请重新登录!";
+              this.panelShow = true;
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push({
+                  path: "/login"
+                });
+              }, 1000);
+            } else {
+              let l = res.data;
+              l.last.number.splice(1, 0, "+");
+              l.last.number.splice(3, 0, "+");
+              l.last.number.splice(5, 0, "=");
+              l.last.number.splice(
+                6,
+                0,
+                Number(l.last.number[0]) +
+                  Number(l.last.number[2]) +
+                  Number(l.last.number[4])
+              );
+              let timeStamp = res.data.next.timestap;
+              this.body = l;
+              this.endtime = res.data.next.endtime - timeStamp;
+              this.fengpan = res.data.next.isclose;
+              this.round = res.data.next.round;
+              if (this.round == this.loading) {
+                for (var a in this.shuju) {
+                  for (var j = 0; j < this.shuju[a].body.length; j++) {
+                    for (
+                      var h = 0;
+                      h < this.shuju[a].body[j].list.length;
+                      h++
+                    ) {
+                      this.shuju[a].body[j].list[h].isCheck = false;
+                    }
+                  }
+                }
+              }
+              let loaclTime = this.endtime + newTime;
+              if (sessionStorage.getItem("im_realname") == "11") {
+                this.zMoney = sessionStorage.getItem("im_money");
+              }else{
+                this.zMoney = res.data.lcurrency;
+                sessionStorage.setItem(
+                  "im_money",
+                  res.data.lcurrency
+                );
+              }
+
+              // localStorage.setItem('pc_time', res.data.next.endtime)
+              localStorage.setItem("pc_time", loaclTime);
+              localStorage.setItem("pc_body", JSON.stringify(res.data));
+              // this.lotteryList = getPcdd().hh;
+              // this.$refs.seller.className = "pcdd_hh bet pcdd";
+              this.numberList = res.data.last.number;
+              this.round = res.data.next.round;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else if (this.endtime <= 30 && this.endtime > 0) {
+        this.qingkong();
+        this.fengpan = true;
+        this.$store.dispatch("hideDailogQ");
+        for (var a in this.shuju) {
+          for (var j = 0; j < this.shuju[a].body.length; j++) {
+            for (var h = 0; h < this.shuju[a].body[j].list.length; h++) {
+              this.shuju[a].body[j].list[h].isCheck = false;
+            }
+          }
+        }
+      }
+    },
+    $route() {}
   },
   components: {
     lotteryArea,
     lotteryHeader,
     dailogQ,
+    dailogS,
     Loadpage,
     promptbox
+    // 'ex-simple': model,
   }
 };
+function getListDataFromNet(pageNum, pageSize, successCallback, errorCallback) {
+  setTimeout(function() {
+    var data = pdlist1; // 模拟数据: ../res/pdlist1.js
+    var listData = []; //模拟分页数据
+    for (var i = (pageNum - 1) * pageSize; i < pageNum * pageSize; i++) {
+      if (i == data.length) break;
+      listData.push(data[i]);
+    }
+    successCallback && successCallback(listData); //成功回调
+  }, 500);
+}
 </script>
 
 
@@ -672,6 +964,7 @@ export default {
     padding: 4/20rem;
   }
 }
+
 .jtc_titl {
   display: flex;
   flex-direction: row;
@@ -721,7 +1014,8 @@ export default {
       > ul {
         button {
           outline: 0;
-          border: 1/20rem solid #eaeaea; // display: flex;
+          border: 1/20rem solid #eaeaea;
+          // display: flex;
           // justify-content: space-around;
           // flex-direction: column;
           width: 2.85rem;
@@ -755,6 +1049,7 @@ export default {
         > li:nth-last-of-type(1) {
           margin-bottom: 9/20rem;
         }
+
         .active {
           border: 1/20rem solid #156bda;
           span:nth-of-type(2) {
@@ -766,6 +1061,7 @@ export default {
     }
   }
 }
+
 .bet_bar {
   width: 100%;
   position: absolute;
@@ -783,7 +1079,8 @@ export default {
     input {
       width: 86/20rem;
       padding: 0;
-      margin: 0; /*height: 30/20rem;
+      margin: 0;
+      /*height: 30/20rem;
           line-height: 25/20rem;
           border-radius: 3/20rem;
           border: 1/20rem solid #f0f0f0;
@@ -821,6 +1118,7 @@ export default {
       background-size: 100% 100%;
       margin-right: 0.2rem;
       display: inline-block;
+
       font-size: 0.5rem;
     }
     // background-color: red;
@@ -843,6 +1141,7 @@ export default {
     color: white;
   }
 }
+
 .iconfont_reset {
   width: 1rem;
   height: 1rem;
@@ -853,6 +1152,7 @@ export default {
   background: url("@{public_img}/images/resx.png") no-repeat;
   background-size: 100% 100%;
 }
+
 .lottery_nav_bar {
   width: 320/20rem;
   z-index: 1;
@@ -873,11 +1173,13 @@ export default {
       color: white;
       padding: 8/20rem 0;
     }
+
     .active {
       background: #1f97f6;
     }
   }
 }
+
 .icon-lajitong {
   font-size: 25/20rem;
 }
@@ -890,6 +1192,7 @@ export default {
 button {
   outline: none;
 }
+
 .regulation {
   position: fixed;
   width: 100%;
@@ -918,6 +1221,7 @@ button {
     display: flex;
     justify-content: space-between;
     margin-top: 20/20rem;
+
     padding-left: 0;
     h5 {
       margin: 0;

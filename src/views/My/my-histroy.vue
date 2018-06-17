@@ -12,30 +12,30 @@
       <div @click="daywino" :class="{xfan:daywin}"></div>
     </div>
     <div class="centermiddle">
-      <div class="list3" v-show='isShow4' @click='weijie(item.createdTime)' v-for='item in histroywj'>
+      <div class="list3" v-show='isShow4' @click='weijie(item.dateTime)' v-for='item in histroywj'>
         <div>
           <div>
-            <span>{{item.createdTime}}</span>
-            <span class="more" style="background: url(@{public_img}/images/more003.png) no-repeat;background-size: 100% 100%;"></span>
+            <span>{{item.dateTime}}</span>
+            <span class="more"></span>
           </div>
           <div>
             <span>
               <i>投注单数</i>
-              <i>{{item.id}}</i>
+              <i>{{item.allNum}}</i>
             </span>
             <span>
               <i style="margin-left: 0.4rem;">下注金额</i>
-              <i>{{item.money}}</i>
+              <i>{{item.allMoney}}</i>
             </span>
           </div>
           <div>
             <span>
               <i>可赢金额</i>
-              <i>{{item.sum}}</i>
+              <i>{{item.allWinMoney}}</i>
             </span>
             <span>
               <i style="margin-left: 0.4rem;">预计退水：</i>
-              <i>{{item.backwater}}</i>
+              <i>{{item.allCut}}</i>
             </span>
           </div>
           <div>
@@ -46,36 +46,36 @@
           </div>
         </div>
       </div>
-      <div class="list3" v-for="(item,i) in histroy" v-show="isShow4" @click="yijie(item.createdTime)">
+      <div class="list3" v-for="(item,i) in histroy" v-show="isShow4" @click="yijie(item.dateTime)">
         <div>
           <div style="background-color:#666">
-            <span>{{item.createdTime}}</span>
+            <span>{{item.dateTime}}</span>
             <span class="more"></span>
           </div>
           <div>
             <span>
               <i>投注单数</i>
-              <i>{{item.id}}</i>
+              <i>{{item.allNum}}</i>
             </span>
             <span>
               <i style="margin-left: 0.4rem;">下注金额</i>
-              <i style="margin-left: 0.4rem;">{{item.money}}</i>
+              <i style="margin-left: 0.4rem;">{{item.allTotal}}</i>
             </span>
           </div>
           <div>
             <span>
               <i>可赢金额</i>
-              <i>{{item.sum}}</i>
+              <i>{{item.allWinMoney}}</i>
             </span>
             <span style="color:#ff8e00">
               <i style="margin-left: 0.4rem;">退水</i>
-              <i style="margin-left: 0.4rem;">{{item.backwater}}</i>
+              <i style="margin-left: 0.4rem;">{{item.allCut}}</i>
             </span>
           </div>
           <div>
             <span>
               <i>总计：</i>
-              <i style="color:#446fd4;">{{item.win}}</i>
+              <i style="color:#446fd4;">{{item.allWinMoney}}</i>
             </span>
           </div>
         </div>
@@ -85,64 +85,64 @@
       </div>
       <div class="zhudan zhudan11" v-show='isShow3' v-for="groups in finished" ref="weijies">
         <div>
-          <span>注单号：{{groups.id}}</span>
+          <span>注单号：{{groups.no}}</span>
           <span class="">未结</span>
         </div>
         <ul>
           <li class="clearfix">
-            <span>{{groups.games}}</span>
+            <span>{{groups.game_name}}</span>
             <span>第{{groups.round}}期</span>
           </li>
           <li class="clearfix">
             <span>游戏玩法</span>
-            <span>{{groups.smallBall}}</span>
+            <span>{{groups.detail}}</span>
           </li>
           <li class="clearfix">
             <span>下注时间</span>
-            <span>{{groups.createdTime}}</span>
+            <span>{{groups.time}}</span>
           </li>
           <li class="clearfix">
             <span>下注金额</span>
-            <span>{{groups.totalMonty}}</span>
+            <span>{{groups.money.toFixed(2)}}</span>
           </li>
           <li class="gexian"></li>
 
           <li class="clearfix">
             <span>可赢金额</span>
-            <span>{{groups.win}}</span>
+            <span>{{groups.win_money.toFixed(2)}}</span>
           </li>
         </ul>
       </div>
-      <div class="zhudan zhudan22" v-show='isShow5' v-for="groups in finished11&&finished11.length ? finished11 :finished111" ref="yijies">
+      <div class="zhudan zhudan22" v-show='isShow5' v-for="groups in finished11.length ? finished11 :finished111" ref="yijies">
         <div>
-          <span>注单号：{{groups.id}}</span>
+          <span>注单号：{{groups.no}}</span>
           <span class="">已结</span>
         </div>
         <ul>
           <li class="clearfix">
-            <span>{{groups.games}}</span>
+            <span>{{groups.game_name}}</span>
             <span>第{{groups.round}}期</span>
           </li>
           <li class="clearfix">
             <span>游戏玩法</span>
-            <span>{{groups.smallBall}}</span>
+            <span>{{groups.detail}}</span>
           </li>
           <li class="clearfix">
             <span>下注时间</span>
-            <span>{{groups.createdTime}}</span>
+            <span>{{groups.time}}</span>
           </li>
           <li class="clearfix">
             <span>下注金额</span>
-            <span>{{groups.totalMonty}}</span>
+            <span>{{groups.money.toFixed(2)}}</span>
           </li>
           <li class="gexian"></li>
           <li class="clearfix">
             <span>输赢结果</span>
-            <span style="color:#446fd4;">{{groups.win}}</span>
+            <span style="color:#446fd4;">{{groups.win_money.toFixed(2)}}</span>
           </li>
           <li class="clearfix">
             <span>下注退水</span>
-            <span>{{groups.userCut}}</span>
+            <span>{{groups.retreat.toFixed(2)}}</span>
           </li>
         </ul>
       </div>
@@ -181,7 +181,6 @@
 import zHeader from "../../components/z-header";
 // import iHeader from '../../components/i-header'
 import promptbox from "../../components/promptbox";
-import { mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -230,8 +229,12 @@ export default {
       successshow: false
     };
   },
+  props: {
+    zMoney: {
+      type: Number
+    }
+  },
   methods: {
-    ...mapActions(["SUMMARY", "FIND_LOTTERYBILL", "TODAY_END"]),
     pasgedayshow() {
       this.pageshow = !this.pageshow;
       if (this.pageshow) {
@@ -249,7 +252,7 @@ export default {
       }
       this.daywen = "今日已结";
       let prams = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem("im_token");
       prams.oid = oidinfo;
       prams.type = 0;
       prams.page = 1;
@@ -258,14 +261,29 @@ export default {
       let timestamp2 = Date.parse(new Date(stringTime));
       prams.time = timestamp2 / 1000;
       this.pageday = prams.time;
-      this.FIND_LOTTERYBILL(prams)
+      this.$http
+        .post(
+          `${getUrl()}/getinfo/getMissedOrHasClosedBet`,
+          JSON.stringify(prams)
+        )
         .then(res => {
-            this.finished = res.data.response||[];
-            this.numb1 = res.data.total;
-            if (Number(res.data.allnmb) > Number(this.pageNumber)) {
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            this.finished = res.data.res;
+            this.numb1 = res.data.page.allnmb;
+            if (Number(res.data.page.allnmb) > Number(this.pageNumber)) {
               this.pagenmb = true;
               this.pagenmblength = Math.ceil(
-                res.data.allnmb / this.pageNumber
+                res.data.page.allnmb / this.pageNumber
               );
             } else {
               this.pagenmb = false;
@@ -275,7 +293,8 @@ export default {
               this.kon = false;
             } else {
               this.kon = true;
-            }          
+            }
+          }
         });
       this.isShow3 = true;
       this.isShow1 = true;
@@ -292,42 +311,40 @@ export default {
       this.pagenmb = false;
       this.pageshow = false;
       let params = {};
-      params.pageNo = 1
-      params.pageSize = -1
-      this.SUMMARY(params).then(res => {
-          this.histroywj = res.data.response.filter(res=>{return res.status;});
-          this.histroy = res.data.response.filter(res=>{return !res.status;});
-          // console.log(res);
-          // if (res.data.msg == 4001) {
-          //   sessionStorage.clear();
-          //   this.panelShow = true;
-          //   this.promptboxtext = "您的账户已失效，请重新登录";
-          //   setTimeout(() => {
-          //     this.panelShow = false;
-          //     this.$router.push({
-          //       path: "/login"
-          //     });
-          //   }, 1000);
-          // } else {
-          //   this.histroy = res.data.summary.hasClose;
-          //   if (res.data.summary.unSettlement.length > 0) {
-          //     this.histroywj = res.data.summary.unSettlement;
-          //     this.moneyf = Number(
-          //       res.data.summary.unSettlement[0].allWinMoney
-          //     );
-          //     this.moneyb = Number(res.data.summary.unSettlement[0].allMoney);
-          //     this.numb = Number(res.data.summary.unSettlement[0].allNum);
-          //     this.numb1 = Number(res.data.summary.unSettlement[0].allNum);
-          //     this.yjts = Number(res.data.summary.unSettlement[0].allCut);
-          //     this.str = res.data.summary.unSettlement[0].dateTime;
-          //   }
-          //   if (this.numb1 > 0 || this.histroy.length > 0) {
-          //     this.kon = false;
-          //   }
-          //   if (this.numb1 < 1 && this.histroy.length < 1) {
-          //     this.kon = true;
-          //   }
-          //}
+      params.oid = sessionStorage.getItem("im_token");
+      this.$http
+        .post(`${getUrl()}/getinfo/getSummaryBet`, JSON.stringify(params))
+        .then(res => {
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            this.histroy = res.data.summary.hasClose;
+            if (res.data.summary.unSettlement.length > 0) {
+              this.histroywj = res.data.summary.unSettlement;
+              this.moneyf = Number(
+                res.data.summary.unSettlement[0].allWinMoney
+              );
+              this.moneyb = Number(res.data.summary.unSettlement[0].allMoney);
+              this.numb = Number(res.data.summary.unSettlement[0].allNum);
+              this.numb1 = Number(res.data.summary.unSettlement[0].allNum);
+              this.yjts = Number(res.data.summary.unSettlement[0].allCut);
+              this.str = res.data.summary.unSettlement[0].dateTime;
+            }
+            if (this.numb1 > 0 || this.histroy.length > 0) {
+              this.kon = false;
+            }
+            if (this.numb1 < 1 && this.histroy.length < 1) {
+              this.kon = true;
+            }
+          }
         });
       this.isShow3 = false;
       this.isShow1 = false;
@@ -351,7 +368,7 @@ export default {
       }
       this.finished111 = [];
       let params = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem("im_token");
       params.oid = oidinfo;
       params.type = 1;
       params.page = 1;
@@ -373,7 +390,11 @@ export default {
         params.time = this.pageday;
       }
       this.pageday = params.time;
-      this.TODAY_END(params)
+      this.$http
+        .post(
+          `${getUrl()}/getinfo/getMissedOrHasClosedBet`,
+          JSON.stringify(params)
+        )
         .then(res => {
           this.daywin = false;
           if (res.data.msg == 4001) {
@@ -387,16 +408,16 @@ export default {
               });
             }, 1000);
           }
-          this.finished11 = res.data.response||[];
-            if (this.finished11.length >= 20) {
-              setTimeout(() => {
-                this.$refs.yijies[19].style = "margin-bottom:2rem;";
-              }, 10);
-            }          
-          if (Number(res.data.allnmb) > Number(this.pageNumber)) {
+          this.finished11 = res.data.res;
+          if (this.finished11.length >= 20) {
+            setTimeout(() => {
+              this.$refs.yijies[19].style = "margin-bottom:2rem;";
+            }, 10);
+          }
+          if (Number(res.data.page.allnmb) > Number(this.pageNumber)) {
             this.pagenmb = true;
             this.pagenmblength = Math.ceil(
-              res.data.allnmb / this.pageNumber
+              res.data.page.allnmb / this.pageNumber
             );
           } else {
             this.pagenmb = false;
@@ -421,7 +442,7 @@ export default {
       }
       this.finished111 = [];
       let params = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem("im_token");
       params.oid = oidinfo;
       params.type = 1;
       params.page = 1;
@@ -447,7 +468,11 @@ export default {
       }
 
       this.pageday = params.time;
-      this.TODAY_END(params)
+      this.$http
+        .post(
+          `${getUrl()}/getinfo/getMissedOrHasClosedBet`,
+          JSON.stringify(params)
+        )
         .then(res => {
           this.daywin = false;
           if (res.data.msg == 4001) {
@@ -461,16 +486,16 @@ export default {
               });
             }, 1000);
           }
-          this.finished11 = res.data.response||[];
+          this.finished11 = res.data.res;
           if (this.finished11.length > 19) {
             setTimeout(() => {
               this.$refs.yijies[19].style = "margin-bottom:2rem;";
             }, 10);
           }
-          if (Number(res.data.allnmb) > Number(this.pageNumber)) {
+          if (Number(res.data.page.allnmb) > Number(this.pageNumber)) {
             this.pagenmb = true;
             this.pagenmblength = Math.ceil(
-              res.data.allnmb / this.pageNumber
+              res.data.page.allnmb / this.pageNumber
             );
           } else {
             this.pagenmb = false;
@@ -511,7 +536,7 @@ export default {
       this.pagenum = index;
       this.$refs.pagecolor[index - 1].style = "color:#196fde;";
       let prams = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem("im_token");
       prams.oid = oidinfo;
       if (this.isShow3) {
         prams.type = 0;
@@ -526,7 +551,10 @@ export default {
       prams.number = this.pageNumber;
       prams.time = this.pageday;
       this.$http
-        .post(`/getinfo/getMissedOrHasClosedBet`, JSON.stringify(prams))
+        .post(
+          `${getUrl()}/getinfo/getMissedOrHasClosedBet`,
+          JSON.stringify(prams)
+        )
         .then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
@@ -563,7 +591,7 @@ export default {
       }
       this.$refs.pagecolor[this.pagenum - 1].style = "color:#196fde;";
       let prams = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem("im_token");
       prams.oid = oidinfo;
       if (this.isShow3) {
         prams.type = 0;
@@ -575,7 +603,10 @@ export default {
       prams.number = this.pageNumber;
       prams.time = this.pageday;
       this.$http
-        .post(`/getinfo/getMissedOrHasClosedBet`, JSON.stringify(prams))
+        .post(
+          `${getUrl()}/getinfo/getMissedOrHasClosedBet`,
+          JSON.stringify(prams)
+        )
         .then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
@@ -610,7 +641,7 @@ export default {
       }
       this.$refs.pagecolor[this.pagenum - 1].style = "color:#196fde;";
       let prams = {};
-      let oidinfo = this.$store.state.userData.sessionId;
+      let oidinfo = sessionStorage.getItem("im_token");
       prams.oid = oidinfo;
       if (this.isShow3) {
         prams.type = 0;
@@ -622,7 +653,10 @@ export default {
       prams.number = this.pageNumber;
       prams.time = this.pageday;
       this.$http
-        .post(`/getinfo/getMissedOrHasClosedBet`, JSON.stringify(prams))
+        .post(
+          `${getUrl()}/getinfo/getMissedOrHasClosedBet`,
+          JSON.stringify(prams)
+        )
         .then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
@@ -651,44 +685,51 @@ export default {
       this.Recharge = "AG充值";
       this.transactionRecord = "AG交易记录";
       let params = {};
-      params.oid = this.$store.state.userData.sessionId;
-      this.$http.post(`/aginfo/getAgInfo`, JSON.stringify(params)).then(res => {
-        this.successshow = false;
-        this.showCurtion = false;
-        if (res.data.msg == 4001) {
-          sessionStorage.clear();
-          this.panelShow = true;
-          this.promptboxtext = "您的账户已失效，请重新登录";
-          setTimeout(() => {
-            this.panelShow = false;
+      params.oid = sessionStorage.getItem("im_token");
+      this.$http
+        .post(`${getUrl()}/aginfo/getAgInfo`, JSON.stringify(params))
+        .then(res => {
+          this.successshow = false;
+          if (res.data.msg == "4003") {
             this.$router.push({
-              path: "/login"
+              path: "/weihu"
             });
-          }, 1000);
-        } else if (res.data.msg == 2006) {
-          if (res.data.balance.agBalance < 0) {
-            that.title = "AG余额不足";
-            that.panelShow = true;
+          }
+          this.showCurtion = false;
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else if (res.data.msg == 2006) {
+            if (res.data.balance.agBalance < 0) {
+              that.title = "AG余额不足";
+              that.panelShow = true;
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push("/index");
+              }, 1200);
+            }
+            this.gameUsermoney = Number(res.data.balance.agBalance).toFixed(2);
+            this.resDate.money = Number(res.data.balance.agBalance).toFixed(2);
+          } else if (res.data.msg == 7001) {
+            this.erreocode = "7001";
+            this.panelShow = true;
+            this.promptsystem = res.data.info;
+          } else {
+            this.promptboxtext = "获取真人游戏额度失败";
+            this.panelShow = true;
             setTimeout(() => {
               this.panelShow = false;
               this.$router.push("/index");
             }, 1200);
           }
-          this.gameUsermoney = Number(res.data.balance.agBalance).toFixed(2);
-          this.resDate.money = Number(res.data.balance.agBalance).toFixed(2);
-        } else if (res.data.msg == 7001) {
-          this.erreocode = "7001";
-          this.panelShow = true;
-          this.promptsystem = res.data.info;
-        } else {
-          this.promptboxtext = "获取真人游戏额度失败";
-          this.panelShow = true;
-          setTimeout(() => {
-            this.panelShow = false;
-            this.$router.push("/index");
-          }, 1200);
-        }
-      });
+        });
     }
     this.newday();
     let d = new Date();
@@ -698,8 +739,8 @@ export default {
     this.isShow = true;
     this.isShow4 = true;
     let params = {};
-    params.oid = this.$store.state.userData.sessionId;
-    this.isWan = this.$store.state.userData.username;
+    params.oid = sessionStorage.getItem("im_token");
+    this.isWan = sessionStorage.getItem("im_username");
     if (this.isWan != "游客") {
       this.quanbu();
     } else {
@@ -707,27 +748,30 @@ export default {
       this.isShow1 = true;
       this.isShow3 = true;
       let prams = {};
-      this.pageday = prams.time;
-      this.FIND_LOTTERYBILL(prams)
+      let oidinfo = sessionStorage.getItem("im_token");
+      prams.oid = oidinfo;
+      this.$http
+        .post(`${getUrl()}/getinfo/bet`, JSON.stringify(prams))
         .then(res => {
-        if (res.data.msg == 4001) {
-          sessionStorage.clear();
-          this.panelShow = true;
-          this.promptboxtext = "您的账户已失效，请重新登录";
-          setTimeout(() => {
-            this.panelShow = false;
-            this.$router.push({
-              path: "/login"
-            });
-          }, 1000);
-        }
-        this.finished = res.data.response||[];
-        if (this.finished.length == 0) {
-          this.kon = true;
-        } else {
-          this.kon = false;
-        }
-      });
+          console.log(res);
+          if (res.data.msg == 4001) {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          }
+          this.finished = res.data[0].res;
+          if (this.finished.length == 0) {
+            this.kon = true;
+          } else {
+            this.kon = false;
+          }
+        });
     }
   },
   components: {

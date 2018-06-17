@@ -148,6 +148,11 @@
 	      successshow:false,
       }
     },
+    props: {
+      zMoney: {
+        type: Number
+      }
+    },
     methods: {
     	pasgedayshow(){
     		this.pageshow=!this.pageshow
@@ -170,12 +175,12 @@
       	this.pagenmb = false
       	this.pageshow =false
         let params = {}
-        params.oid = this.$store.state.userData.sessionId
+        params.oid = sessionStorage.getItem('im_token')
         params.type = 0
         params.page = 1;
         params.number = this.pageNumber;
         params.hunter = 1;
-        this.$http.post(`/getinfo/getAGHunterBill`, JSON.stringify(params)).then(res => {
+        this.$http.post(`${getUrl()}/getinfo/getAGHunterBill`, JSON.stringify(params)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;
@@ -212,7 +217,7 @@
       	}
         this.finished111 = [];
         let params = {};
-        let oidinfo = this.$store.state.userData.sessionId;
+        let oidinfo = sessionStorage.getItem('im_token');
         params.oid = oidinfo;
         params.type = 1;
         params.page = 1;
@@ -221,7 +226,7 @@
         params.time = strTime;
         params.type = 1
         params.hunter = 1;
-        this.$http.post(`/getinfo/getAGHunterBill`, JSON.stringify(params)).then(res => {
+        this.$http.post(`${getUrl()}/getinfo/getAGHunterBill`, JSON.stringify(params)).then(res => {
         	this.daywin = false
           if (res.data.msg == 4001){
             sessionStorage.clear();
@@ -261,7 +266,7 @@
       	}
         this.finished111 = [];
         let params = {};
-        let oidinfo = this.$store.state.userData.sessionId;
+        let oidinfo = sessionStorage.getItem('im_token');
         params.oid = oidinfo;
         params.type = 1;
         params.page = 1;
@@ -272,7 +277,7 @@
 				this.pageday = params.time
         params.type = 1
         params.hunter = 1;
-        this.$http.post(`/getinfo/getAGHunterBill`, JSON.stringify(params)).then(res => {
+        this.$http.post(`${getUrl()}/getinfo/getAGHunterBill`, JSON.stringify(params)).then(res => {
         	this.daywin = false
           if (res.data.msg == 4001){
             sessionStorage.clear();
@@ -324,7 +329,7 @@
      		this.pagenum =index
      		this.$refs.pagecolor[index-1].style='color:#196fde;'
         let prams = {};
-        let oidinfo = this.$store.state.userData.sessionId;
+        let oidinfo = sessionStorage.getItem('im_token');
         prams.oid = oidinfo;
         if(this.isShow3){
         	prams.type = 0;
@@ -338,7 +343,7 @@
         prams.page = index;
        	prams.number = this.pageNumber;
 				prams.time = this.pageday;
-        this.$http.post(`/getinfo/getAGHunterBill`, JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/getinfo/getAGHunterBill`, JSON.stringify(prams)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;
@@ -374,7 +379,7 @@
       	}
       	this.$refs.pagecolor[this.pagenum-1].style='color:#196fde;'
         let prams = {};
-        let oidinfo = this.$store.state.userData.sessionId;
+        let oidinfo = sessionStorage.getItem('im_token');
         prams.oid = oidinfo;
         if(this.isShow3){
         	prams.type = 0;
@@ -385,7 +390,7 @@
         prams.page = this.pagenum;
        	prams.number = this.pageNumber;
 				prams.time = this.pageday;
-        this.$http.post(`/getinfo/getAGHunterBill`, JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/getinfo/getAGHunterBill`, JSON.stringify(prams)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;
@@ -421,7 +426,7 @@
       	}
 				this.$refs.pagecolor[this.pagenum-1].style='color:#196fde;'
         let prams = {};
-        let oidinfo = this.$store.state.userData.sessionId;
+        let oidinfo = sessionStorage.getItem('im_token');
         prams.oid = oidinfo;
         if(this.isShow3){
         	prams.type = 0;
@@ -432,7 +437,7 @@
         prams.page = this.pagenum;
        	prams.number = this.pageNumber;
 				prams.time = this.pageday;
-        this.$http.post(`/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;

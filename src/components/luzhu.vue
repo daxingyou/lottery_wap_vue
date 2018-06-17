@@ -6,7 +6,7 @@
       </mu-tabs>
     </div>
     <div class="luzhu-detail">
-      <ul class="luzhu-list" :style="{width:luzhuData.length*23+'px'}" v-show="!isLoading">
+      <ul class="luzhu-list" :style="{width:luzhuData.length*27+'px'}" v-show="!isLoading">
         <li v-for="luzhuLi in luzhuData">
           <div v-for="luzhuItem in luzhuLi" :class="setLuzhuItemClass(luzhuItem)" class="luzhu-item">{{luzhuItem}}</div>
         </li>
@@ -20,9 +20,8 @@
 <script>
 import LuzhuConfig from "../config/luzhu.config";
 import { getLuzhuData } from "../api/index";
-import { mapActions } from "vuex";
 export default {
-  props: ["gameCode"],
+  props:['gameCode'],
   data() {
     return {
       tabArray: [],
@@ -35,13 +34,12 @@ export default {
     this.loadData();
   },
   methods: {
-    ...mapActions(["GET_DEWDROP_DATA"]),
     generateParams(gameCode) {
       let ctype = 0;
       let typecode = 0;
       LuzhuConfig.forEach(game => {
         if (game.game_code === this.gameCode) {
-          typecode = this.currentTab+1;
+          typecode = game.typecode;
           this.tabArray = game.tabs;
           game.tabs.forEach((tab, index) => {
             if (this.currentTab === index) {
@@ -51,30 +49,31 @@ export default {
         }
       });
       return {
-        lotteryGamesId: this.gameCode,
-        lotteryGamesType: typecode
+        game_code: this.gameCode,
+        ctype,
+        typecode
       };
     },
     loadData() {
-      this.GET_DEWDROP_DATA(this.generateParams(this.gameCode)).then(res => {
+      getLuzhuData(this.generateParams(this.gameCode)).then(data => {
         this.isLoading = false;
         // 需要处理返回过来的data数据,把繁体字的单双变成简体字的单双;
-        if (res && res.length) {
-          for (var i = 0; i < res.length; i++) {
-            for (var k = 0; k < res[i].length; k++) {
-              if (res[i][k] == "單") {
-                res[i][k] = "单";
+        if(data&&data.data.length){
+          for (var i=0;i<data.data.length;i++){
+            for(var k = 0;k<data.data[i].length;k++){
+              if(data.data[i][k]=='單'){
+                data.data[i][k] = '单'
               }
-              if (res[i][k] == "雙") {
-                res[i][k] = "双";
+              if(data.data[i][k]=='雙'){
+                data.data[i][k] = '双'
               }
-              if (res[i][k] == "龍") {
-                res[i][k] = "龙";
+              if (data.data[i][k] == "龍") {
+                data.data[i][k] = "龙";
               }
             }
           }
         }
-        this.luzhuData = res || [];
+        this.luzhuData = (data && data.data) || [];
       });
     },
     handleTabChange(val) {
@@ -102,20 +101,42 @@ export default {
       if (item == "和") {
         return "luzhu-he";
       }
+      if (item == '前') {
+        return 'luzhu-front'; 
+      }
+      if (item == '后') {
+        return 'luzhu-back'; 
+      }
+      if (item == '金') {
+        return 'luzhu-gold'; 
+      }
+      if (item == '木') {
+        return 'luzhu-wood'; 
+      }
+      if (item == '水') {
+        return 'luzhu-water'; 
+      }
+      if (item == '火') {
+        return 'luzhu-fire'; 
+      }
+      if (item == '土') {
+        return 'luzhu-soil'; 
+      }
     }
   }
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .luzhu-list {
   display: flex;
   text-align: center;
 }
 .luzhu-list > li {
-  width: 23px;
+  min-width: 25px;
   text-align: center;
   min-height: 150px;
+  padding: 0 3/20rem;
 }
 .luzhu-list > li:nth-child(odd) {
   background-color: #f2f2f2;
@@ -134,10 +155,15 @@ export default {
   margin-top: 4px;
   margin-left: auto;
   margin-right: auto;
-  font-size: 0.65rem;
+  font-size: 0.55rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 18px;
+  font-weight: normal;
 }
 
 /* 露珠大小，单双，龙虎样式 */
+/*
 .luzhu-big,
 .luzhu-long {
   width: 18px;
@@ -162,7 +188,40 @@ export default {
   background-color: #379b02;
   color: white;
 }
-.loading-box {
+*/
+.loading-box{
   text-align: center;
+}
+
+.luzhu-big,
+.luzhu-long,
+.luzhu-back,
+.luzhu-fire {
+  background-color: #fb170f;
+  color: white;
+}
+.luzhu-small,
+.luzhu-hu,
+.luzhu-front {
+  background-color: #2d4bfe;
+  color: white;
+}
+.luzhu-he,
+.luzhu-wood {
+  background-color: #379b02;
+  color: white;
+}
+
+.luzhu-gold {
+  background-color: #ebc512;
+  color: white;
+}
+.luzhu-water {
+  background-color: #44b6eb;
+  color: white;
+}
+.luzhu-soil {
+  background-color: #a7784b;
+  color: white;
 }
 </style>

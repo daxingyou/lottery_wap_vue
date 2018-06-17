@@ -93,7 +93,7 @@ import {
   getSearchHistory,
   clearSearchHistory
 } from "../../utils/storeSearchHistory";
-//import { getMgGameLink } from "../../api/index";
+import { getMgGameLink } from "../../api/index";
 export default {
   data() {
     return {
@@ -142,7 +142,7 @@ export default {
   },
   methods: {
     setBalance() {
-      this.balance = this.$store.state.userData.balance;
+      this.balance = sessionStorage.getItem("im_money");
     },
     gotoBetHistory() {
       this.$router.push({
@@ -199,7 +199,7 @@ export default {
     },
     getGameLink(gamecode, type) {
       let params = {};
-      let oid = this.$store.state.userData.sessionId;
+      let oid = sessionStorage.getItem('im_token');
       // 试玩账号下点击真钱模式
       if (this.loginState == 1 && type == "真钱") {
         this.dialogShow = true;

@@ -1,14 +1,13 @@
-import axios from "axios";
-axios.defaults.timeout = 100000;
-axios.defaults.baseURL = "http://javaadmin.lebole2.com:8087";
-axios.defaults.headers.post["Content-Type"] = "application/json";
+import axios from 'axios'
+axios.defaults.timeout = 100000
+
 // code状态码0判断  0 成功
-axios.interceptors.response.use(
-  res => {
-    return res;
-  },
-  error => {
-    return Promise.reject(error);
-  }
-);
-export default axios;
+axios.interceptors.response.use((res) => {
+    // if (res.data.code !== 200) {
+    //     return Promise.reject(res)
+    // }
+    return res
+}, (error) => {
+    return Promise.reject(error)
+})
+export default axios

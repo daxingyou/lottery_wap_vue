@@ -1,21 +1,21 @@
 <template >
   <div style='height:100%'>
-    <dailog-q :gametoken="gametoken" :type_code="activeTabIndex" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
-    <dailog-s :gametoken="gametoken" :type_code="activeTabIndex" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" :typecode="activeSubId" v-if="showDailogS" v-on:listenToChildEvent="showMsgFromChild"></dailog-s>
-    <lotteryHeader :title="title" :game_code="game_code"></lotteryHeader>
-    <div id="cont_main" v-on:touchmove="banmove()" style='position:absolute;top:0;bottom:2.45rem;    overflow: auto; -webkit-overflow-scrolling: touch;width:100%'>
-      <lotteryArea class="game_25" :lotteryObj="body" :fenpan="!!fengpan" :endtime="endtime" :fentime="fentime" v-if="isOk" gameType="25"></lotteryArea>
+    <dailog-q :gametoken="gametoken" :type_code="activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
+    <dailog-s :gametoken="gametoken" :type_code="activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" :typecode="activeSubId" v-if="showDailogS" v-on:listenToChildEvent="showMsgFromChild"></dailog-s>
+    <lotteryHeader :title="title" :game_code="game_code" @regulation_click="regulation_control=true"></lotteryHeader>
+    <div style='position:absolute;top:0;bottom:2.45rem;    overflow: auto; -webkit-overflow-scrolling: touch;width:100%'>
+      <lotteryArea class="game_25" :lotteryObj="body" :zMoney="zMoney" :fenpan="fengpan" :endtime="endtime" :fentime="fentime" v-if="isOk" gameType="25"></lotteryArea>
       <div :style='de==true||loadpage==true?"display:none":"display:block"' class="lottery_nav_bar">
         <ul>
-          <button class="trapezoid color1" v-for="(item,i) in xyncClassify" :class="{active8: activeTabIndex === item.type_code}" @click="changeTab(item,i)">
+          <button class="trapezoid color1" v-for="(item,i) in xyncClassify" :class="{active8: activeClassifyId === item.type_code}" @click="changeDate(item,i)">
             <span>{{item.name}}</span>
           </button>
         </ul>
       </div>
-      <div style="margin-top: 0.3rem;" v-if="activeTabIndex === 9">
+      <div style="margin-top: 0.3rem;" v-if="activeClassifyId === 9">
         <ul class="cqList">
           <li v-for="(item,index) in currentGame[0] && currentGame[0].list">
-            <div v-bind:class="{active3: activeSubId == item.key}" @click='changeSecondMenu(item, index)'>
+            <div v-bind:class="{active3: activeSubId === item.key}" @click='one(item, index)'>
               <strong>{{item.name}}</strong>
               <span class="color_money">{{item.odds}}</span>
             </div>
@@ -27,7 +27,7 @@
         <ul class="clearfix">
           <li v-for="(item,j) in currentGame" :key="j">
             <span>{{item.name}}</span>
-            <ul v-if="activeTabIndex !== 9">
+            <ul v-if="activeClassifyId !== 9">
               <li v-for="(ite,i) in item.list" :key="i">
                 <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan||round=='loading'">
                   <span>{{ite.name}}</span>
@@ -47,7 +47,7 @@
           </li>
         </ul>
       </section>
-      <luzhu :gameCode="game_code" />
+      <luzhu gameCode="47" />
     </div>
     <section class="bet_bar" ref="bet_bar">
       <div>
@@ -71,66 +71,101 @@
         <mu-circular-progress style="" :size="40" />
       </div>
     </div>
+    <div class="fp" v-if="fengpan">
+    </div>
     <promptbox @panelShow="panelShow=false" :promptboxshow="promptboxshow" :panelShow="panelShow" :promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
 </template>
 <script>
-import { mapGetters, mutations, mapActions } from "vuex";
-import {
-  parseOddsList,
-  getGamesCache,
-  setGamesCache,
-  banOverFlow
-} from "@/utils";
+import { mapGetters, mutations } from "vuex";
+// import footGuide from '../../components/footer/footGuide'
 import lotteryHeader from "../../components/header/lotteryHeader";
 import lotteryArea from "../../components/lottery-area";
 import dailogQ from "../../components/dailogQ.vue";
 import dailogS from "../../components/dailogS.vue";
 import Loadpage from "../../components/Loadpage.vue";
 import { xyncClassify } from "@/config/classify.config";
+import { parseOddsList, getGamesCache, setGamesCache } from "@/utils";
 import { getEvenCode } from "./klsf.config";
 import api from "@/api";
 import promptbox from "../../components/promptbox";
-import luzhu from "../../components/luzhu";
+import luzhu from '../../components/luzhu'
 export default {
   data() {
     return {
       currentGame: [],
-      activeTabIndex: 0,
-      activeSubId: "2032",
+      activeClassifyId: 0,
+      activeSubId: 2032,
       xyncClassify,
       evenCode: getEvenCode(),
       roundCha: null,
       xshuzi: 0,
-      fentime: 60,
+      zMoney: 0,
+      fentime: 120,
       promptboxtext: "",
       panelShow: false,
       regulation_control: false,
       lianxu: {
-        keys: "2032",
+        keys: 2032,
         index: 2
       },
       zhanshi: false,
+      datas: [
+        {
+          isCheck: true,
+          _name: "任选二",
+          odds: "6.5",
+          key_s: 2032,
+          inde: 2
+        },
+        {
+          isCheck: false,
+          _name: "任选三",
+          odds: "19.6",
+          key_s: 2035,
+          inde: 3
+        },
+        {
+          isCheck: false,
+          _name: "任选四",
+          odds: "60",
+          key_s: 2038,
+          inde: 4
+        },
+        {
+          isCheck: false,
+          _name: "任选五",
+          odds: "250",
+          key_s: 2039,
+          inde: 5
+        }
+      ],
       game_code: 47,
       type_code: 0,
       title: "重庆幸运农场",
+      shuju: {},
       isBlue: false,
+      demo: 0,
       body: {},
+      seen: false,
       de: false,
       loading: false,
+      oid_info: 0,
       isOk: false,
-      endtime: null,
+      endtime: 0,
       isOpen: true,
       lotteryList: {},
       numberList: [],
       dialog: false,
       codeMessage: "",
+      keyValue: null,
       setTime: null,
       fengpan: false,
       object: {},
       objects: [],
       money_s: null,
       round: 0,
+      n_1: false,
       dadiao: "lmp",
       panelShow: false,
       loadpage: false,
@@ -139,45 +174,17 @@ export default {
       promptboxtext: "",
       panelShow: false,
       promptboxshow: true,
-      gametoken: "",
-      showDailogQ: false,
-      showDailogS: false,
-      timerOut: null,
-      timerInterval: null
+      gametoken: ""
     };
   },
   methods: {
-    ...mapActions(["GET_LOTTERY_RESULT", "GET_LOTTERY_ODDS"]),
-    updateResult(flag=false) {
-      this.GET_LOTTERY_RESULT({ gameCode: this.game_code, update: true }).then(
-        res => {
-          if(!res[0].next){return}; let needRefresh = res[0].next.round - res[0].last.round !== 1;
-          if (needRefresh) {
-            this.timerOut = setTimeout(() => {
-              this.updateResult(true);
-            }, 2000);
-          }
-          this.isOk = true;
-          let timeStamp = res[0].next.timestamp;
-          this.body = res[0];
-          if(!flag){
-            // 避免从接口拿到不准确的开奖时间
-             this.endtime = res[0].next.endTime - timeStamp;
-          }
-          this.fengpan = !!res[0].next.isClose;
-          this.round = res[0].next.round;
-        }
-      );
-    },
-    banmove(evt) {
-      banOverFlow(document.getElementById("cont_main"));
-    },
     cleanmoney() {
       this.money_s = null;
     },
     fours() {
       this.onoff = false;
       if (navigator.userAgent.indexOf("UCBrowser") > -1) {
+        // alert(1)
         setTimeout(() => {
           document.body.scrollTop = document.body.scrollHeight;
         }, 600);
@@ -189,12 +196,36 @@ export default {
     showMsgFromChild(data) {
       if (data === true) {
         this.qingkong();
-        this.xshuzi = 0;
-        this.showDailogQ = false;
-        this.showDailogS = false;
+        let oidInfo = sessionStorage.getItem('im_token');
+        let prams = {
+          oid: oidInfo
+        };
+        this.$http
+          .post(`${getUrl()}/getinfo/money`, JSON.stringify(prams))
+          .then(res => {
+            if (res.data.msg == "4001") {
+              sessionStorage.clear();
+              this.panelShow = true;
+              this.promptboxtext = "您的账户已失效，请重新登录";
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push({
+                  path: "/login"
+                });
+              }, 1000);
+            } else {
+              this.zMoney = res.data.money;
+              sessionStorage.setItem(
+                "im_money",
+                res.data.money
+              );
+              this.xshuzi = 0;
+            }
+          });
       }
     },
-    changeSecondMenu(item, j) {
+    one(item, j) {
+      this.qingkong();
       if (!this.activeSubId !== item.key) {
         this.activeSubId = item.key;
       }
@@ -235,6 +266,14 @@ export default {
       this.object = {};
     },
     subMit() {
+      if (sessionStorage.getItem("im_realname") == "11") {
+        sessionStorage.clear();
+            this.promptboxtext = "请登录正式账号!";
+            this.panelShow = true;
+            this.promptboxshow = false;
+            this.qingkong();
+            return;
+      }
       this.objects = [];
       for (let i in this.object) {
         this.objects.push(this.object[i]);
@@ -249,7 +288,7 @@ export default {
         this.promptboxtext = "请输入正确金额";
         return;
       }
-      if (this.activeTabIndex == 9) {
+      if (this.activeClassifyId === 9) {
         const idx = this.checkOddsLen();
         if (this.checkOddsLen() < 4) {
           if (this.objects.length < idx || this.objects.length > 8) {
@@ -261,7 +300,7 @@ export default {
             //          setTimeout(this.isSHowff, 1200)
             return;
           }
-          this.showDailogS = true;
+          this.$store.dispatch("showDailogS");
           return;
         } else if (idx >= 4) {
           if (this.objects.length < idx || this.objects.length > 6) {
@@ -273,22 +312,22 @@ export default {
             //          setTimeout(this.isSHowff, 1200)
             return;
           }
-          this.showDailogS = true;
+          this.$store.dispatch("showDailogS");
           return;
         }
       }
-      this.showDailogQ = true;
+      this.$store.dispatch("showDailogQ");
     },
     // 连码投注数量限制
     checkOddsLen() {
       switch (this.activeSubId) {
-        case "2032":
+        case 2032:
           return 2;
-        case "2035":
+        case 2035:
           return 3;
-        case "2038":
+        case 2038:
           return 4;
-        case "2039":
+        case 2039:
           return 5;
       }
     },
@@ -319,18 +358,18 @@ export default {
       for (let i in this.object) {
         s++;
       }
-      if (this.activeTabIndex == 9) {
+      if (this.activeClassifyId === 9) {
         switch (this.activeSubId) {
-          case "2032":
+          case 2032:
             this.xshuzi = parseInt(this.kadun(s, 2));
             break;
-          case "2035":
+          case 2035:
             this.xshuzi = parseInt(this.kadun(s, 3));
             break;
-          case "2038":
+          case 2038:
             this.xshuzi = parseInt(this.kadun(s, 4));
             break;
-          case "2039":
+          case 2039:
             this.xshuzi = parseInt(this.kadun(s, 5));
             break;
         }
@@ -338,34 +377,57 @@ export default {
         this.xshuzi = s;
       }
     },
-    // 获取赔率
     fetchGames(params) {
       this.de = true;
       setTimeout(() => {
         if (!this.loadpagebol) {
           this.de = false;
           this.loadpage = true;
+          return;
         }
-        return;
       }, 10000);
-      this.GET_LOTTERY_ODDS({
-        game_code: params.game_code,
-        type_code: params.type_code
-      }).then(res => {
-        this.de = false;
-        this.loadpagebol = true;
-        this.currentGame = res;
-        if (this.activeTabIndex === 9) {
-          this.currentGame &&
-            this.currentGame[0] &&
-            (this.currentGame[0].list[0].isCheck = true);
-        }
-      });
+      api
+        .getOddsList(params)
+        .then(data => {
+          if (data.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
+          if (data.data.msg == "4001") {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            this.de = false;
+            this.loadpagebol = true;
+            this.currentGame = parseOddsList(data.data);
+            console.log(this.currentGame);
+            if (this.activeClassifyId === 9) {
+              this.currentGame &&
+                this.currentGame[0] &&
+                (this.currentGame[0].list[0].isCheck = true);
+            }
+            if (!getGamesCache(`${params.game_code}_${params.type_code}`)) {
+              setGamesCache(`${params.game_code}_${params.type_code}`, data);
+            }
+          }
+        })
+        .catch(err => {
+          this.de = false;
+        });
     },
-    changeTab(item, i) {
-      if (item.type_code !== this.activeTabIndex) {
-        this.activeTabIndex = item.type_code;
+    changeDate(item, i) {
+      if (item.type_code !== this.activeClassifyId) {
+        this.activeClassifyId = item.type_code;
         this.fetchGames({
+          oid: sessionStorage.getItem('im_token'),
           game_code: item.game_code,
           type_code: item.type_code
         });
@@ -376,11 +438,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(["showDailogQ", "showDailogS"]),
     setSectionClass() {
-      if (this.activeTabIndex === 0) {
+      if (this.activeClassifyId === 0) {
         return "cqnc_lmp bet";
       }
-      if (this.activeTabIndex === 9) {
+      if (this.activeClassifyId === 9) {
         return "cqList1";
       }
       return "cqnc_ys bet";
@@ -388,31 +451,227 @@ export default {
   },
   //初始化
   created() {
-    // 开奖结果
-    this.updateResult();
-    // 赔率数据
+    let param = {};
+    param.oid = sessionStorage.getItem('im_token');
+    this.$http
+      .post(`${getUrl()}/getinfo/getFirstToken`, JSON.stringify(param))
+      .then(res => {
+        this.gametoken = res.data.token;
+        sessionStorage.setItem("gametoken", JSON.stringify(res.data.token));
+      });
     this.fetchGames({
-      game_code: this.game_code,
+      oid: sessionStorage.getItem('im_token'),
+      game_code: 3,
       type_code: 0
     });
-  },
-  mounted() {
-    this.timerInterval = setInterval(() => {
-      if (this.endtime === 0) {
-        // 开始拿开奖结果
-        this.updateResult();
-      } else {
-        if (this.endtime <= 30) {
-          // 投注区封盘
-          this.fengpan = true;
+    this.de = true;
+    let newTime = Date.parse(new Date()) / 1000;
+    let oldTime = localStorage.getItem("nc_time");
+    let roundCha = localStorage.getItem("nc_roundCha");
+    if (oldTime && newTime <= oldTime && roundCha == 1) {
+      let bodyS = localStorage.getItem("nc_body");
+      let oldTime = localStorage.getItem("nc_time");
+      let moneyX = sessionStorage.getItem("im_money");
+      JSON.parse(bodyS).next.isclose
+        ? (this.fengpan = true)
+        : (this.fengpan = false);
+      this.zMoney = parseFloat(moneyX);
+      this.isOk = true;
+      this.endtime = oldTime - newTime;
+      this.body = JSON.parse(bodyS);
+      this.round = this.body.next.round;
+      //    this.de = false;
+    } else {
+      let oidInfo = sessionStorage.getItem('im_token');
+      this.oid_info = oidInfo;
+      let params = {
+        params: {
+          game_code: 47, //  登录账号
+          // type_code: 0, //  登录密码
+          oid: oidInfo
         }
+      }; // 获取token配置
+      this.$http
+        .post(
+          `${getUrl()}/getinfo/game`,
+          JSON.stringify({
+            oid: sessionStorage.getItem('im_token'),
+            game_code: 47
+          })
+        )
+        .then(res => {
+          if (res.data.msg == "4003") {
+            this.$router.push({
+              path: "/weihu"
+            });
+          }
+          //      this.de = false;
+          this.isOk = true;
+          if (res.data.msg == "4001") {
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: "/login"
+              });
+            }, 1000);
+          } else {
+            let moneyX = sessionStorage.getItem("im_money");
+            this.zMoney = parseFloat(moneyX);
+            let timeStamp = res.data.next.timestap;
+            this.fengpan = res.data.next.isclose;
+            this.body = res.data;
+            this.endtime = res.data.next.endtime - timeStamp;
+            this.round = res.data.next.round;
+            let loaclTime = this.endtime + newTime;
+            if (sessionStorage.getItem("im_realname") == "11") {
+              this.zMoney = sessionStorage.getItem("im_money");
+            } else {
+              this.zMoney = res.data.lcurrency;
+              sessionStorage.setItem(
+                "im_money",
+                res.data.lcurrency
+              );
+            }
+            localStorage.setItem("nc_time", loaclTime);
+            localStorage.setItem("nc_body", JSON.stringify(res.data));
+            this.numberList = res.data.last.number;
+            this.round = res.data.next.round;
+            this.roundCha =
+              Number(res.data.next.round.split("-")[1]) -
+              Number(res.data.last.round.split("-")[1]);
+            localStorage.setItem("nc_roundCha", JSON.stringify(this.roundCha));
+          }
+        })
+        .catch(() => {
+          this.$router.push({
+            path: "/login"
+          }); // 跳转到登陆
+        });
+    }
+    //  })
+  },
+  reddy() {},
+  mounted() {
+    this.$refs.bet_bar.addEventListener(
+      "touchmove",
+      function name(event) {
+        event.preventDefault();
+      },
+      false
+    );
+    setInterval(() => {
+      if (this.endtime <= 0) {
+        this.isOpen = false;
+        return;
+      } else {
         this.endtime--;
+        let timeStamp = Date.parse(new Date()) / 1000;
       }
     }, 1000);
   },
-  destroyed() {
-    clearTimeout(this.timerOut);
-    clearInterval(this.timerInterval);
+  watch: {
+    endtime: function() {
+      if (
+        this.endtime == 0 ||
+        this.endtime == 440 ||
+        this.endtime == 500 ||
+        this.endtime == 540 ||
+        this.endtime == 550 ||
+        this.endtime == 530 ||
+        this.endtime == 500 ||
+        this.endtime == 560 ||
+        this.endtime == 570 ||
+        this.endtime == 580
+      ) {
+        let newTime = Date.parse(new Date()) / 1000;
+        this.fengpan = false;
+        let oidInfo = sessionStorage.getItem('im_token');
+        this.oid_info = oidInfo;
+        let params = {
+          params: {
+            game_code: 47,
+            oid: oidInfo
+          }
+        };
+        this.$http
+          .post(`${getUrl()}/getinfo/game`, JSON.stringify(params.params))
+          .then(res => {
+            this.isOk = true;
+            let timeStamp = res.data.next.timestap;
+            if (res.data.msg == 4001) {
+              //  1未登陆
+              sessionStorage.clear();
+              this.panelShow = true;
+              this.promptboxtext = "您的账户已失效，请重新登录";
+              setTimeout(() => {
+                this.panelShow = false;
+                this.$router.push({
+                  path: "/login"
+                });
+              }, 1000);
+            } else {
+              let timeStamp = res.data.next.timestap;
+              this.body = res.data;
+              this.endtime = res.data.next.endtime - timeStamp;
+              this.round = res.data.next.round;
+              if (this.round == this.loading) {
+                for (var a in this.shuju) {
+                  for (var j = 0; j < this.shuju[a].body.length; j++) {
+                    for (
+                      var h = 0;
+                      h < this.shuju[a].body[j].list.length;
+                      h++
+                    ) {
+                      this.shuju[a].body[j].list[h].isCheck = false;
+                    }
+                  }
+                }
+              }
+              let loaclTime = this.endtime + newTime;
+              localStorage.setItem("nc_time", loaclTime);
+              localStorage.setItem("nc_body", JSON.stringify(res.data));
+              this.numberList = res.data.last.number;
+              this.zMoney = res.data.lcurrency;
+              if (sessionStorage.getItem("im_realname") == "11") {
+                this.zMoney = sessionStorage.getItem("im_money");
+              } else {
+                this.zMoney = res.data.lcurrency;
+                sessionStorage.setItem(
+                  "im_money",
+                  res.data.lcurrency
+                );
+              }
+              this.fengpan = res.data.next.isclose;
+              this.roundCha =
+                Number(res.data.next.round.split("-")[1]) -
+                Number(res.data.last.round.split("-")[1]);
+              localStorage.setItem(
+                "nc_roundCha",
+                JSON.stringify(this.roundCha)
+              );
+            }
+          });
+        let moneyX = sessionStorage.getItem("im_money");
+        this.zMoney = parseFloat(moneyX);
+      } else if (this.endtime <= 120 && this.endtime > 0) {
+        this.qingkong();
+        this.xshuzi = 0;
+        this.fengpan = true;
+        this.$store.dispatch("hideDailogS");
+        this.$store.dispatch("hideDailogQ");
+        for (var a in this.shuju) {
+          for (var j = 0; j < this.shuju[a].body.length; j++) {
+            for (var h = 0; h < this.shuju[a].body[j].list.length; h++) {
+              this.shuju[a].body[j].list[h].isCheck = false;
+            }
+          }
+        }
+      }
+    },
+    $route() {}
   },
   components: {
     lotteryArea,
@@ -452,7 +711,7 @@ h3 {
   margin: 0;
   text-align: center;
   font-weight: 100;
-  margin-top: 10 / @zoom;
+  margin-top: 10/@zoom;
 
   // border-left: 2/20rem solid #8c8c8c;
   // border-right: 2/20rem solid #d9d9d9;
@@ -940,14 +1199,14 @@ h3 {
         button {
           outline: 0;
           border: 1/20rem solid #eaeaea; // display: flex;
- // justify-content: space-around;
-          // flex-direction: column;
+          // justify-content: space-around;
+ // flex-direction: column;
           width: 2.85rem;
           height: 41/20rem;
           padding: 0;
           align-items: center;
-          margin-top: 10 / @zoom;
-          margin-bottom: 10 / @zoom;
+          margin-top: 10/@zoom;
+          margin-bottom: 10/@zoom;
           position: relative;
           background: #fff;
           border-radius: 3/20rem;
@@ -1188,6 +1447,7 @@ h3 {
 .regulation {
   position: fixed;
   width: 100%;
+
   height: 100%;
   background: rgba(7, 17, 27, 0.8);
   z-index: 999;

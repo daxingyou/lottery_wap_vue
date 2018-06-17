@@ -70,7 +70,7 @@ export default {
             panelShow:false,
             title:'',
             times:'0',
-            
+            imMoney:sessionStorage.getItem("im_money"),
             isWan:'',
             titleshow:true,
             erreocode:'',

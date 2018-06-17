@@ -101,8 +101,7 @@
 </template>
 <script>
   import iHeader from '../../components/j-header'
-	import promptbox from '../../components/promptbox'
-	import { mapActions } from "vuex";
+  import promptbox from '../../components/promptbox'
   export default {
     components: {
       iHeader,
@@ -110,7 +109,7 @@
     },
     data() {
       return {
-      	isWan:this.$store.state.userData.username?this.$store.state.userData.username:'游客',
+      	isWan:sessionStorage.getItem('im_username')?sessionStorage.getItem('im_username'):'游客',
       	bgSrc:'',
       	agbgimg:'',
       	isUser:false,
@@ -136,7 +135,6 @@
       }
     },
     methods:{
-			...mapActions(["GAME_BALANCE", "GAME_TRANSFER", "GAME_AGLOGIN"]),
     	gbzr(){
     		this.isykag=false
     	},
@@ -150,7 +148,7 @@
            window.location.href=sessionStorage.getItem("im_sportsurl");
          }
          else {
-            // 发送后退的状态
+           this.$store.dispatch('goBack') // 发送后退的状态
            // 后退
            this.$router.go(-1)
          }
@@ -165,17 +163,64 @@
 		        this.promptboxtext = 'AG余额不足'
     			}else{
     				this.showCurtion=true
-						this.GAME_AGLOGIN({actype:1}).then(res=>{
-							location.href=res.data.response[0].url;
-						});		       
+    			let params ={};
+		        params.oid = sessionStorage.getItem('im_token');
+		        this.$http.post(getUrl()+'/aginfo/getAgGameLink/1',JSON.stringify(params)).then(res => {
+		        	this.showCurtion=false
+		         	if(res.data.msg == 4001){
+				          sessionStorage.clear();
+				          this.showCurtion=false
+				          this.panelShow = true;
+				          this.promptboxtext = "您的账户已失效，请重新登录";
+				          setTimeout(() => {
+				            this.panelShow = false;
+				            this.$router.push({
+				              path: '/login'
+				            })
+				          },1000);
+			        }else if(res.data.msg == 2006){
+			        	this.showCurtion=false
+			        	location.href=res.data.link
+			        }else if(res.data.msg ==7001){
+			        	this.showCurtion=false
+			        	this.panelShow = true;
+			            this.promptboxtext = '请先转账或充值到AG，激活账户';
+			            setTimeout(() => {
+			              this.panelShow = false;
+			            },1200);
+					 		}
+		        })
     			}
     		}
     	},
     	yksw(){
-				this.successshow=false
-				this.GAME_AGLOGIN({actype:0}).then(res=>{
-					location.href=res.data.response[0].url;
-				});		
+    		this.successshow=false
+    		let params ={};
+		        params.oid = sessionStorage.getItem('im_token');
+			    this.$http.post(getUrl()+'/aginfo/getAgGameLink/0',JSON.stringify(params)).then(res => {
+			  	 if(res.data.msg == 4001){
+				          sessionStorage.clear();
+				          this.showCurtion=false
+				          this.panelShow = true;
+				          this.promptboxtext = "您的账户已失效，请重新登录";
+				          setTimeout(() => {
+				            this.panelShow = false;
+				            this.$router.push({
+				              path: '/login'
+				            })
+				          },1000);
+			        }else if(res.data.msg == 2006){
+			        	this.showCurtion=false
+			        	location.href=res.data.link
+			        }else if(res.data.msg ==7001){
+			        	this.showCurtion=false
+			        	this.panelShow = true;
+			          this.promptboxtext = res.data.info;
+			            setTimeout(() => {
+			              this.panelShow = false;
+			            },1200);
+					 }
+			  })
     	},
     	shiwan(){
 			this.yksw()
@@ -192,13 +237,14 @@
 	       if(this.nut == 0){
 	       	this.nut = null
 	       }
+	       console.log();
       	},
       	submit(){
       		this.successshow=false
 	        let params ={};
-					params.amount = this.nut
-					params.gameOut = this.transferType=='0'?"AG":0;					
-	        params.gameIn = this.transferType=='0'?0:"AG";
+	        params.oid = sessionStorage.getItem('im_token');
+	        params.amount = this.nut
+	        params.transfer_io = this.transferType;
 				// kong 或者 0
 	        if(this.nut == 0){
 	          this.panelShow = true;
@@ -210,6 +256,7 @@
 	          return;
 	        }
 	        if(this.nut ==null){
+	        	console.log('001')
 	          this.panelShow = true;
 	          this.promptboxtext = '请输入转换金额';
 	          this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')"
@@ -248,18 +295,58 @@
       	this.nut=""
       },
       getData(params){
-				this.successshow=false
-				this.GAME_TRANSFER(params).then(res=>{
-					if(this.transferType == 1){
-						this.agMoney = parseFloat(this.agMoney) +  parseFloat(this.nut);
-						this.balance = parseFloat(this.balance) - parseFloat(this.nut);
-					}else if(this.transferType == 0){
-						this.agMoney =parseFloat(this.agMoney) - parseFloat(this.nut);
-						this.balance =  parseFloat(this.balance) + parseFloat(this.nut);
-					}
-					this.panelShow = true;           
-					this.isEdzh=false
-				})
+      	this.successshow=false
+      		this.$http.post(getUrl()+'/aginfo/agQuotaConversion',JSON.stringify(params)).then(res => {
+						console.log(res)
+   				this.showCurtion = false;
+          if(res.data.msg == 4001){
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: '/login'
+              })
+            },1000)
+          }else if(res.data.msg == 7001){
+            // this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')"
+              this.promptboxtext = res.data.info;
+              this.panelShow = true;
+              setTimeout(() => {
+                this.panelShow = false;
+              },1200)
+            
+          }else if(res.data.msg == 2006){
+          	this.successshow=true
+            this.promptboxtext = "转换成功";
+            this.nut = '';
+            if(typeof res.data.amount == 'undefined'){
+              this.panelShow = true;
+              this.promptboxtext = '余额不足,请充值'
+              this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')"
+              setTimeout(() => {
+                this.panelShow = false;
+              },1200)
+              return;
+            }
+            if(this.transferType == 1){
+              this.agMoney = parseFloat(this.agMoney) +  parseFloat(res.data.amount);
+              this.balance = parseFloat(this.balance) - parseFloat(res.data.amount);
+               sessionStorage.setItem('im_money', this.balance)
+            }else if(this.transferType == 0){
+              this.agMoney =parseFloat(this.agMoney) - parseFloat(res.data.amount);
+              this.balance =  parseFloat(this.balance) + parseFloat(res.data.amount);
+               sessionStorage.setItem('im_money', this.balance)
+            }
+            this.agMoney = this.agMoney.toFixed(2);
+            this.balance = this.balance.toFixed(2);
+            sessionStorage.setItem('im_money', this.balance)
+            this.panelShow = true;
+           
+            this.isEdzh=false
+          }
+        })
       },
       gotoPayAddress(){
         this.$router.push('/order:0?GameName=AG')
@@ -273,18 +360,46 @@
        	if(this.isWan=='游客'){
        		this.showCurtion=false
        	}else{
-					this.GAME_BALANCE({gpkey:'AG'}).then(res=>{				
-					this.showCurtion = false;				 
-					if(res.data.response[0].agBalance < 0){
-						this.promptboxtext = "AG余额不足";
-						this.panelShow = true;
-						setTimeout(() => {
-							this.panelShow = false;
-							this.$router.push('/index');
-						},1200)
-					}
-					this.agMoney =res.data.response[0].agBalance;			          
-					this.balance = res.data.response[0].balance;	     
+       	let params = {};
+     		params.oid = sessionStorage.getItem('im_token');
+				this.$http.post(`${getUrl()}/aginfo/getAgInfo`, JSON.stringify(params)).then(res => {
+				this.showCurtion = false;
+				 if(res.data.msg == 4001){
+			          sessionStorage.clear();
+			          this.panelShow = true;
+			          this.promptboxtext = "您的账户已失效，请重新登录";
+			          setTimeout(() => {
+			            this.panelShow = false;
+			            this.$router.push({
+			              path: '/login'
+			            })
+			          },1000);
+		        } else if(res.data.msg == 2006){
+			          if(res.data.balance.agBalance < 0){
+			            this.promptboxtext = "AG余额不足";
+			            this.panelShow = true;
+			            setTimeout(() => {
+			              this.panelShow = false;
+			              this.$router.push('/index');
+			            },1200)
+		          }
+			          this.agMoney = Number(res.data.balance.agBalance).toFixed(2);			          
+			          this.balance = Number(res.data.balance.userBalance).toFixed(2);
+			          sessionStorage.setItem('im_money', this.balance)
+		        }else if(res.data.msg == 7001){
+			          this.promptboxtext = res.data.info;
+			          this.panelShow = true;
+			          setTimeout(() => {
+			            this.panelShow = false
+			          },1200)
+		        }else{
+			          this.promptboxtext = "获取真人游戏额度失败";
+			          this.panelShow = true;
+			          setTimeout(() => {
+			            this.panelShow = false
+			            this.$router.push('/index')
+			          },1200)
+			        }
 				})
        	}
     },

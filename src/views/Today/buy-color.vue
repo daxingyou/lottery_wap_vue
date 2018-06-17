@@ -34,10 +34,27 @@
       initData(){
         let prams = {};
 
-        let oidinfo = this.$store.state.userData.sessionId;
+        let oidinfo = sessionStorage.getItem('im_token');
         prams.oid = oidinfo;
-        this.$http.post(`/getinfo/bet`,JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/getinfo/bet`,JSON.stringify(prams)).then(res => {
+        	if(res.data.msg=='4003'){
+	        		this.$router.push({
+	            	path: '/weihu'
+	          })
+	        }
+          if(res.data.msg==4001){
+             sessionStorage.clear();
+			this.panelShow = true;
+	      	this.promptboxtext = "您的账户已失效，请重新登录";
+	        setTimeout(() => {
+	          	this.panelShow = false;
+	          	this.$router.push({
+	            	path: '/login'
+	          	})
+	          },1000)
+          }
           this.finished=res.data[0].res
+
         })
       }
     },

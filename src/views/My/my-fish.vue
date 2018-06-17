@@ -109,7 +109,7 @@
     },
     data() {
       return {
-      	isWan:this.$store.state.userData.username?this.$store.state.userData.username:'游客',
+      	isWan:sessionStorage.getItem('im_username')?sessionStorage.getItem('im_username'):'游客',
       	bgSrc:'',
       	agbgimg:'',
       	isUser:false,
@@ -148,7 +148,7 @@
            window.location.href=sessionStorage.getItem("im_sportsurl");
          }
          else {
-            // 发送后退的状态
+           this.$store.dispatch('goBack') // 发送后退的状态
            // 后退
            this.$router.go(-1)
          }
@@ -164,10 +164,21 @@
     			}else{
     				this.showCurtion=true
     			let params ={};
-		        params.oid = this.$store.state.userData.sessionId;
+		        params.oid = sessionStorage.getItem('im_token');
 		        this.$http.post(getUrl()+'/aginfo/getAgGameLink/1/6',JSON.stringify(params)).then(res => {
 		        	this.showCurtion=false
-		         	if(res.data.msg == 2006){
+		         	if(res.data.msg == 4001){
+				          sessionStorage.clear();
+				          this.showCurtion=false
+				          this.panelShow = true;
+				          this.promptboxtext = "您的账户已失效，请重新登录";
+				          setTimeout(() => {
+				            this.panelShow = false;
+				            this.$router.push({
+				              path: '/login'
+				            })
+				          },1000);
+			        }else if(res.data.msg == 2006){
 			        	this.showCurtion=false
 			        	location.href=res.data.link
 			        }else if(res.data.msg ==7001){
@@ -185,9 +196,20 @@
     	yksw(){
     		this.successshow=false
     		let params ={};
-		        params.oid = this.$store.state.userData.sessionId;
+		        params.oid = sessionStorage.getItem('im_token');
 			    this.$http.post(getUrl()+'/aginfo/getAgGameLink/0/6',JSON.stringify(params)).then(res => {
-			  	 if(res.data.msg == 2006){
+			  	 if(res.data.msg == 4001){
+				          sessionStorage.clear();
+				          this.showCurtion=false
+				          this.panelShow = true;
+				          this.promptboxtext = "您的账户已失效，请重新登录";
+				          setTimeout(() => {
+				            this.panelShow = false;
+				            this.$router.push({
+				              path: '/login'
+				            })
+				          },1000);
+			        }else if(res.data.msg == 2006){
 			        	this.showCurtion=false
 			        	location.href=res.data.link
 			        }else if(res.data.msg ==7001){
@@ -220,7 +242,7 @@
       	submit(){
       		this.successshow=false
 	        let params ={};
-	        params.oid = this.$store.state.userData.sessionId;
+	        params.oid = sessionStorage.getItem('im_token');
 	        params.amount = this.nut
 	        params.transfer_io = this.transferType;
 				// kong 或者 0
@@ -276,8 +298,18 @@
       	this.successshow=false
       		this.$http.post(getUrl()+'/aginfo/agQuotaConversion',JSON.stringify(params)).then(res => {
 						console.log(res)
-					 this.showCurtion = false;
-					if(res.data.msg == 7001){
+   				this.showCurtion = false;
+          if(res.data.msg == 4001){
+            sessionStorage.clear();
+            this.panelShow = true;
+            this.promptboxtext = "您的账户已失效，请重新登录";
+            setTimeout(() => {
+              this.panelShow = false;
+              this.$router.push({
+                path: '/login'
+              })
+            },1000)
+          }else if(res.data.msg == 7001){
             // this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')"
               this.promptboxtext = res.data.info;
               this.panelShow = true;
@@ -301,15 +333,15 @@
             if(this.transferType == 1){
               this.agMoney = parseFloat(this.agMoney) +  parseFloat(res.data.amount);
               this.balance = parseFloat(this.balance) - parseFloat(res.data.amount);
-               
+               sessionStorage.setItem('im_money', this.balance)
             }else if(this.transferType == 0){
               this.agMoney =parseFloat(this.agMoney) - parseFloat(res.data.amount);
               this.balance =  parseFloat(this.balance) + parseFloat(res.data.amount);
-               
+               sessionStorage.setItem('im_money', this.balance)
             }
             this.agMoney = this.agMoney.toFixed(2);
             this.balance = this.balance.toFixed(2);
-            
+            sessionStorage.setItem('im_money', this.balance)
             this.panelShow = true;
            
             this.isEdzh=false
@@ -320,7 +352,7 @@
 				let game_code = '';
         this.game_code = game_code;
         //试玩账号权限限制
-        this.isWan = this.$store.state.userData.username
+        this.isWan = sessionStorage.getItem('im_username')
         if (this.isWan == '游客') {
         	this.mask=false;
         	this.isOpen=false;
@@ -336,7 +368,7 @@
         } else if (/activity*/.test(path)) {
           this.$router.push(path)
         } else {
-          if (!this.$store.state.userData.sessionId) {
+          if (!sessionStorage.getItem("im_token")) {
            this.$router.push("/login")
             }
            else {
@@ -355,8 +387,8 @@
        		this.showCurtion=false
        	}else{
        	let params = {};
-     		params.oid = this.$store.state.userData.sessionId;
-				this.$http.post(`/aginfo/getAgInfo`, JSON.stringify(params)).then(res => {
+     		params.oid = sessionStorage.getItem('im_token');
+				this.$http.post(`${getUrl()}/aginfo/getAgInfo`, JSON.stringify(params)).then(res => {
 				this.showCurtion = false;
 				 if(res.data.msg == 4001){
 			          sessionStorage.clear();
@@ -379,7 +411,7 @@
 		          }
 			          this.agMoney = Number(res.data.balance.agBalance).toFixed(2);			          
 			          this.balance = Number(res.data.balance.userBalance).toFixed(2);
-			          
+			          sessionStorage.setItem('im_money', this.balance)
 		        }else if(res.data.msg == 7001){
 			          this.promptboxtext = res.data.info;
 			          this.panelShow = true;
