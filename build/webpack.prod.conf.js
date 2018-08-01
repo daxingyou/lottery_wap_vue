@@ -12,12 +12,6 @@ var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 var env = config.build.env
 
 var webpackConfig = merge(baseWebpackConfig, {
-  externals: {  
-    'vue': 'Vue',  
-    'vue-router': 'VueRouter',  
-    'vuex': 'Vuex',  
-    'axios': 'axios'  
-  },
   module: {
     rules: utils.styleLoaders({
       sourceMap: config.build.productionSourceMap,

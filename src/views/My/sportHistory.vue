@@ -6,35 +6,48 @@
     <div class="content">
       <div @click='quanbu' v-if='isWan!="游客"' :class="{active:isShow}">汇总</div>
       <div @click='weijie()' :class="{active:isShow1}">未结注单</div>
-      <div @click="yijie1()" :class="{active:isShow2}">{{daywen}}</div>
+      <div v-show="isWan != '游客'" @click="yijie1()" :class="{active:isShow2}">{{daywen}}</div>
     </div>
     <div class="centermiddle">
       <div class="list3" v-if='isShow4' v-for='ite in history'>
-        <div v-for='item in ite.content' style="margin-bottom:.5rem;">
-          <div>
-            <span>{{item.betDate}}</span>
-            <span class="more"></span>
+        <div style="margin-bottom:.5rem;">
+          <div  :class="{act:ite.Checked==1}">
+            <span>注单号:{{ite.orderid}}</span>
+            <li style="list-style:none;text-align:right;color:#fff">{{ite.flag}}</li>
           </div>
-          <div>
-            <span>
-              <i>注单总数</i>
-              <i>{{item.num}}</i>
-            </span>
-            <span>
-              <i style="margin-left:.4rem">总下注金额</i>
-              <i>{{item.BetScore}}</i>
-            </span>
-          </div>
-          <div>
-            <span>
-              <i>总有效金额</i>
-              <i>{{item.VGOLD}}</i>
-            </span>
-            <span>
-              <i style="margin-left:.4rem">输赢金额</i>
-              <i>{{item.M_Result}}</i>
-            </span>
-          </div>
+          <ul class="jiesuan">
+            <li class="clearfix">
+              <span>{{ite.Gtype}}</span>
+              <span style="text-aligin:right">{{ite.BetType}}</span>
+            </li>
+            <li class="clearfix">
+              <span>{{ite.sportName}}</span>
+              <!-- <span style="text-aligin:right">{{ite.sportRate}}</span> -->
+            </li>
+            <li class="clearfix">
+              <span>{{ite.sportTeam}}</span>
+            </li>
+            <li class="clearfix">
+              <span>{{ite.sportRate}}</span>
+            </li>
+            <li v-show="ite.LineName != ''" class="clearfix">
+              <span>危险球</span>
+              <span style="text-aligin:right">{{ite.LineName}}</span>
+            </li>
+            <li class="clearfix">
+              <span>下注金额</span>
+              <span style="text-aligin:right">{{ite.BetScore}}</span>
+            </li>
+            <li v-if="ite.Checked == '未结'" class="clearfix">
+              <span>可赢金额</span>
+              <span style="text-aligin:right">{{ite.Gwin}}</span>
+            </li>
+            <li v-else class="clearfix">
+              <span>输赢结果</span>
+              <span style="text-aligin:right">{{ite.M_Result}}</span>
+            </li>
+          </ul>
+
         </div>
       </div>
       <div v-if='kon' style='text-align:center;margin:3rem 0;font-size:0.8rem'>
@@ -46,21 +59,27 @@
         </div>
         <ul>
           <li class="clearfix">
-            <span>球类</span>
             <span>{{groups.Gtype}}</span>
+            <span>{{groups.BetType}}</span>
           </li>
           <li class="clearfix">
-            <span>下注时间</span>
-            <span>{{groups.BetTime}}</span>
+            <span>{{groups.sportName}}</span>
+          </li>
+          <li class="clearfix">
+            <span>{{groups.sportTeam}}</span>
+          </li>
+          <li class="clearfix">
+              <span>{{groups.sportRate}}</span>
+          </li>
+          <li v-show="groups.LineName != ''" class="clearfix">
+            <span>危险球</span>
+            <span>{{groups.LineName}}</span>
           </li>
           <li class="clearfix">
             <span>下注金额</span>
-            <span>{{groups.BetScore}}</span>
+            <span style="text-aligin:right">{{groups.BetScore}}</span>
           </li>
-          <li class="clearfix">
-            <span>下注内容</span>
-            <span v-html="groups.Middle"></span>
-          </li>
+
           <li class="gexian"></li>
           <li class="clearfix">
             <span>可赢金额</span>
@@ -74,25 +93,31 @@
         </div>
         <ul>
           <li class="clearfix">
-            <span>球类</span>
             <span>{{groups.Gtype}}</span>
+            <span>{{groups.BetType}}</span>
           </li>
           <li class="clearfix">
-            <span>下注时间</span>
-            <span>{{groups.BetTime}}</span>
+            <span>{{groups.sportName}}</span>
+          </li>
+          <li class="clearfix">
+            <span>{{groups.sportTeam}}</span>
+          </li>
+          <li class="clearfix">
+              <span>{{groups.sportRate}}</span>
+          </li>
+          <li v-show="groups.LineName != ''" class="clearfix">
+            <span>危险球</span>
+            <span>{{groups.LineName}}</span>
           </li>
           <li class="clearfix">
             <span>下注金额</span>
-            <span>{{groups.BetScore}}</span>
+            <span style="text-aligin:right">{{groups.BetScore}}</span>
           </li>
-          <li class="clearfix">
-            <span>下注内容</span>
-            <span v-html="groups.Middle"></span>
-          </li>
+
           <li class="gexian"></li>
           <li class="clearfix">
-            <span>可赢金额</span>
-            <span>{{groups.Gwin}}</span>
+            <span>输赢结果</span>
+            <span>{{groups.M_Result}}</span>
           </li>
         </ul>
       </div>
@@ -177,7 +202,7 @@ export default {
       panelShow: false,
       promptboxshow: true,
       successshow: false,
-      history: []
+      history: [],
     };
   },
   props: {
@@ -234,13 +259,15 @@ export default {
       let strTime = stringTime;
       let betTime = this.getFormatDate(strTime);
       console.log(betTime);
-      params.date = betTime;
-      params.is_total = 0;
-      params.pc = 1;
+      // params.date = betTime;
+      // params.is_total = 0;
+      // params.pc = 1;
       this.$http
-        .post(`${getUrl()}/SportFunction/getBetInfo`, JSON.stringify(params))
+        .post(`${getUrl()}/sportFunction/getSportBill`, JSON.stringify(params))
         .then(res => {
           if (res.data.msg == 4001) {
+            if (this.isWan == '游客') return// 游客点击“未结账单”不会退出到登录页面
+
             sessionStorage.clear();
             this.panelShow = true;
             this.promptboxtext = "您的账户已失效，请重新登录";
@@ -251,8 +278,16 @@ export default {
               });
             }, 1000);
           } else {
-            this.finished = res.data.data || [];
-            console.log(this.finished);
+            this.finished = res.data.info.res || [];
+            for (let i = 0; i < this.finished.length; i++) {
+              if(this.finished[i].Gtype == "FT"){
+                this.finished[i].Gtype = "足球"
+              }
+              if(this.finished[i].Gtype == "BK"){
+                this.finished[i].Gtype = "篮球"
+              }
+
+            }
             if (this.finished.length == 0) {
               this.kon = true;
             } else {
@@ -268,20 +303,17 @@ export default {
       this.isShow5 = false;
     },
     quanbu(daydate) {
-      // let item = "";
-      //  let ite = "";
-      // if(sessionStorage.getItem('win')!=''){
-      // 		sessionStorage.setItem('win','')
-      // }
       this.daywen = "今日已结";
       this.pagenmb = false;
       this.pageshow = false;
       let params = {};
       params.oid = sessionStorage.getItem('im_token');
       params.is_total = 1;
-      params.pc = 1;
+      params.page = 1;
+      params.number = this.pageNumber;
+      params.type = 2;
       this.$http
-        .post(`${getUrl()}/SportFunction/getBetInfo`, JSON.stringify(params))
+        .post(`${getUrl()}/sportFunction/getSportBill`, JSON.stringify(params))
         .then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
@@ -300,8 +332,23 @@ export default {
               this.panelShow = false;
             }, 1000);
           } else if (res.data.msg == 2006) {
-            this.history = res.data.data || [];
-            console.log(this.history);
+            this.history = res.data.info.res || [];
+            for (let i = 0; i < this.history.length; i++) {
+              if(this.history[i].Gtype == "FT"){
+                this.history[i].Gtype = "足球"
+              }
+              if(this.history[i].Gtype == "BK"){
+                this.history[i].Gtype = "篮球"
+              }
+              if(this.history[i].Checked == 1){
+                this.history[i].Checked = "已结"
+                this.history[i].flag = "已结"
+              }
+              if(this.history[i].Checked == 0){
+                this.history[i].Checked = "未结"
+                this.history[i].flag = "未结"
+              }
+            }
             if (this.history.length == 0) {
               this.kon = true;
             } else {
@@ -335,7 +382,7 @@ export default {
       params.is_total = 0;
       params.pc = 1;
       this.$http
-        .post(`${getUrl()}/SportFunction/getBetInfo`, JSON.stringify(params))
+        .post(`${getUrl()}/sportFunction/getSportBill`, JSON.stringify(params))
         .then(res => {
           this.daywin = false;
           if (res.data.msg == 4001) {
@@ -349,7 +396,15 @@ export default {
               });
             }, 1000);
           } else if (res.data.msg == 2006) {
-            this.finished11 = res.data.data || [];
+            this.finished11 = res.data.info.res || [];
+            for (let i = 0; i < this.finished11.length; i++) {
+              if(this.finished11[i].Gtype == "FT"){
+                this.finished11[i].Gtype = "足球"
+              }
+              if(this.finished11[i].Gtype == "BK"){
+                this.finished11[i].Gtype = "篮球"
+              }
+            }
             if (this.finished11.length >= 20) {
               setTimeout(() => {
                 this.$refs.yijies[19].style = "margin-bottom:2rem;";
@@ -388,7 +443,7 @@ export default {
       params.is_total = 0;
       params.pc = 1;
       this.$http
-        .post(`${getUrl()}/SportFunction/getBetInfo`, JSON.stringify(params))
+        .post(`${getUrl()}/sportFunction/getSportBill`, JSON.stringify(params))
         .then(res => {
           console.log(res.data.data);
           this.daywin = false;
@@ -409,7 +464,15 @@ export default {
               this.panelShow = false;
             }, 1000);
           } else if (res.data.msg == 2006) {
-            this.finished11 = res.data.data || [];
+            this.finished11 = res.data.info.res || [];
+            for (let i = 0; i < this.history.length; i++) {
+              if(this.history[i].Gtype == "FT"){
+                this.history[i].Gtype = "足球"
+              }
+              if(this.history[i].Gtype == "BK"){
+                this.history[i].Gtype = "篮球"
+              }
+            }
             if (this.finished11.length > 19) {
               setTimeout(() => {
                 this.$refs.yijies[19].style = "margin-bottom:2rem;";
@@ -656,39 +719,43 @@ export default {
     let params = {};
     params.oid = sessionStorage.getItem('im_token');
     this.isWan = sessionStorage.getItem("im_username");
-    if (this.isWan != "游客") {
-      // this.quanbu();
-    } else {
-      this.isShow4 = false;
-      this.isShow1 = true;
-      this.isShow3 = true;
-      let prams = {};
-      let oidinfo = sessionStorage.getItem('im_token');
-      prams.oid = oidinfo;
-      this.$http
-        .post(`${getUrl()}/getinfo/bet`, JSON.stringify(prams))
-        .then(res => {
-          console.log(res);
-          if (res.data.msg == 4001) {
-            sessionStorage.clear();
-            this.panelShow = true;
-            this.promptboxtext = "您的账户已失效，请重新登录";
-            setTimeout(() => {
-              this.panelShow = false;
-              this.$router.push({
-                path: "/login"
-              });
-            }, 1000);
-          }
-          this.finished = res.data[0].res;
-          if (this.finished.length == 0) {
-            this.kon = true;
-          } else {
-            this.kon = false;
-          }
-        });
+    if(this.isWan != "游客"){
+      this.quanbu();
+    }else{
+      this.kon = true;
     }
-    this.quanbu();
+    // if (this.isWan != "游客") {
+    //   // this.quanbu();
+    // } else {
+    //   this.isShow4 = false;
+    //   this.isShow1 = true;
+    //   this.isShow3 = true;
+    //   let prams = {};
+    //   let oidinfo = sessionStorage.getItem('im_token');
+    //   prams.oid = oidinfo;
+    //   this.$http
+    //     .post(`${getUrl()}/getinfo/bet`, JSON.stringify(prams))
+    //     .then(res => {
+    //       console.log(res);
+    //       if (res.data.msg == 4001) {
+    //         sessionStorage.clear();
+    //         this.panelShow = true;
+    //         this.promptboxtext = "您的账户已失效，请重新登录";
+    //         setTimeout(() => {
+    //           this.panelShow = false;
+    //           this.$router.push({
+    //             path: "/login"
+    //           });
+    //         }, 1000);
+    //       }
+          // this.finished = res.data[0].res;
+          // if (this.finished.length == 0) {
+          //   this.kon = true;
+          // } else {
+          //   this.kon = false;
+          // }
+        // });
+    // }
   },
   components: {
     zHeader,
@@ -846,14 +913,13 @@ export default {
     background: #fff;
     color: #666;
     li {
-      // height: 60/40rem;
       line-height: 60/40rem;
       > span {
         float: left;
       }
-      > span:nth-child(1) {
-        width: 25%;
-      }
+      // > span:nth-child(1) {
+      //   width: 25%;
+      // }
       > span:nth-child(2) {
         text-align: right;
         width: 75%;
@@ -975,5 +1041,23 @@ export default {
   background: rgba(0, 0, 0, 0.6);
   height: 100%;
   z-index: 5;
+}
+.jiesuan{
+  list-style:none;
+  overflow:hidden;
+  border-bottom: 1px solid #aaa;
+}
+.jiesuan li{
+    height: 35px;
+    padding: 5px 10px;
+    color: #666;
+    font-size: 17px;
+    font-weight: 500;
+}
+.jiesuan li span:nth-child(2){
+  float:right;
+}
+.act{
+  background:#666666!important;
 }
 </style>

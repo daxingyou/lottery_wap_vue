@@ -17,7 +17,7 @@
             <div>
               彩票余额:
               <span style="color:#507BD9">
-                
+
               </span>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default {
   line-height: 90/46.875rem;
   text-align: center;
   z-index: 4;
-  position: fixed;
+  /*position: fixed;*/
   left: 0;
   top: 0;
   > i {

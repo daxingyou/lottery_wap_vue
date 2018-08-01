@@ -1,5 +1,5 @@
 <template>
-  <div style="top:0">
+  <div style="top:0;height:1.9rem;">
 
     <header class="color1" :style="{'top': isIosWebview ? 40/40+'rem': 0}" ref="headZindex">
       <div @click="goHome">
@@ -114,7 +114,9 @@ export default {
         game_25:"重庆幸运农场",
         game_88:"江苏骰宝(快3)",
         game_881:"吉林快3",
-        game_180:"北京快乐8"
+        game_180:"北京快乐8",
+        game_220:"福彩3D",
+        game_133:"广东11选5"
       }
     }
     // if (obj.is_gd_ali == 'lv'){
@@ -193,7 +195,10 @@ export default {
       delete this.lotteryGame.game_881;
       break;
       case 180:
-       delete this.lotteryGame.game_180; 
+       delete this.lotteryGame.game_180;
+      break;
+      case 220:
+       delete this.lotteryGame.game_220;
       break;
     }
   },

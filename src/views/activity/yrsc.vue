@@ -67,7 +67,7 @@
       	 </table>
       	 <p>（例如：会员首次存款1000元，申请首存Ⅰ活动，可获得1000（本金）+58（彩金）=1058，会员在有总效投注达到1058X1=1058后可申请提款）</p>
         <h4 style="margin-top:1.5rem">首存优惠二:</h4>
-      	  <table cellpadding='0' cellspacing="0" style="margin-top: 1rem;"> 
+      	  <table cellpadding='0' cellspacing="0" style="margin-top: 1rem;">
       	 	<tr>
       	 		<th>存款金额</th>
       	 		<th>优惠百分比</th>
@@ -139,7 +139,7 @@
     background:#c33949 !important;
     line-height: 90/46.875rem;
     text-align: center;
-    position: fixed;
+    /*position: fixed;*/
     left: 0;
     top: 0;
     >i{

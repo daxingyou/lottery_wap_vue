@@ -1,188 +1,194 @@
 <template>
-<div>
-  <div class="bj" @click='hideTitle'>
-  <div class="hed color1" style="position: relative;">
-    <i class="icon iconfont icon-zuo" @click="gobackLast"></i>
-  	<div  style="display: inline-block;" @click.stop="showTitle"><span>{{menu_title}}</span><i class="xiaoxia " style="float: right;margin-left: 0.2rem;"></i></div>
-  	<div @click='datashow' v-show = "urlId!=69||urlId!=270" style="position: absolute;right:0.5rem;top:0rem;width: 1rem;height: 1rem;"><img :src="$getPublicImg('/images/data.png')" alt="" style="width: 100%;height: 100%;"/></div>
-  </div>
-   <div class="header-is-active" v-if="show_title">
-    <div class="header-modal-content">
-      <ul>
-        <li v-for="(value,key,index) in urlUrl"  @click="changUrl(value,key)" v-show="key != menu_title">{{key}}
-            <span class="line"></span>
-        </li>
-      </ul>
-
-      <i class="up"></i>
+  <div>
+    <div class="bj" @click='hideTitle'>
+      <div class="hed color1" >
+        <i class="icon iconfont icon-zuo" @click="gobackLast"></i>
+        <div  style="display: inline-block;" @click.stop="showTitle"><span>{{menu_title}}</span><i class="xiaoxia " style="float: right;margin-left: 0.2rem;"></i></div>
+        <!-- <div @click='datashow' v-show = "urlId!=69||urlId!=270" style="position: absolute;right:0.5rem;top:0rem;width: 1rem;height: 1rem;"> -->
+        <div v-show = "urlId!=69||urlId!=270" style="position: absolute;right:0.5rem;top:0rem;width: 1rem;height: 1rem;">
+          <span><img :src="$getPublicImg('/images/data.png')" alt="" style="width: 100%;height: 100%;"/></span>
+          <mu-date-picker class="date-picker-x" v-model="dateOptions.selectedDate" :minDate="dateOptions.minDate" :maxDate="dateOptions.maxDate" :disableYearSelection="true"/>
+          </div>
+      </div>
+       <div class="header-is-active" v-if="show_title">
+        <div class="header-modal-content">
+          <ul>
+            <li v-for="(value,key,index) in urlUrl"  @click="changUrl(value,key)" v-show="key != menu_title">{{key}}
+                <span class="line"></span>
+            </li>
+          </ul>
+          <i class="up"></i>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="biao" v-show="isReady">
-  	<div class="titleheader">
-  		<span>开奖期数</span>
-  		<span :style="{marginLeft:mleft}">开奖号码</span>
-  		<span v-if = "urlId==160" style="margin-left:2rem;">和值</span>
-  		<span v-if = "urlId==69||urlId==270" style="margin-left: 5.8rem;">特码</span>
-  		<span v-if="datatrueq" style="float: right;margin-right: 0.2rem;display: inline-block;height: 1rem;">{{nowday}}</span>
-  	</div>
-  	<div class="kjh" v-for='(item,index) in lotteryList' :class="`game_${urlId}`">
-  			<div class="lottery-rs-wp">
-  				<div class="issue-wp">
-							<div>{{item.round}}期</div>
-							<div>{{timetrans(item.endtime)}}</div>
-						</div>
-					<div class="balls-wp">	
-  				<span class='feiche' v-for='i in isNuber(item.number)' v-if = "urlId==51||urlId==171||urlId==210||urlId==240||urlId==260"  :class="`cl_${i} `">{{i}}</span>
-  				<span  v-for='i in isNuber(item.number)' v-if = "urlId==2||urlId==46||urlId==250" class="color88 cqsscdd cqsscy">{{i}}</span>
-  				<span  v-for='i in isNuber(item.number)' v-if = "urlId==3" :class="`clg1_${i}`" class="cqsscdd">{{i}}</span>
-  				<span  v-for='i in isNuber(item.number)' v-if = "urlId==47" :class="`clg_${i}`" class="cqsscdd" style="line-height: 1.5rem!important;">{{i}}</span>
-  				<span  v-for='i in isNuber(item.number)' v-if = "urlId==69||urlId==270" :class="`bgxg_${i}`"  class="cqsscdd">{{i}}</span>
-  				<span  v-for='i in isNuber(item.number)' v-if = "urlId==160"   class="cqsscdd">{{i}}</span>
-  				<span :class="`color_${isSum(item)} color88 cqsscdd`" v-if = "urlId==160">{{isSum(item)}} </span>
-  				<span  v-for='i in isNuber(item.number)' v-if = "urlId==172||urlId==280" :class="`color_${i}`"  class="cqsscdd">{{1}}</span>
-					<span  v-for='i in isNuber(item.number)' v-if = "urlId==180" :class="i <= 40 ? 'icon-gray-f-ball' : 'icon-blue-f-ball'"  class="ball-item" >{{i}}</span>
-					</div>
-  			</div>
-  			 <div class="sxh bjpksxh" v-if = "urlId==51||urlId==171||urlId==210||urlId==240||urlId==260" >
-		         <ul>
-		          <li style="background-color: #eaeaea;">冠亚和</li>
-		        	<li>{{bjSum(item)}}</li>
-		        	<li>{{bjSum(item)>11?'大':'小'}}</li>
-		          <li>{{bjSum(item)%2=='0'?'双':'单'}}</li>
-		          <li style="background-color: #eaeaea;">1-5球</li>
-		          <li>{{parseInt(isNuber(item.number)[0])>parseInt(isNuber(item.number)[9])?'龙':'虎'}}</li>
-			        <li>{{parseInt(isNuber(item.number)[1])>parseInt(isNuber(item.number)[8])?'龙':'虎'}}</li>
-			        <li>{{parseInt(isNuber(item.number)[2])>parseInt(isNuber(item.number)[7])?'龙':'虎'}}</li>
-			        <li>{{parseInt(isNuber(item.number)[3])>parseInt(isNuber(item.number)[6])?'龙':'虎'}}</li>
-			        <li>{{parseInt(isNuber(item.number)[4])>parseInt(isNuber(item.number)[5])?'龙':'虎'}}</li>
-		        </ul>
-		      </div>
-		     <!--重庆时时彩-->
-		      <div class="sxh cqsscsxh" v-if = "urlId==2||urlId==46||urlId==250">
-		        <ul>
-		          <li style="background-color: #eaeaea;">总和</li>
-		          <li>{{isSum(item)}}</li>
-		          <li>{{isSum(item)%2=='0'?'双':'单'}}</li>
-		          <li>{{isSum(item)>=23?'大':'小'}}</li>
-		          <li style="background-color: #eaeaea;">龙虎</li>
-		          <li>{{ssche(isNuber(item.number)[0],isNuber(item.number)[4])}}</li>
-		        </ul>
-		      </div>
-		       <!--广东快乐十分-->
-		      <div class="sxh gdklsfsxh cqxynsxh " v-if = "urlId==3||urlId==47">
-		        <ul>
-		          <li style="background-color: #eaeaea;">总和</li>
-		          <li>{{isSum(item)}}</li>
-		          <li>{{isSum(item)>=85?'大':'小'}}</li>
-		        	<li>{{isSum(item)%2=='0'?'双':'单'}}</li>
-		          <li style="background-color: #eaeaea;width: 15%;">尾大小</li>
-		          <li>{{isSum(item).toString().substr(isSum(item).toString().length-1) >= 5?'尾大':'尾小'}}</li>
-		          <li style="background-color: #eaeaea;">1-4球</li>
-		          <li>{{isNuber(item.number)[0]>isNuber(item.number)[7]?'龙':'虎'}}</li>
-			        <li>{{isNuber(item.number)[1]>isNuber(item.number)[6]?'龙':'虎'}}</li>
-			        <li>{{isNuber(item.number)[2]>isNuber(item.number)[5]?'龙':'虎'}}</li>
-			        <li>{{isNuber(item.number)[3]>isNuber(item.number)[4]?'龙':'虎'}}</li>
-		        </ul>
-		      </div>
-		       <!--香港彩-->
-			      <div class="sxh xgcsxh" v-if = "urlId==69||urlId==270">
-			        <ul>
-			          <li style="background-color: #eaeaea;">总分</li>
-			          <li>{{isSum(item)}}</li>
-			          <li style="background-color: #eaeaea;">生肖</li>
-			          <li>{{xgcsx(isNuber(item.number)[0],item.round)}}</li>
-			          <li>{{xgcsx(isNuber(item.number)[1],item.round)}}</li>
-			          <li>{{xgcsx(isNuber(item.number)[2],item.round)}}</li>
-			          <li>{{xgcsx(isNuber(item.number)[3],item.round)}}</li>
-			          <li>{{xgcsx(isNuber(item.number)[4],item.round)}}</li>
-			          <li>{{xgcsx(isNuber(item.number)[5],item.round)}}</li>
-			          <li style='background: #2753b2;color: white;'>{{xgcsx(isNuber(item.number)[6],item.round)}}</li>
-			        </ul>
-			      </div>
-
-			      <!--PC蛋蛋-->
-			      <div class="sxh pcddsxh" v-if = "urlId==160">
-			        <ul>
-			          <li style="background-color: #eaeaea;">总和</li>
-			          <li>{{isSum(item)}}</li>
-			          <li>{{isSum(item)>=14?'大':'小'}}</li>
-			          <li>{{isSum(item)%2=='0'?'双':'单'}}</li>
-
-			        </ul>
-			      </div>
-			       <!--江苏骰宝（快3）-->
-		      <div class="sxh jskssxh" v-if = "urlId==172 || urlId==280"  >
-		        <ul>
-		          <li style="background-color: #eaeaea;">总和</li>
-		          <li>{{isSum(item)}}</li>
-		          <li>{{jskssx(isNuber(item.number)[0],isNuber(item.number)[1],isNuber(item.number)[2])}}</li>
-		          <li>{{isSum(item)%2=='0'?'双':'单'}}</li>
-		          <li style="background-color: #eaeaea;width: 15%;">鱼虾蟹</li>
-		          <li>{{kssx(isNuber(item.number)[0])}}</li>
-			        <li>{{kssx(isNuber(item.number)[1])}}</li>
-			        <li>{{kssx(isNuber(item.number)[2])}}</li>
-		        </ul>
-		      </div>
-		       <p style="height: 1px;background:#CCCCCC;width: 96%;margin: 0 auto;margin-top: 0.3rem;"></p>
-		  </div>
-  </div>
-</div>
-<div v-show='isday' class='mask1' @click="datahide"></div>
-<div v-show='isday' class='dayshow'>
-	<div class="dayheader color1">{{daydata}}</div>
-	<div class="dayfoot">
-		<div>
-			<span @click="lastdata"></span>
-			<span>{{yearyue}}</span>
-			<span @click='nextdata'></span>
-		</div>
-		<div>
-			<ul>
-				<li style="margin-left: 1.2rem;">日</li>
-				<li>一</li>
-				<li>二</li>
-				<li>三</li>
-				<li>四</li>
-				<li>五</li>
-				<li>六</li>
-			</ul>
-			<ul>
-				<li v-for='(item,index) in daycount' ref='tenli' class='lis' @click='postjl(index)'>{{item}}</li>
-			</ul>
-		</div>
-		<div>
-			<a @click="datahide">取消</a>
-			<a @click='senddate'>确定</a>
-		</div>
-	</div>
-</div>
- <!--底部选择页-->
- <div v-show='pageshow' class='mask1' @click="pageshow=false" style="z-index: 10;top: 0;"></div>
+    <div class="biao" v-show="isReady">
+      <div class="titleheader">
+        <span>开奖期数</span>
+        <mu-tabs v-if="urlId !=172&& urlId !=280 && urlId !=220" :value="activeTab" @change="handleTabChange">
+          <mu-tab value="all" :title="numberss" />
+          <mu-tab value="obligation" :title="bigSmall" />
+          <mu-tab v-if="urlId != 69 && urlId != 270" value="paid" :title="danShuang" />
+        </mu-tabs>
+        <span v-if="urlId ==172 || urlId ==280 || urlId ==220" style="margin-left:2.8rem;">开奖号码</span>
+        <span v-if="datatrueq" style="float:right; margin-right: 0.2rem;display: inline-block;height: 1rem;color:#000 ">{{dateOptions.selectedDate}}</span>
+        <!-- <span v-if="datatrueq" style="float:right; margin-right: 0.2rem;display: inline-block;height: 1rem;color:#000 ">{{nowday}}</span> -->
+      </div>
+      <div v-if="activeTab ==='all'" class="mains">
+        <div class="kjh" v-for='(item,index) in lotteryList' :class="`game_${urlId}`">
+        <div class="lottery-rs-wp">
+          <div class="issue-wp">
+            <div>{{item.round}}期</div>
+            <div>{{timetrans(item.endtime)}}</div>
+          </div>
+          <div class="balls-wp haoma">
+            <!-- 赛车系列 -->
+            <span class='feiche' v-for='i in isNuber(item.number)' v-if = "urlId==51||urlId==171||urlId==210||urlId==240||urlId==260"  :class="`cl_${i} `">{{i}}</span>
+            <!-- 时时彩系列 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==2||urlId==46||urlId==250||urlId==220" class="color88 cqsscdd cqsscy">{{i}}</span>
+            <!-- 广东快乐十分 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==3" :class="`clg1_${i}`" class="cqsscdd">{{i}}</span>
+            <!-- 重庆幸运农场 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==47" :class="`clg_${i}`" class="cqsscdd" style="line-height: 1.5rem!important;">{{i}}</span>
+            <!-- 六合彩 -->
+            <span  v-for='i in isNuber(item.number).slice(0, isNuber(item.number).length-1)' v-if = "urlId==69||urlId==270" :class="`bgxg_${i}`"  class="cqsscdd">{{i}}</span>
+             <span class="plus_tm"  v-if = "urlId==69||urlId==270">+</span>
+             <span  v-for='i in isNuber(item.number).slice(5, isNuber(item.number).length-1)' v-if = "urlId==69||urlId==270" :class="`bgxg_${i}`"  class="cqsscdd">{{isNuber(item.number)[isNuber(item.number).length-1]}}</span>
+            <!-- 蛋蛋 -->
+            <span  v-for='i in isNuber(item.number).slice(0, isNuber(item.number).length-2)' v-if = "urlId==160"   class="cqsscdd">{{i}}</span>
+            <span class="plus_tm"  v-if = "urlId==160">+</span>
+            <span  v-for='i in isNuber(item.number).slice(1, isNuber(item.number).length-1)' v-if = "urlId==160"   class="cqsscdd">{{i}}</span>
+            <span class="plus_tm"  v-if = "urlId==160">+</span>
+            <span  v-for='i in isNuber(item.number).slice(2, isNuber(item.number).length)' v-if = "urlId==160"   class="cqsscdd">{{i}}</span>
+            <span class="plus_tm"  v-if = "urlId==160">=</span>
+            <span :class="`color_${isSum(item)} color88 cqsscdd`" v-if = "urlId==160">{{isSum(item)}} </span>
+             <!-- 骰宝和快3 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==172||urlId==280" :class="`color_${i}`"  class="cqsscdd">{{1}}</span>
+            <!-- 北京快乐8 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==180" :class="i <= 40 ? 'icon-gray-f-ball' : 'icon-blue-f-ball'"  class="ball-item" >{{i}}</span>
+            <!-- 广东11选5 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==133"  class="blue-ball" >{{i}}</span>
+          </div>
+        </div>
+        <p style="height: 1px;background:#CCCCCC;width: 96%;margin: 0 auto;margin-top: 0.3rem;"></p>
+        </div>
+      </div>
+      <div v-if="activeTab ==='obligation'" class="mains">
+        <div class="kjh" v-for='(item,index) in lotteryList' :class="`game_${urlId}`">
+        <div class="lottery-rs-wp">
+          <div class="issue-wp">
+            <div>{{item.round}}期</div>
+            <div>{{timetrans(item.endtime)}}</div>
+          </div>
+          <!-- 大小-->
+          <div class="balls-wp daXiao">
+            <!-- 赛车系列 -->
+            <span class='feiche' v-for='i in isNuber(item.number)' v-if = "urlId==51||urlId==171||urlId==210||urlId==240||urlId==260" :class="i>6?'da':'xiao'">{{i>=6?'大':'小'}}</span>
+            <!-- 时时彩系列 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==2||urlId==46||urlId==250||urlId==220" class="color88 cqsscdd" :class="i>4?'da':'xiao'">{{i>4?"大":"小"}}</span>
+            <!-- 广东快乐十分 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==3" class="cqsscdd" :class="i>10?'da':'xiao'">{{i>10?"大":"小"}}</span>
+            <!-- 重庆幸运农场 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==47" class="cqsscdd" :class="i>10?'da':'xiao'">{{i>10?"大":"小"}}</span>
+            <!-- 六合彩 -->
+             <span  v-for='i in isNuber(item.number)' v-if = "urlId==69||urlId==270" class="cqsscdd lhs">{{xgcsx(i)}}</span>
+            <!-- 蛋蛋 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==160" class="cqsscdd" :style="i>4?'background:#f9982e!important':'background:#7f8ab0!important' ">{{i>4?"大":"小"}}</span>
+            <!-- 北京快乐8 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==180" :class="i <= 40 ? 'icon-gray-f-ball' : 'icon-blue-f-ball'"  class="ball-item" :style="i>40?'background:#f9982e!important':'background:#7f8ab0!important' ">{{i>40?"大":"小"}}</span>
+             <!-- 广东11选5 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==133" class="cqsscdd" :class="i>5?'da':'xiao'">{{i>5?"大":"小"}}</span>
+          </div>
+        </div>
+        <p style="height: 1px;background:#CCCCCC;width: 96%;margin: 0 auto;margin-top: 0.3rem;"></p>
+        </div>
+      </div>
+      <div v-if="activeTab ==='paid'" class="mains">
+        <div class="kjh" v-for='(item,index) in lotteryList' :class="`game_${urlId}`">
+        <div class="lottery-rs-wp">
+          <div class="issue-wp">
+            <div>{{item.round}}期</div>
+            <div>{{timetrans(item.endtime)}}</div>
+          </div>
+          <div class="balls-wp danShuang">
+            <!-- 赛车系列 -->
+            <span class='feiche' v-for='i in isNuber(item.number)' v-if = "urlId==51||urlId==171||urlId==210||urlId==240||urlId==260" :class="i%2?'dan':'shuang'">{{i%2?'单':'双'}}</span>
+            <!-- 时时彩系列 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==2||urlId==46||urlId==250||urlId==220" class="color88 cqsscdd" :class="i%2?'dan':'shuang'">{{i%2?'单':'双'}}</span>
+            <!-- 快乐十分 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==3||urlId==133" :class="i%2?'dan':'shuang'" class="cqsscdd">{{i%2?'单':'双'}}</span>
+            <!-- 重庆幸运农场 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==47" class="cqsscdd" :class="i%2?'dan':'shuang'">{{i%2?'单':'双'}}</span>
+            <!-- 蛋蛋 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==160"   class="cqsscdd" :style="i%2?'background:#f9982e!important':'background:#7f8ab0!important' ">{{i%2?'单':'双'}}</span>
+            <!-- 北京快乐8 -->
+            <span  v-for='i in isNuber(item.number)' v-if = "urlId==180" :class="i <= 40 ? 'icon-gray-f-ball' : 'icon-blue-f-ball'"  class="ball-item" :style="i%2?'background:#f9982e!important':'background:#7f8ab0!important' ">{{i%2?'单':'双'}}</span>
+          </div>
+        </div>
+        <p style="height: 1px;background:#CCCCCC;width: 96%;margin: 0 auto;margin-top: 0.3rem;"></p>
+        </div>
+      </div>
+    </div>
+    <div v-show='isShowCalendar' class='mask1' @click="dateCancel"></div>
+    <div v-show='isShowCalendar' class='dayshow'>
+      <div class="dayheader color1">{{daydata}}</div>
+      <div class="dayfoot">
+        <div>
+          <span @click="lastdata"></span>
+          <span>{{yearyue}}</span>
+          <span @click='nextdata'></span>
+        </div>
+        <div>
+          <ul>
+            <li style="margin-left: 1.2rem;">日</li>
+            <li>一</li>
+            <li>二</li>
+            <li>三</li>
+            <li>四</li>
+            <li>五</li>
+            <li>六</li>
+          </ul>
+          <ul>
+            <li v-for='(item,index) in daycount' ref='tenli' class='lis' @click='selectDate(index, item)'>{{item}}</li>
+          </ul>
+        </div>
+        <div>
+          <a @click="dateCancel">取消</a>
+          <a @click='dateConfirm'>确定</a>
+        </div>
+      </div>
+    </div>
+    <!--底部选择页-->
+    <div v-show='pageshow' class='mask1' @click="pageshow=false" style="z-index: 10;top: 0;"></div>
     <div id="page">
-    	<div  v-show='pageshow'>
-    		<ul>
-    			<li ref='pagecolor'  v-for='(item,index) in pagenmblength' @click="pagenumb(index+1)">第{{index+1}}页
-    				<img  v-show="index+1==pagenum"  :src="$getPublicImg('/images/goulszd.png')"/></li>
-    		</ul>
-    	</div>
-    	<div v-show='pagenmb' :style="{'box-shadow':boxshadow}">
-    		<a @click='lastpage' ref='lastcolor'>上一页</a>
-    		<a @click='pasgedayshow'>第{{pagenum}}页<i></i></a>
-    		<a @click='nextpage'>下一页</a>
-    	</div>
+      <div  v-show='pageshow'>
+        <ul>
+          <li ref='pagecolor'  v-for='(item,index) in pagenmblength' @click="pagenumb(index+1)">第{{index+1}}页
+            <img  v-show="index+1==pagenum"  :src="$getPublicImg('/images/goulszd.png')"/></li>
+        </ul>
+      </div>
+      <div v-show='pagenmb' :style="{'box-shadow':boxshadow}">
+        <a @click='lastpage' ref='lastcolor'>上一页</a>
+        <a @click='pasgedayshow'>第{{pagenum}}页<i></i></a>
+        <a @click='nextpage'>下一页</a>
+      </div>
     </div>
-		</div>
-		</template>
+  </div>
+</template>
 
 <script>
 //import {
 //  getUrl
 //} from '../../api'
 import lotteryHeader from '../../components/header/lotteryHeader'
+import moment from 'moment'
 export default {
   data() {
     return {
-	  is_gd_ali: is_gd_ali(),
+    is_gd_ali: is_gd_ali(),
+    activeTab: "all",
+    numberss:"号码",
+    bigSmall:"大小",
+    danShuang:"单双",
 	  pageshow:false,
 	  pagenmb:true,
 	  pageNumber:'30',
@@ -193,7 +199,11 @@ export default {
 	  nowday:'',
 	  titleleft:'2.5rem',
 	  isday:false,
-	  daydata:'',
+		daydata:'',
+		tempDaydata: "",
+    tempDaynian: "",
+    tempDayyue: "",
+    tempDaytian: "",
 	  yearyue:'',
 	  daycount:'',
 	  daytian:'',
@@ -230,15 +240,36 @@ export default {
         '重庆幸运农场':47,
 				'江苏骰宝(快3)':172,
 				'吉林快3':280,
-				'北京快乐8':180
+				'北京快乐8':180,
+        '福彩3D':220,
+        '广东11选5':133
       },
       mleft:'',
       lotteryList: [],
       number: 10,
       page: 1,
       urlId: null,
-      selectedId:"",
-    }
+			selectedId:"",
+
+			dayOfWeek: ['周日','周一','周二','周三','周四','周五','周六'],
+      isPressedChoiceDay: false,
+      dateOptions: {
+        minDate: moment().add(-6, 'days').format('YYYY-MM-DD'),// 可选择的最小时间
+        maxDate: moment().format('YYYY-MM-DD'),// 可选择的最大时间
+        selectedDate: moment().format('YYYY-MM-DD'),// 选中的时间,格式如:'2010-01-01'
+      },
+      isShowCalendar: false,
+      curSelectedDate: '',
+		}
+  },
+  watch: {
+    // 交易记录的日期一更改就请求对应的数据
+    'dateOptions.selectedDate'(val) {
+      this.getTransactionData({
+        date: val,
+        number: 30,
+      })
+    },
   },
   components:{
   	lotteryHeader
@@ -253,6 +284,28 @@ export default {
   	},
   },
   methods:{
+    getTransactionData(params = {}){
+      if (this.tempDaynian) params.date = `${ this.tempDaynian }-${ this.tempDayyue }-${ this.dayday }`
+      params.game_code = this.urlId;
+      params.page = this.page;
+      params.date = params.date || moment().format('YYYY-MM-DD')
+      params.number=this.pageNumber;
+      this.nowday= this.dateyes;
+      this.$http.post(`${getUrl()}/user/getResult`, JSON.stringify(params)).then(res => {
+      this.isday = false;
+      this.lotteryList = res.data.result;
+      if(Number(res.data.allnumb)>Number(this.pageNumber)){
+        this.pagenmb = true
+      }
+      this.pagenmblength = Math.ceil(res.data.allnumb/this.pageNumber)
+        this.isday = false;
+        this.isReady = true;
+        this.datatrueq = true;
+      })
+    },
+    handleTabChange(val){
+      this.activeTab = val;
+    },
   	pasgedayshow(){
     		this.pageshow=!this.pageshow
     		if(this.pageshow){
@@ -310,13 +363,14 @@ export default {
       	}
       	this.pagenum--;
   			if(this.pagenum<1){
-		  		this.pagenum=1
+					this.pagenum=1
+					return;
       	}
   			let params = {};
 		     params.game_code = this.urlId;
 		     params.page = this.pagenum;
 		     params.number=this.pageNumber;
-		     params.date = this.dateyes;
+		     params.date = moment(this.dateOptions.selectedDate).format('YYYY-MM-DD');;
 		     this.$refs.pagecolor[this.pagenum-1].style='color:#196fde;'
 		     this.$http.post(`${getUrl()}/user/getResult`, JSON.stringify(params)).then(res => {
 		       this.lotteryList = res.data.result;
@@ -341,13 +395,14 @@ export default {
       	}
       	this.pagenum++;
 	      if(this.pagenum>this.pagenmblength){
-	      		this.pagenum=this.pagenmblength
-	      	}
+						this.pagenum=this.pagenmblength
+						return;
+	      }
       	 let params = {};
 		     params.game_code = this.urlId;
 		     params.page = this.pagenum;
 		     params.number=this.pageNumber;
-		     params.date = this.dateyes;
+		     params.date = moment(this.dateOptions.selectedDate).format('YYYY-MM-DD');;
 		     this.$refs.pagecolor[this.pagenum-1].style='color:#196fde;'
 		     this.$http.post(`${getUrl()}/user/getResult`, JSON.stringify(params)).then(res => {
 		       this.lotteryList = res.data.result;
@@ -369,9 +424,8 @@ export default {
   				return '鸡'
   		}
   	},
-  	xgcsx(sx, round=''){
-
-      if ((this.urlId == 69 && round < 2018017) || (this.urlId == 270 && round < 20180221000)) {
+  	xgcsx(sx, round){
+      if (round<= 2018016){
         if(sx=='10'||sx=='22'||sx=='34'||sx=='46'){
     			return '鼠'
     		}else if(sx=='8'||sx=='20'||sx=='32'||sx=='44'){
@@ -403,6 +457,7 @@ export default {
           for (var x = 0; x < list_sx[i].numbers.length; x++) {
             if (sx == list_sx[i].numbers[x]){
               return list_sx[i].animal;
+              console.log(list_sx[i].animal)
             }
           }
         }
@@ -431,7 +486,7 @@ export default {
         for(let i=0;i<2;i++){
           value+=Number(len[i])
         }
-        return value
+        return value;
     },
     isxg(item){
       let arr_t=item.number.split(',')
@@ -445,84 +500,69 @@ export default {
       let last_te= arr_t.pop()
       return last_te;
     },
-    postjl(index){
-    	for(var i =0;i<this.l;i++){
-    		if(this.daytian-index>7||this.daytian-index<=0){
-    		}else{
-					if(this.daytian-this.l+i==index){
-						let weekday = null;
-						this.dayday=this.daytian-this.l+i+1;
-						if(this.dayday%7=='0'){
-							weekday = '周日'
-						}else if(this.dayday%7=='1'){
-							weekday = '周一'
-						}else if(this.dayday%7=='2'){
-							weekday = '周二'
-						}else if(this.dayday%7=='3'){
-							weekday = '周三'
-						}else if(this.dayday%7=='4'){
-							weekday = '周四'
-						}else if(this.dayday%7=='5'){
-							weekday = '周五'
-						}else if(this.dayday%7=='6'){
-							weekday = '周六'
-						}
-						this.daydata = this.dayyue+'月'+this.dayday+'日'+weekday;
-				   	this.$refs.tenli[index].style.backgroundColor='#2e65d4';
-				   	this.$refs.tenli[index].style.color='#fff';
-					}else{
-  					this.$refs.tenli[this.daytian-this.l+i].style.backgroundColor='';
-			   		this.$refs.tenli[this.daytian-this.l+i].style.color='#373737';
-				}
-			}
-			}
+    dateConfirm() {
+      if (this.dateyes == "") {
+        this.dateyes = this.nowday;
+      }
+      if (this.dayyue < 10) {
+        this.dayyue = "0" + this.dayyue;
+      }
+      if (this.dayday < 10) {
+        this.dayday = "0" + this.dayday;
+      }
+      this.dateyes = String(this.daynian) + "-" + String(this.dayyue) + "-" + String(this.dayday);
+      this.curSelectedDate = this.dateyes;
+      this.nowday = this.dateyes;
+      this.curPage = 1;
+      this.getTransactionData({date: this.dateyes});
+      this.isShowCalendar = false;
     },
-    senddate(){
-    	if(this.dateyes==''){
-    		 this.dateyes = this.nowday;
-    	}
-    	if(this.dayyue<10){
-					this.dayyue = '0'+this.dayyue
-			}
-    	if(this.dayday<10){
-					this.dayday = '0'+this.dayday
-			}
-			this.dateyes =  String(this.daynian)+"-"+String(this.dayyue)+"-"+String(this.dayday);
-    	let params = {};
-		     params.game_code = this.urlId;
-		     params.page = this.page;
-				 params.date = this.dateyes;
-				 params.number=this.pageNumber;
-				 this.nowday= this.dateyes;
-		     this.$http.post(`${getUrl()}/user/getResult`, JSON.stringify(params)).then(res => {
-		     	this.isday = false;
-		       this.lotteryList = res.data.result;
-		       if(Number(res.data.allnumb)>Number(this.pageNumber)){
-		      	this.pagenmb = true
-		      	this.pagenmblength = Math.ceil(res.data.allnumb/this.pageNumber)
-		      }
-		       this.isday = false;
-		       this.isReady = true;
-		       this.datatrueq = true;
-		     })
+    selectDate(index, day) {
+      for (var i = 0; i < this.l; i++) {
+        if (this.daytian - index > 7 || this.daytian - index <= 0) {
+          // 浅色区域，即不可点击的日期
+          // this.$refs.tenli[this.daytian - this.l + i].style.color = "#ccc";
+          this.$refs.tenli[this.daytian - this.l + i].style.backgroundColor = "red"
+        } else {
+          // 深色区域，可点击的日期
+          if (this.daytian - this.l + i == index) {
+            this.$refs.tenli[this.daytian - this.l + i].style.backgroundColor = "green"
+            // 所点击的那天
+            this.isPressedChoiceDay = true;
+            this.tempDaydata = this.daydata;
+            this.tempDaynian = this.daynian;
+            this.tempDayyue = this.dayyue;
+            this.tempDaytian = this.dayday;
+            let weekday = null;
+            this.dayday = this.daytian - this.l + i + 1;
+            // this.dayday = day;
+            var _date = new Date();
+            _date.setFullYear(this.daynian);
+            _date.setMonth(this.dayyue-1);
+            _date.setDate(day);
+            weekday = this.dayOfWeek[_date.getDay()];
+            this.daydata = this.dayyue + "月" + this.dayday + "日" + weekday;
+            this.$refs.tenli[index].style.backgroundColor = "#2e65d4";
+            this.$refs.tenli[index].style.color = "#fff";
+          } else {
+            this.$refs.tenli[this.daytian - this.l + i].style.backgroundColor = "blue"
+            // 剩下非点击的其它天数
+            this.$refs.tenli[this.daytian - this.l + i].style.backgroundColor = "";
+            this.$refs.tenli[this.daytian - this.l + i].style.color = "#373737";
+          }
+        }
+      }
     },
-   	datashow(){
-   		this.isday =! this.isday
-   		this.daymargin(this.getWeek(this.daynian,this.dayyue))
-				for(var i =0;i<this.l;i++){
-					this.$refs.tenli[this.daytian-this.l+i].style ="color:black"
-					if(i==this.l-1){
-						this.$refs.tenli[this.daytian-this.l+i].style.backgroundColor='#2e65d4';
-				   	this.$refs.tenli[this.daytian-this.l+i].style.color='#fff';
-					}
-				}
-				this.dayyue = String((new Date().getMonth()+1))
-  		 this.yearyue = this.daynian+'年'+this.dayyue+'月';
-   },
-   datahide(){
-   	this.isday =false
-   	this.dayyue = String((new Date().getMonth()+1))
-   },
+   dateCancel() {
+      if (this.isPressedChoiceDay) {
+        this.daynian = this.tempDaynian;
+        this.dayyue = this.tempDayyue;
+        this.dayday = this.tempDaytian;
+        this.daydata = this.tempDaydata;
+      }
+      this.isShowCalendar = false;
+      this.dayyue = String(new Date().getMonth() + 1);
+    },
    nextdata(){
 	   this.dayyue++
 	   this.yearyue = this.daynian+'年'+this.dayyue+'月';
@@ -598,9 +638,7 @@ export default {
 		    return weeks[d.getDay()];
    },
    lastdata(){
-// 	console.log(this.dayyue,parseInt(this.dayyue1))
    			this.dayyue--
-
    			this.yearyue = this.daynian+'年'+this.dayyue+'月';
    		if(this.dayyue==this.dayyue1){
 	   				this.yearyue = this.daynian+'年'+this.dayyue+'月';
@@ -678,6 +716,15 @@ export default {
     },
     // 切换不同的
     changUrl(game_code,key) {
+      this.bigSmall = ""
+      if(game_code == 69 || game_code == 270){
+        this.numberss = "号码"
+        this.bigSmall = "生肖" 
+      }
+      if(game_code != 69 && game_code != 270){
+        this.bigSmall = "大小" 
+      }
+      this.activeTab = "all",
       this.isReady = false;
     	this.menu_title = key;
     	this.show_title = false;
@@ -788,8 +835,18 @@ export default {
        this.mleft = '3rem'
        this.titleleft ='2.5rem'
        break;
+			 case 133:
+       this.isShowColorG = false;
+       this.isShowColor = false;
+       this.urlId = 133
+       this.mleft = '3rem'
+       this.titleleft ='2.5rem'
+       break;
 			 case 180:
 			 	this.urlId = 180;
+			 break;
+			 case 220:
+			 	this.urlId = 220;
 			 break;
          default:
      }
@@ -802,15 +859,14 @@ export default {
 			this.pagenum ='1';
 			this.lotteryList = res.data.result;
 			this.isReady = true;
-					if(Number(res.data.allnumb)>Number(this.pageNumber)){
-						this.pagenmb = true
-						this.pagenmblength = Math.ceil(res.data.allnumb/this.pageNumber)
-					}
+			if(Number(res.data.allnumb)>Number(this.pageNumber)){
+				this.pagenmb = true
+			}
+			this.pagenmblength = Math.ceil(res.data.allnumb/this.pageNumber)
      })
     }
   },
   created(){
-
   	let myDate = new Date();
 		myDate.getYear();        //获取当前年份(2位)
 		myDate.getFullYear();    //获取完整的年份(4位,1970-????)
@@ -858,7 +914,6 @@ export default {
 		this.dayyue1 = String((myDate.getMonth()+1))
 		this.daynian = String(myDate.getFullYear())
 		this.daydata = String((myDate.getMonth()+1))+'月'+String(myDate.getDate())+'日'+dayday;
-		console.log(this.daydata)
 		this.yearyue = this.daynian+'年'+this.dayyue+'月';
     this.urlId = this.$route.params.id.split(':')[1];
     let params = {};
@@ -969,6 +1024,18 @@ export default {
         this.isShowColor = false;
         this.selectedId = "北京快乐8";
         this.mleft = '4.2rem'
+				break;
+			case 220:
+        this.isShowColorG = false;
+        this.isShowColor = false;
+        this.selectedId = "福彩3D";
+        this.mleft = '4.2rem'
+        break;
+			case 133:
+        this.isShowColorG = false;
+        this.isShowColor = false;
+        this.selectedId = "广东11选5";
+        this.mleft = '4.2rem'
         break;
     }
     this.menu_title = this.selectedId;
@@ -981,8 +1048,8 @@ export default {
       this.lotteryList = res.data.result;
       if(Number(res.data.allnumb)>Number(this.pageNumber)){
 	      	this.pagenmb = true
-	      	this.pagenmblength = Math.ceil(res.data.allnumb/this.pageNumber)
-	     }
+			}
+			this.pagenmblength = Math.ceil(res.data.allnumb/this.pageNumber)
     });
     let sx_list = sessionStorage.getItem('sx_list');
     if (sx_list) {
@@ -999,12 +1066,38 @@ export default {
          sessionStorage.setItem('sx_list', JSON.stringify(res.data));
       });
     }
+    if(this.urlId == 69 || this.urlId == 270){
+      this.numberss = "号码"
+      this.bigSmall = "生肖" 
+    }
   }
 }
 </script>
+<style>
+  .biao .titleheader span.mu-tab-link-highlight {
+    background:none!important;
+  }
+</style>
 
 <style lang="less" rel="stylesheet/less" scoped>
 @import '../../assets/less/variable.less';
+  .da{
+    background:#f9982e!important;
+  }
+  .xiao{
+    background:#7f8ab0!important;
+  }
+  .dan{
+    background:#f9982e!important;
+  }
+  .shuang{
+    background:#7f8ab0!important;
+  }
+  .mains{
+    margin:1.5rem 0.3rem 0.3rem 0.3rem;
+    border:1px solid #ccc;
+    border-radius:.3rem;
+  }
 .game_160{
   .color_1,.color_4,.color_7,.color_10,.color_16,.color_19,.color_22,.color_25{
     background:green!important;
@@ -1182,33 +1275,39 @@ export default {
     }
 	}
   .biao{
-    top: 1.9rem;
-    position: absolute;
+    background:#F2F2F2;
     width: 100%;
-    left: 0rem;
 		overflow: auto;
 		padding-bottom: 2.5rem;
+    padding-top: 1.9rem;
     >.titleheader{
     	height:70/46.875rem;
     	width: 96%;
-    	border-bottom: 1px solid #CCCCCC;
     	margin: 0 auto;
     	color:#a3a3a3;
     	font-size: 0.6rem;
-    	line-height: 70/46.875rem;
+      line-height: 70/46.875rem;
+      position: fixed;
+      z-index: 10;
+      background: #f2f2f2;
+      margin-left: 0.3rem;
     	>span:nth-child(1){
     		margin-left: 0.5rem;
     	}
     }
+    .kjh:nth-child(1){
+      border-radius: .3rem .3rem 0 0;
+    }
+    .kjh:last-child{
+      border-radius: .3rem;
+    }
     .kjh{
     	background: #FFFFFF;
-    	border-left:1px solid #CCCCCC;
-    	border-right:1px solid #CCCCCC;
-    	margin: 0 0.3rem;
-    	position: relative;
-    	/*>div:nth-child(1){ */
-			.lottery-rs-wp {	
-    		// line-height: 1.7rem;
+      position: relative;
+      div:nth-child(1){
+        border-radius:.3rem;
+      }
+			.lottery-rs-wp {
     		text-align: center;
     		overflow: hidden;
 				position: relative;
@@ -1400,27 +1499,41 @@ export default {
 		border: 1px solid #333;
  }
 .game_51{
-	/* >div:nth-child(1){ */
   .lottery-rs-wp .balls-wp {
 		span{
-			    width: .9rem!important;
-			    height: .9rem!important;
-			    line-height: .9rem!important;
-			    text-indent: -9999px;
-			    display: inline-block;
-			    margin-left: 0.1rem;
+      width: .9rem!important;
+      height: .9rem!important;
+      line-height: .9rem!important;
+      text-indent: -9999px;
+      display: inline-block;
+      margin-left: 0.1rem;
 		}
-		/*
-		span:nth-of-type(1){
-			margin-left: 2.2rem!important;
+  }
+  .lottery-rs-wp .daXiao {
+		span{
+      width: .9rem!important;
+      height: .9rem!important;
+      line-height: .9rem!important;
+      text-indent: 0;
+      display: inline-block;
+      margin-left: 0.1rem;
 		}
-		*/
+  }
+  .lottery-rs-wp .danShuang {
+		span{
+      width: .9rem!important;
+      height: .9rem!important;
+      line-height: .9rem!important;
+      text-indent: 0;
+      display: inline-block;
+      margin-left: 0.1rem;
+		}
 	}
 }
-.game_171,.game_210,.game_240,.game_260{ 
+.game_171,.game_210,.game_240,.game_260{
 
 	/* >div:nth-child(1){ */
-.balls-wp {	
+.balls-wp {
 		>span{
 			    width: .9rem!important;
 			    height: .9rem!important;
@@ -1504,19 +1617,17 @@ export default {
      .bgxg_43,
      .bgxg_44,
      .bgxg_49{
-        //  background-color: #22620c !important;
-        //  border: 1px solid #666666;
 				 text-shadow:none!important;
 				  background:url(/wap/images/green_ball.png);
          background-size:100% 100% !important;
           color:#333 !important;
      }
 }
-.game_160 span:last-child{
-			 float: right;
-			 margin-right: 4.5rem!important;
-			//  margin-top: 0.3rem;
-		}
+
+.game_160 .haoma{
+    float: right;
+    margin-right: 1.3rem!important;
+	}
 .mask1{
 	width: 100%;
 	height:100vh;
@@ -1633,29 +1744,26 @@ export default {
 }
 
 .game_160{
-
-   		span{
-   			    background: #146cdc!important;
-    				border: 1px solid #666666;
-   			}
-      .color_1,.color_4,.color_7,.color_10,.color_16,.color_19,.color_22,.color_25{
-        background:green!important;
+    span{
+        background: #146cdc!important;
         border: 1px solid #666666;
       }
-      .color_3,.color_6,.color_9,.color_12,.color_15,.color_18,.color_21,.color_24{
-        background:red!important;
-        border: 1px solid #666666;
-      }
-      .color_2,.color_5,.color_8,.color_11,.color_17,.color_20,.color_23,.color_26{
-        background:blue!important;
-        border: 1px solid #666666;
-      }
-      .color_0,.color_13,.color_14,.color_27{
-        background:#ccc!important;
-        border: 1px solid #666666;
-      }
-
-
+    .color_1,.color_4,.color_7,.color_10,.color_16,.color_19,.color_22,.color_25{
+      background:green!important;
+      border: 1px solid #666666;
+    }
+    .color_3,.color_6,.color_9,.color_12,.color_15,.color_18,.color_21,.color_24{
+      background:red!important;
+      border: 1px solid #666666;
+    }
+    .color_2,.color_5,.color_8,.color_11,.color_17,.color_20,.color_23,.color_26{
+      background:blue!important;
+      border: 1px solid #666666;
+    }
+    .color_0,.color_13,.color_14,.color_27{
+      background:#ccc!important;
+      border: 1px solid #666666;
+    }
   }
     #page{
 				width: 100%;
@@ -1762,7 +1870,7 @@ export default {
 .issue-wp {
 		min-width: 70/20rem;
 	  font-size: 0.5rem;
-		color: #000000;	
+		color: #000000;
 		text-align: left;
 }
 .balls-wp {
@@ -1779,5 +1887,125 @@ export default {
 	background: url("@{public_img}/images/blue_f_ball.png") no-repeat;
 	background-size: 100%;
 	color: #fff;
+}
+.mu-tab-link{
+  min-height: 0.5rem;
+  border-radius:.2rem;
+  height:50/46.875rem;
+  background:#bbbbbb;
+  margin-left: 0.2rem;
+  float:left;
+  width:25%;
+  padding-top:0.1rem!important;
+  padding-bottom: 0!important;
+}
+.mu-tabs{
+  height: 50/46.875rem!important;
+  width: 50%;
+  position: relative;
+  left: 2rem;
+  background:none!important;
+  display:inline-block;
+  top: .25rem;
+}
+  .game_171 .daXiao > span, .game_210 .daXiao > span, .game_240 .daXiao > span, .game_260 .daXiao > span{
+    text-indent:0;
+  }
+  .game_171 .danShuang > span, .game_210 .danShuang > span, .game_240 .danShuang > span, .game_260 .danShuang > span{
+    text-indent:0;
+  }
+  .daXiao span{
+    color:#fff;
+  }
+  .danShuang span{
+    color:#fff;
+  }
+  .game_47 {
+    .daXiao span{
+      font-size: 12px;
+    }
+    .danShuang span{
+      font-size: 12px;
+    }
+  }
+  .game_160 .daXiao{
+    margin-left:-5rem;
+  }
+  .game_160 .danShuang{
+    margin-left:-5rem;
+  }
+  span.plus_tm{
+    background: none!important;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .game_180 .daXiao span{
+    color:#fff!important;
+  }
+  .game_180 .danShuang span{
+    color:#fff!important;
+  }
+  
+.blue-ball {
+  width: 0.96rem;
+  height: 0.96rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0.1rem 0;
+  margin-left: 0.1rem;
+  background: url(/wap/img/blue_ball.863b729.png) no-repeat center center !important;
+  background-size: 100% 100% !important;
+  color: black !important;
+}
+.game_133 .haoma{
+  display: flex;
+}
+.lhs{
+  color:#000 !important;
+}
+</style>
+<style lang='less'>
+.date-picker-x{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 33%;
+  height: 1.2rem;
+  & > div:last-child{
+    display: none;
+  }
+}
+.date-picker-x .mu-text-field{
+  width: 100%;
+  min-height: initial;
+  margin: 0;
+}
+.mu-text-field-input{
+  height: initial;
+}
+.date-picker-x .mu-text-field-content{
+  padding: 0;
+  opacity: 0;
+}
+.mu-date-display{
+  background-color: #146cdc;
+}
+.mu-day-button-bg{
+  background-color: #146cdc;
+}
+.mu-flat-button-primary{
+  color: #146cdc;
+}
+.mu-day-button.now .mu-day-button-text{
+  color: #146cdc;
+}
+.mu-day-button.selected .mu-day-button-text{
+  color: white;
 }
 </style>

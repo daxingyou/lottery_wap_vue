@@ -28,7 +28,7 @@
         history.go(-1);
       }
     },
-   
+
   }
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
@@ -47,7 +47,7 @@
     text-align: center;
     font-size: 36/46.875rem;
     color: #ffffff;
-    position: fixed;
+    /*position: fixed;*/
     left: 0;
     top: 0;
   }

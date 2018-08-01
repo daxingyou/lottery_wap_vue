@@ -16,9 +16,9 @@
     </div>
     <div class="foot_bbh">
       {{copy}} <br/>
-      <a v-show="isAli != '618cp'" href="https://want-gaming.com" target="_blank" >万游科技提供技术支持</a>
+      <a v-show="techShow" href="https://want-gaming.com" target="_blank" >万游科技提供技术支持</a>
     </div>
-      <promptbox  @panelShow="panelShow=false" :successshow="successshow" :promptsystem="promptsystem" :promptboxshow="promptboxshow" :panelShow="panelShow" 
+      <promptbox  @panelShow="panelShow=false" :successshow="successshow" :promptsystem="promptsystem" :promptboxshow="promptboxshow" :panelShow="panelShow"
    	:promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
 
@@ -39,7 +39,8 @@
         isAli: is_gd_ali(),
         num:'',
         tel:'',
-        email:''
+        email:'',
+        techShow:false
       }
     },
     components: {
@@ -48,6 +49,11 @@
     },
     created(){
       this.site();
+      ['lv', 'uc', 'fh', 'ly', 'gd','ali'].forEach(item => {
+      if (item === this.isAli) {
+        this.techShow = true
+      }
+    })
     },
     methods:{
       site(){

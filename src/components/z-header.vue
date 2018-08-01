@@ -39,7 +39,7 @@
                 'dzHistory':"电子记录",
                 // 'qpHistory':"棋牌记录",
                 'sportHistory':"体育记录",
-                'fishHistory':"捕鱼记录",  
+                'fishHistory':"捕鱼记录",
             },
         }
     },
@@ -48,6 +48,13 @@
       'title' //接收一个标题
     ],
     methods: {
+      openChessOrNot() {
+        // 棋牌的ID为6，检查sort字段里面是否有该ID
+        const hasChess = JSON.parse(sessionStorage.gamesort).sort.indexOf('6') > -1
+        if (hasChess) {
+          this.listGame['qpHistory'] = '棋牌记录'
+        }
+      },
       goback() {
         this.$store.dispatch('goBack') // 发送后退的状态
         // 后退
@@ -67,6 +74,8 @@
         }
     },
     created(){
+      this.openChessOrNot()// 是否要开启棋牌的下注记录
+
       if(this.is_gd_ali == 'yile' && this.is_gd_ali == 'crow'){
         this.listGame.dzHistory = '电子记录';
       }
@@ -79,7 +88,10 @@
       if(this.is_gd_ali == 'fulicai'){
          delete this.listGame.sportHistory;
       }
-        if (typeof(location.href.split('?')[1]) != 'undefined')
+      if(this.is_gd_ali == 'letian'){
+         delete this.listGame.dzHistory;
+      }
+      if (typeof(location.href.split('?')[1]) != 'undefined')
         {
             let pa = location.href.split('?')[1].split('=')[1];
         }

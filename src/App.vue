@@ -1,11 +1,11 @@
 <template>
 
   <div id="app">
-    <div class='view'>
+    <!--<div class='view'>-->
       <div style="width:100%; height: 1rem; position: fixed; top:0; left:0; background: red; z-index: 111;" :style="{background: is_gd_ali ? '#146cdc': '#e60d39'}" v-if="isIosWebview&hideTop">
       </div>
       <router-view class="child-view" :style="{top: isIosWebview ? '1rem' : 0}"></router-view>
-    </div>
+    <!--</div>-->
   </div>
 </template>
 
@@ -36,7 +36,7 @@ export default {
         this.transitionName = "fade";
       }
     }
-  },
+    },
   created() {
     // 有一定概率取不到this.$route.query.promotionId，所以需要用到URLParams
     if (URLParams.promotionId && !sessionStorage.getItem("promotionId")) {
@@ -59,15 +59,26 @@ export default {
 </script>
 
 <style>
+@import "./icon/iconfont.css";
 @import "./assets/css/common.css";
 </style>
 
 <style lang="less" rel="stylesheet/less">
+.view{
+  height: 100vh;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
 // 动画
 .child-view {
-  position: absolute;
+  display: flex;
+  flex-direction: column;
+  /*position: absolute;*/
   width: 100%; // transition: all .3s cubic-bezier(.55, 0, .1, 1);
-  // transition: all 0.05s ease-in-out;
+  /*height: 100vh;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;*/
+  /*margin-top: 0.6rem;*/
 }
 
 /*动画*/
@@ -97,6 +108,8 @@ export default {
 
 #app {
   height: 100%;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 @color: #d1506d;

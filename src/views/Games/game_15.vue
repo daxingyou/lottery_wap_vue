@@ -5,57 +5,60 @@
     <!-- <drawer v-show="showDrawer"></drawer> -->
     <!-- <dailog-q v-if="showDailogQ" :titleDate="titleDate" v-on:listenToChildEvent="changeDate"></dailog-q> -->
 
-    <div id="mescroll" class="mescroll" style='position:absolute;top:0;bottom:2.45rem;overflow: auto; -webkit-overflow-scrolling: touch;width:100%;'>
-      <div id="dataList" class="data-list" v-cloak>
-        <!-- <iframe data-v-7e6a6fe1="" src="//kj.kai861.com/view/video/PK10/video.html?10001?1682011.cn" scrolling="no" frameborder="0" style="width: 100%; height: 270px;margin-top:1.91rem;">暂无开奖视频</iframe> -->
-      </div>
+    <gameChat>
+      <div id="mescroll" class="mescroll" style='overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch;width:100%;padding-bottom:2rem;'>
+        <div id="dataList" class="data-list" v-cloak>
+          <!-- <iframe data-v-7e6a6fe1="" src="//kj.kai861.com/view/video/PK10/video.html?10001?1682011.cn" scrolling="no" frameborder="0" style="width: 100%; height: 270px;margin-top:1.91rem;">暂无开奖视频</iframe> -->
+        </div>
 
-      <lotteryArea :lotteryObj="body" class='game_15' :zMoney="zMoney" :fenpan="fengpan" :endtime="endtime" :fentime="fentime" v-if="isOk" gameType="15"></lotteryArea>
-      <div class="lottery_nav_bar" :style='de==true||loadpage==true?"display:none":"display:block"'>
-        <ul>
-          <button class="trapezoid color1" v-for="(item,i) in pcddClassify" :class="{active8: activeClassifyId === item.type_code}" @click="changeDate(item,i)">
-            <span>{{item.name}}</span>
-          </button>
-        </ul>
+        <lotteryArea :lotteryObj="body" class='game_15' :zMoney="zMoney" :fenpan="fengpan" :endtime="endtime" :fentime="fentime" v-if="isOk" gameType="15"></lotteryArea>
+        <div class="lottery_nav_bar" :style='de==true||loadpage==true?"display:none":"display:block"'>
+          <ul>
+            <button class="trapezoid color1" v-for="(item,i) in pcddClassify" :class="{active8: activeClassifyId === item.type_code}" @click="changeDate(item,i)">
+              <span>{{item.name}}</span>
+            </button>
+          </ul>
+        </div>
+        <section :style='de==true||loadpage==true?"display:none":"display:block"' :class='setSectionClass' ref="seller">
+          <ul>
+            <li v-for="(item,j) in currentGame" :key="j">
+              <span class="colortitle">{{item.name}}</span>
+              <ul>
+                <li v-for="(ite,i) in item.list">
+                  <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan||round=='loading'">
+                    <span>{{ite.name}}</span>
+                    <span class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <Loadpage v-if='loadpage'></Loadpage>
       </div>
-      <section :style='de==true||loadpage==true?"display:none":"display:block"' :class='setSectionClass' ref="seller">
-        <ul>
-          <li v-for="(item,j) in currentGame" :key="j">
-            <span class="colortitle">{{item.name}}</span>
-            <ul>
-              <li v-for="(ite,i) in item.list">
-                <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan||round=='loading'">
-                  <span>{{ite.name}}</span>
-                  <span class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
-                </button>
-              </li>
-            </ul>
-          </li>
-        </ul>
+      <section class="bet_bar" ref="bet_bar">
+        <div>
+          <span class="qin" @click="qingkong">重置</span>
+        </div>
+        <div style='position:relative'>
+          <span style="color:#FFFFFF;" v-if="xshuzi>0">{{xshuzi}}</span>
+          <span style="background:`url(${getPublicImg('/images/small_m.png')}) no-repeat`;background-size:100% 100%;" v-else="xshuzi=0">{{xshuzi}}</span>
+          <div style='position:relative;height:1.4rem'>
+            <input style='position:absolute;left:0;padding-left:1.5rem;line-height:1.4rem;' type="number" pattern="\d*" v-model="money_s" placeholder="输入金额" @input="changes_m()" @focus='fours()' @blur='blur()' min="1" />
+            <img @click='cleanmoney' v-show="money_s!=null" style="width: 0.8rem;height: 0.8rem;float: right;margin-top: 0.32rem;margin-right: 0.3rem;" :src="$getPublicImg('/images/tzgb.png')" alt="" />
+          </div>
+        </div>
+        <div>
+          <button class="gdcolor" :class="{color1:isBlue}" type="button" @click="subMit">确认下注</button>
+        </div>
       </section>
-      <Loadpage v-if='loadpage'></Loadpage>
-    </div>
-    <section class="bet_bar" ref="bet_bar">
-      <div>
-        <span class="qin" @click="qingkong">重置</span>
-      </div>
-      <div style='position:relative'>
-        <span style="color:#FFFFFF;" v-if="xshuzi>0">{{xshuzi}}</span>
-        <span style="background:`url(${getPublicImg('/images/small_m.png')}) no-repeat`;background-size:100% 100%;" v-else="xshuzi=0">{{xshuzi}}</span>
-        <div style='position:relative;height:1.4rem'>
-          <input style='position:absolute;left:0;padding-left:1.5rem;line-height:1.4rem;' type="number" pattern="\d*" v-model="money_s" placeholder="输入金额" @input="changes_m()" @focus='fours()' @blur='blur()' min="1" />
-          <img @click='cleanmoney' v-show="money_s!=null" style="width: 0.8rem;height: 0.8rem;float: right;margin-top: 0.32rem;margin-right: 0.3rem;" :src="$getPublicImg('/images/tzgb.png')" alt="" />
+      <div :style='de?"display:block":"display:none"' style="position: fixed;top:0;left:0;background:rgba(0,0,0,0.5);opacity:.8;width:100%;height:100%;z-index:6">
+        <div style='position: fixed;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;'>
+          <mu-circular-progress :size="40" />
         </div>
       </div>
-      <div>
-        <button class="gdcolor" :class="{color1:isBlue}" type="button" @click="subMit">确认下注</button>
-      </div>
-    </section>
-    <div :style='de?"display:block":"display:none"' style="position: fixed;top:0;left:0;background:rgba(0,0,0,0.5);opacity:.8;width:100%;height:100%;z-index:6">
-      <div style='position: fixed;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;'>
-        <mu-circular-progress :size="40" />
-      </div>
-    </div>
+    </gameChat>
+
     <promptbox @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" :promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
 </template>
@@ -68,6 +71,7 @@ import dailogS from "../../components/dailogS.vue";
 import { pcddClassify } from "@/config/classify.config";
 import Loadpage from "../../components/Loadpage.vue";
 import promptbox from "../../components/promptbox";
+import gameChat from '@/components/game-chat/index';
 import api from "@/api";
 import { parseOddsList, getGamesCache, setGamesCache } from "@/utils";
 export default {
@@ -469,6 +473,7 @@ export default {
             this.roundCha =
               Number(res.data.next.round) - Number(res.data.last.round);
             localStorage.setItem("pc_roundCha", JSON.stringify(this.roundCha));
+            console.log(res.data)
             this.isOk = true;
           }
         })
@@ -614,7 +619,8 @@ export default {
     dailogQ,
     dailogS,
     Loadpage,
-    promptbox
+    promptbox,
+    gameChat
     // 'ex-simple': model,
   }
 };
@@ -1064,7 +1070,7 @@ function getListDataFromNet(pageNum, pageSize, successCallback, errorCallback) {
 
 .bet_bar {
   width: 100%;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   display: flex;
   justify-content: space-between;

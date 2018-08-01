@@ -1,24 +1,26 @@
 <template>
   <div style="height:100%">
-    <div class="header_order">
-      <i-header title="资金管理"></i-header>
-    </div>
-    <div class="bank">
-      <div>
-        <span>用户:</span>
-        <i>{{gameUsername}}</i>
+    <div class="header-sec">
+      <div class="header_order">
+        <i-header title="资金管理"></i-header>
       </div>
-      <div>
-        <span>余额:</span>
-        <i>￥{{gameUsermoney}}</i>
+      <div class="bank">
+        <div>
+          <span>用户:</span>
+          <i>{{gameUsername}}</i>
+        </div>
+        <div>
+          <span>余额:</span>
+          <i>￥{{gameUsermoney}}</i>
+        </div>
       </div>
-    </div>
-    <div>
       <mu-tabs :value="activeTab" @change="handleTabChange">
         <mu-tab value="all" :title="Recharge" />
         <mu-tab value="obligation" :title="Withdraw" />
         <mu-tab value="paid" :title="transactionRecord" />
       </mu-tabs>
+    </div>
+    <div>
       <div class="payTab" v-if="activeTab ==='all'">
         <div class="order_title">
           在线支付 Online Payment
@@ -48,6 +50,16 @@
           <p>快捷支付在线充值</p>
           <span class="pay-arrow-right-icon"></span>
         </div>
+        <div class="ban" @click="gotoPayAddress(jdPay)" v-if="jdisCunzai.length>0">
+          <img src="/wap/images/jd.png" alt="" />
+          <p>京东在线充值</p>
+          <span class="pay-arrow-right-icon"></span>
+        </div>
+        <div class="ban" @click="gotoPayAddress(ylPay)" v-if="ylisCunzai.length>0">
+          <img src="/wap/images/wy.png" alt="" />
+          <p>银联在线充值</p>
+          <span class="pay-arrow-right-icon"></span>
+        </div>
         <div class="order_title">
           线下支付 Offline Payment
         </div>
@@ -69,6 +81,16 @@
         <div class="ban" @click="gotoPayAddress(handPay,'cft_array')" v-if="lineCftisCunzai.length>0">
           <img :src="$getPublicImg('/images/qqqb.png')" alt="" />
           <p>QQ钱包转账</p>
+          <span class="pay-arrow-right-icon"></span>
+        </div>
+        <div class="ban" @click="gotoPayAddress(handPay,'jdpay_array')" v-if="lineJdisCunzai.length>0">
+          <img src="/wap/images/jd.png" alt="" />
+          <p>京东转账</p>
+          <span class="pay-arrow-right-icon"></span>
+        </div>
+        <div class="ban" @click="gotoPayAddress(handPay,'yl_array')" v-if="lineYlisCunzai.length>0">
+          <img src="/wap/images/wy.png" alt="" />
+          <p>银联转账</p>
           <span class="pay-arrow-right-icon"></span>
         </div>
       </div>
@@ -118,8 +140,13 @@
           <div class="cz_list" style="border-bottom:1px solid #E4E4E4">
             <span v-if="is_gd_ali != 'fulicai'" @click="game" style="color:#196fde">{{daywen}}</span>
             <span v-else style="color:#196fde">{{daywen}}</span>
-            <span>{{nowday}}</span>
-            <span><img :src="$getPublicImg('/images/data.png')" alt="" @click="datashow" class="img_data" style="filter:brightness(.2)" /></span>
+            <!--<span>{{curSelectedDate}}</span>-->
+            <span>{{ dateOptions.selectedDate }}</span>
+            <!--<span><img :src="$getPublicImg('/images/data.png')" alt="" @click="datashow" class="img_data" style="filter:brightness(.2)" /></span>-->
+            <span><img :src="$getPublicImg('/images/data.png')" alt="" class="img_data" style="filter:brightness(.2)" /></span>
+
+            <mu-date-picker class="date-picker-x" v-model="dateOptions.selectedDate" :minDate="dateOptions.minDate" :maxDate="dateOptions.maxDate" :disableYearSelection="true"/>
+
             <ul>
               <li v-for="(item,key) in activeList" @click="list_lis(item)" ref="lis" v-show="lis" v-if="key!==daywen">{{key}}</li>
             </ul>
@@ -200,8 +227,8 @@
         </div>
       </div>
     </div>
-    <div v-show='isday' class='mask1' @click="datahide"></div>
-    <div v-show='isday' class='dayshow'>
+    <div v-show='isShowCalendar' class='mask1' @click="dateCancel"></div>
+    <div v-show='isShowCalendar' class='dayshow'>
       <div class="dayheader color1">{{daydata}}</div>
       <div class="dayfoot">
         <div>
@@ -220,24 +247,39 @@
             <li>六</li>
           </ul>
           <ul>
-            <li v-for='(item,index) in daycount' ref='tenli' class='lis' @click='postjl(index)'>{{item}}</li>
+            <li v-for='(item,index) in daycount' ref='tenli' class='lis' @click='selectDate(index, item)'>{{item}}</li>
           </ul>
         </div>
         <div>
-          <a @click="datahide">取消</a>
-          <a @click='senddate'>确定</a>
+          <a @click="dateCancel">取消</a>
+          <a @click='dateConfirm'>确定</a>
         </div>
       </div>
     </div>
+      <!--底部选择页-->
+      <div v-show='isShowPagerNumPanel' class='mask1' @click="isShowPagerNumPanel=false" style="z-index: 101;top: 0;"></div>
+      <div id="pager" v-show='isShowPager'>
+        <div v-show="isShowPagerNumPanel">
+          <ul>
+            <li :class="index+1 == curPage ? 'selected-page-num' : ''"  v-for='(item,index) in totalPage' @click="toPage(index+1)">第{{index+1}}页
+              <img  v-show="index+1==curPage"  :src="$getPublicImg('/images/goulszd.png')"/>
+            </li>
+          </ul>
+        </div>
+        <div v-show='pagenmb' :style="{'box-shadow':boxshadow}">
+          <a @click='lastPage' ref='lastcolor'>上一页</a>
+          <a @click='showPagerNumPanel'>第{{curPage}}页<i></i></a>
+          <a @click='nextPage'>下一页</a>
+        </div>
+      </div>
   </div>
 </template>
 
 <script>
 import iHeader from "../../components/i-header";
 import promptbox from "../../components/promptbox";
-//import {
-//  getOid,getUrl
-//} from '../../api'
+import moment from 'moment'
+
 export default {
   components: {
     iHeader,
@@ -256,8 +298,8 @@ export default {
       activeList: {
         彩票游戏: 1,
         真人视讯: 2,
-        体育游戏: 3
-        // 棋牌游戏:4,
+        体育游戏: 3,
+        // 棋牌游戏: 4,
       },
       lis: false,
       is_gd_ali: is_gd_ali(),
@@ -272,16 +314,22 @@ export default {
       bankmax2: 0,
       bankmax: 0,
       singeMoney: {},
-      AliisCunzai: 0,
-      WechatisCunzai: 0,
-      BankisCunzai: 0,
-      CftisCunzai: 0,
-      ZjzfisCunzai: 0,
-      lineAliisCunzai: 0,
-      lineWechatisCunzai: 0,
-      lineBankisCunzai: 0,
-      lineCftisCunzai: 0,
-      lineZjzfisCunzai: 0,
+      AliisCunzai: [],
+      WechatisCunzai: [],
+      BankisCunzai: [],
+      CftisCunzai: [],
+      ZjzfisCunzai: [],
+      jdisCunzai: [],
+      ylisCunzai: [],
+
+      lineAliisCunzai: [],
+      lineWechatisCunzai: [],
+      lineBankisCunzai: [],
+      lineCftisCunzai: [],
+      lineZjzfisCunzai: [],
+      lineJdisCunzai: [],
+      lineYlisCunzai: [],
+      
       isShowMoney: 0,
       list: [],
       page: 0,
@@ -289,7 +337,7 @@ export default {
       number: 100,
       num: 10,
       loading: false,
-      scroller: null,
+      // scroller: null,
       resDate: {},
       resDateBank: [],
       resDateAli: [],
@@ -300,10 +348,14 @@ export default {
       isBank: false,
       aliPayId: "",
       wechatPayId: "",
+      jdPayId: "",
+      ylPayId: "",
       onlinePayId: "",
       payId: "",
       onlinePay: 55,
       wechatPay: 66,
+      jdPay: 22,
+      ylPay: 33,
       CftPay: 88,
       handPay: "handPay",
       aliPay: 77,
@@ -316,6 +368,8 @@ export default {
       check: true,
       banHeight: "0rem",
       transtionwechatPay: false,
+      transtionjdPay: false,
+      transtionylPay: false,
       transtionaliPay: false,
       transtiononlinePay: false,
       transtionCftPay: false,
@@ -328,11 +382,17 @@ export default {
       successshow: false,
       promptsystem: "",
       math: Math.random().toFixed(2),
-      isday: false,
+      isShowCalendar: false,
       daydata: "",
+      tempDaydata: "",
+      tempDaynian: "",
+      tempDayyue: "",
+      tempDaytian: "",
+      curSelectedDate: '',
       yearyue: "",
       daycount: "",
       daytian: "",
+      dayday: '',
       bankList: [
         {
           bankName: "工商",
@@ -410,21 +470,71 @@ export default {
           bankName: "OTHER",
           url: "bank_default.png"
         }
-      ]
+      ],
+
+      dayOfWeek: ['周日','周一','周二','周三','周四','周五','周六'],
+      isPressedChoiceDay: false,
+
+      totalPage: 1,
+      curPage: 1,
+      pageSize: 30,
+
+      userOid: '',
+
+      TAB_DEPOSIT: 0,        // 充值
+      TAB_WITHDRAW: 1,       // 提现
+      TAB_TRANSACTION: 2,    // 交易记录
+
+      GAME_NAME_LO: 'Lo',         // 彩票
+      GAME_NAME_AG: 'AG',         // AG
+      GAME_NAME_SPORT: 'sport',   // 体育
+      GAME_NAME_CHESS: 'chess',   // 棋牌
+      GAME_NAME_FISH: 'fish',     // 捕鱼
+
+      cruGameName: 'Lo',
+
+      isShowPager: false,
+      isShowPagerNumPanel: false,
+      pagenmb: true,
+      pays:[],
+      payss:'',
+
+      boxshadow: '',
+
+      // 交易记录的时间
+      dateOptions: {
+        minDate: moment().add(-6, 'days').format('YYYY-MM-DD'),// 可选择的最小时间
+        maxDate: moment().format('YYYY-MM-DD'),// 可选择的最大时间
+        selectedDate: moment().format('YYYY-MM-DD'),// 选中的时间,格式如:'2010-01-01'
+      }
     };
   },
+  watch: {
+    // 交易记录的日期一更改就请求对应的数据
+    'dateOptions.selectedDate'(val) {
+      this.getTransactionData({
+        date: val,
+        number: 30,
+      })
+    },
+    activeTab(val) {
+      if (val == 'paid') {
+        this.list = []// 切换TAB时清空数据
+      }
+    }
+  },
   mounted() {
-    this.scroller = this.$refs.historyM;
+    // this.scroller = this.$refs.historyM;
   },
   beforeCreate() {
     let params = {};
-    let userOid = sessionStorage.getItem('im_token');
-    params.oid = userOid;
+    this.userOid = sessionStorage.getItem('im_token');
+    params.oid = this.userOid;
     this.$http
       .post(`${getUrl()}/getinfo/money`, JSON.stringify(params))
-      .then(res => {
+      .then((res) => {
         this.gameUsername = res.data.username;
-        this.str = res.data.bank_code;
+        this.str = res.data.bank_code || '';
         sessionStorage.setItem(
           "im_bankcode",
           JSON.stringify(res.data.bank_code)
@@ -454,7 +564,7 @@ export default {
       });
 
     this.$http
-      .post(`${getUrl()}/user/payin`, JSON.stringify(params))
+      .post(`${getUrl()}/user/newPayin`, JSON.stringify(params))
       .then(res => {
         this.showCurtion = false;
         this.successshow = false;
@@ -469,32 +579,84 @@ export default {
             });
           }, 1000);
         } else {
-          this.lineAliisCunzai = res.data.alipay_array;
-          this.lineWechatisCunzai = res.data.wechat_array;
-          this.lineBankisCunzai = res.data.bankpay_array;
-          this.lineCftisCunzai = res.data.cft_array;
-          this.resDateBank = res.data.online_bank;
-          this.resDateAli = res.data.online_alipay;
-          this.resDateWechat = res.data.online_wechat;
-          this.BankisCunzai = res.data.online_bank;
-          this.AliisCunzai = res.data.online_alipay;
-          this.CftisCunzai = res.data.online_cft;
-          this.WechatisCunzai = res.data.online_wechat;
-          this.ZjzfisCunzai = res.data.online_quickpay;
-          this.bankmin = Number(res.data.moneylimit.bankmin);
-          this.bankmax = Number(res.data.moneylimit.bankmax);
+          let types = res.data.online_pay_limit;
+          for (let i = 0; i < types.length; i++) {
+            this.pays.push(types[i].pay_type)
+            if(types[i].pay_type == 0){
+               this.BankisCunzai.push(types[i])
+            }
+            if(types[i].pay_type == 1){
+               this.AliisCunzai.push(types[i])
+            }
+            if(types[i].pay_type == 2){
+               this.WechatisCunzai.push(types[i])
+            }
+            if(types[i].pay_type == 3){
+               this.CftisCunzai.push(types[i])
+            }
+            if(types[i].pay_type == 4){
+               this.ZjzfisCunzai.push(types[i])
+            }
+            if(types[i].pay_type == 6){
+               this.ylisCunzai.push(types[i])
+            }
+            if(types[i].pay_type == 7){
+               this.jdisCunzai.push(types[i])
+            }
+
+          }
+          let typess = res.data.linedown_pay_limit;
+          for (let j = 0; j < typess.length; j++) {
+            console.log(typess[j].pay_type)
+            if(typess[j].pay_type == 0){
+               this.lineBankisCunzai.push(typess[j])
+            }
+            if(typess[j].pay_type == 1){
+               this.lineAliisCunzai.push(typess[j])
+            }
+            if(typess[j].pay_type == 2){
+               this.lineWechatisCunzai.push(typess[j])
+            }
+            if(typess[j].pay_type == 3){
+               this.lineCftisCunzai.push(typess[j])
+            }
+            if(typess[j].pay_type == 4){
+               this.lineBankisCunzai.push(typess[j])
+            }
+            if(typess[j].pay_type == 6){
+               this.lineYlisCunzai.push(typess[j])
+            }
+            if(typess[j].pay_type == 7){
+               this.lineJdisCunzai.push(typess[j])
+            }
+            
+          }
+        
+          // this.lineAliisCunzai = res.data.alipay_array;
+          // this.lineWechatisCunzai = res.data.wechat_array;
+          // this.lineBankisCunzai = res.data.bankpay_array;
+          // this.lineCftisCunzai = res.data.cft_array;
+          // this.resDateBank = res.data.online_bank;
+          // this.resDateAli = res.data.online_alipay;
+          // this.resDateWechat = res.data.online_wechat;
+          // this.BankisCunzai = res.data.online_bank;
+          // this.AliisCunzai = res.data.online_alipay;
+          // this.CftisCunzai = res.data.online_cft;
+          // this.WechatisCunzai = res.data.online_wechat;
+          // this.ZjzfisCunzai = res.data.online_quickpay;
+          // this.bankmin = Number(res.data.moneylimit.bankmin);
+          // this.bankmax = Number(res.data.moneylimit.bankmax);
         }
       });
+
   },
   created() {
+    this.openChessOrNot()// 是否要开启棋牌的交易记录
+    this.cruGameName = this.$route.query.GameName || this.GAME_NAME_LO;
+    this.isChOrRu = this.$route.params.id.split(":")[1];
+    this.isShowPager = this.TAB_TRANSACTION == this.isChOrRu;
+    this.userOid = sessionStorage.getItem('im_token');
     let myDate = new Date();
-    myDate.getYear(); //获取当前年份(2位)
-    myDate.getFullYear(); //获取完整的年份(4位,1970-????)
-    myDate.getMonth() + 1; //获取当前月份(0-11,0代表1月)
-    myDate.getDate(); //获取当前日(1-31)
-    myDate.getDay(); //获取当前星期X(0-6,0代表星期天)
-    myDate.getMilliseconds(); //获取当前毫秒数(0-999)
-    myDate.toLocaleDateString(); //获取当前日期
     this.daytian = myDate.getDate();
     this.dayday = myDate.getDate();
     if (this.daytian < 7) {
@@ -514,22 +676,7 @@ export default {
       monthday = "0" + monthday;
     }
     this.nowday = myDate.getFullYear() + "-" + month + "-" + monthday;
-    let dayday = null;
-    if (myDate.getDay() == "0") {
-      dayday = "周日";
-    } else if (myDate.getDay() == "1") {
-      dayday = "周一";
-    } else if (myDate.getDay() == "2") {
-      dayday = "周二";
-    } else if (myDate.getDay() == "3") {
-      dayday = "周三";
-    } else if (myDate.getDay() == "4") {
-      dayday = "周四";
-    } else if (myDate.getDay() == "5") {
-      dayday = "周五";
-    } else if (myDate.getDay() == "6") {
-      dayday = "周六";
-    }
+    let dayday = this.dayOfWeek[myDate.getDay()];
     this.dayyue = String(myDate.getMonth() + 1);
     this.dayyue1 = String(myDate.getMonth() + 1);
     this.daynian = String(myDate.getFullYear());
@@ -540,9 +687,9 @@ export default {
       "日" +
       dayday;
     this.yearyue = this.daynian + "年" + this.dayyue + "月";
-    this.isChOrRu = this.$route.params.id.split(":")[1];
+
     let params = {};
-    params.oid = sessionStorage.getItem('im_token');
+    params.oid = this.userOid;
     if (this.isAG) {
       this.daywen = "真人视讯";
       this.$http
@@ -699,8 +846,7 @@ export default {
         });
     } else {
       let params = {};
-      let userOid = sessionStorage.getItem('im_token');
-      params.oid = userOid;
+      params.oid = this.userOid;
       this.$http
         .post(`${getUrl()}/getinfo/money`, JSON.stringify(params))
         .then(res => {
@@ -728,165 +874,60 @@ export default {
           }
         });
     }
+
     if (Number(this.isChOrRu) == 1) {
-      //  debugger
       this.handleTabChange("obligation");
     } else if (Number(this.isChOrRu) == 2) {
       this.handleTabChange("paid");
     }
 
-    let param = {};
-    let userOid = sessionStorage.getItem('im_token');
-    param.oid = userOid;
-    param.page = this.page;
-    param.number = this.number;
   },
   methods: {
-    pasgedayshow() {
-      this.pageshow = !this.pageshow;
-      if (this.pageshow) {
-        this.boxshadow = "";
-      } else {
-        this.boxshadow = "0 0.06rem 0.8rem rgba(0, 0, 0, 0.2)";
+    // 查询该平台是否有棋牌游戏，有则开启棋牌的交易记录
+    openChessOrNot() {
+      // 棋牌的ID为6，检查sort字段里面是否有该ID
+      const hasChess = JSON.parse(sessionStorage.gamesort).sort.indexOf('6') > -1
+      if (hasChess) {
+        this.activeList['棋牌游戏'] = 4
       }
     },
-    //取某一页的注单
-    pagenumb(index) {
-      if (this.dateyes == "") {
-        this.dateyes = this.nowday;
-      }
-      let dayyue1 = this.dayyue;
-      let dayday1 = this.dayday;
-      if (this.dayyue.length == 1) {
-        dayyue1 = "0" + this.dayyue;
-      }
-      if (this.dayday.length == 1) {
-        dayday1 = "0" + this.dayday;
-      }
-      this.dateyes =
-        String(this.daynian) + "-" + String(dayyue1) + "-" + String(dayday1);
-      for (var i = 0; i < this.pagenmblength; i++) {
-        this.$refs.pagecolor[i].style = "color:black;";
-      }
-      this.pagenum = index;
-      this.$refs.pagecolor[index - 1].style = "color:#196fde;";
-      let params = {};
-      params.game_code = this.urlId;
-      params.page = this.pagenum;
-      params.number = this.pageNumber;
-      params.date = this.dateyes;
-      this.$refs.pagecolor[this.pagenum - 1].style = "color:#196fde;";
-      this.$http
-        .post(`${getUrl()}/user/getResult`, JSON.stringify(params))
-        .then(res => {
-          this.lotteryList = res.data.result;
-          this.isReady = true;
-        });
-    },
-    //上一页
-    lastpage() {
-      if (this.dateyes == "") {
-        this.dateyes = this.nowday;
-      }
-      let dayyue1 = this.dayyue;
-      let dayday1 = this.dayday;
-      if (this.dayyue.length == 1) {
-        dayyue1 = "0" + this.dayyue;
-      }
-      if (this.dayday.length == 1) {
-        dayday1 = "0" + this.dayday;
-      }
-      this.dateyes =
-        String(this.daynian) + "-" + String(dayyue1) + "-" + String(dayday1);
-      for (var i = 0; i < this.pagenmblength; i++) {
-        this.$refs.pagecolor[i].style = "color:black;";
-      }
-      this.pagenum--;
-      if (this.pagenum < 1) {
-        this.pagenum = 1;
-      }
-      let params = {};
-      params.game_code = this.urlId;
-      params.page = this.pagenum;
-      params.number = this.pageNumber;
-      params.date = this.dateyes;
-      this.$refs.pagecolor[this.pagenum - 1].style = "color:#196fde;";
-      this.$http
-        .post(`${getUrl()}/user/getResult`, JSON.stringify(params))
-        .then(res => {
-          this.lotteryList = res.data.result;
-          this.isReady = true;
-        });
-    },
-    nextpage() {
-      if (this.dateyes == "") {
-        this.dateyes = this.nowday;
-      }
-      let dayyue1 = this.dayyue;
-      let dayday1 = this.dayday;
-      if (this.dayyue.length == 1) {
-        dayyue1 = "0" + this.dayyue;
-      }
-      if (this.dayday.length == 1) {
-        dayday1 = "0" + this.dayday;
-      }
-      this.dateyes =
-        String(this.daynian) + "-" + String(dayyue1) + "-" + String(dayday1);
-      for (var i = 0; i < this.pagenmblength; i++) {
-        this.$refs.pagecolor[i].style = "color:black;";
-      }
-      this.pagenum++;
-      if (this.pagenum > this.pagenmblength) {
-        this.pagenum = this.pagenmblength;
-      }
-      let params = {};
-      params.game_code = this.urlId;
-      params.page = this.pagenum;
-      params.number = this.pageNumber;
-      params.date = this.dateyes;
-      this.$refs.pagecolor[this.pagenum - 1].style = "color:#196fde;";
-      this.$http
-        .post(`${getUrl()}/user/getResult`, JSON.stringify(params))
-        .then(res => {
-          this.lotteryList = res.data.result;
-          this.isReady = true;
-        });
-    },
-    postjl(index) {
+    selectDate(index, day) {
       for (var i = 0; i < this.l; i++) {
         if (this.daytian - index > 7 || this.daytian - index <= 0) {
+          // 浅色区域，即不可点击的日期
+          // this.$refs.tenli[this.daytian - this.l + i].style.color = "#ccc";
+          this.$refs.tenli[this.daytian - this.l + i].style.backgroundColor = "red"
         } else {
+          // 深色区域，可点击的日期
           if (this.daytian - this.l + i == index) {
+            this.$refs.tenli[this.daytian - this.l + i].style.backgroundColor = "green"
+            // 所点击的那天
+            this.isPressedChoiceDay = true;
+            this.tempDaydata = this.daydata;
+            this.tempDaynian = this.daynian;
+            this.tempDayyue = this.dayyue;
+            this.tempDaytian = this.dayday;
             let weekday = null;
             this.dayday = this.daytian - this.l + i + 1;
-            if (this.dayday % 7 == "0") {
-              weekday = "周日";
-            } else if (this.dayday % 7 == "1") {
-              weekday = "周一";
-            } else if (this.dayday % 7 == "2") {
-              weekday = "周二";
-            } else if (this.dayday % 7 == "3") {
-              weekday = "周三";
-            } else if (this.dayday % 7 == "4") {
-              weekday = "周四";
-            } else if (this.dayday % 7 == "5") {
-              weekday = "周五";
-            } else if (this.dayday % 7 == "6") {
-              weekday = "周六";
-            }
+            // this.dayday = day;
+            var _date = new Date();
+            _date.setFullYear(this.daynian);
+            _date.setMonth(this.dayyue-1);
+            _date.setDate(day);
+            weekday = this.dayOfWeek[_date.getDay()];
             this.daydata = this.dayyue + "月" + this.dayday + "日" + weekday;
-            console.log(this.daydata);
             this.$refs.tenli[index].style.backgroundColor = "#2e65d4";
             this.$refs.tenli[index].style.color = "#fff";
           } else {
-            this.$refs.tenli[this.daytian - this.l + i].style.backgroundColor =
-              "";
+            this.$refs.tenli[this.daytian - this.l + i].style.backgroundColor = "blue"
+            // 剩下非点击的其它天数
+            this.$refs.tenli[this.daytian - this.l + i].style.backgroundColor = "";
             this.$refs.tenli[this.daytian - this.l + i].style.color = "#373737";
           }
         }
       }
     },
-    senddate() {
+    dateConfirm() {
       if (this.dateyes == "") {
         this.dateyes = this.nowday;
       }
@@ -896,48 +937,64 @@ export default {
       if (this.dayday < 10) {
         this.dayday = "0" + this.dayday;
       }
-      this.dateyes =
-        String(this.daynian) +
-        "-" +
-        String(this.dayyue) +
-        "-" +
-        String(this.dayday);
+      this.dateyes = String(this.daynian) + "-" + String(this.dayyue) + "-" + String(this.dayday);
+      this.curSelectedDate = this.dateyes;
+      this.nowday = this.dateyes;
+      this.curPage = 1;
+      /*
       let params = {};
       params.game_code = this.urlId;
       params.page = this.page;
       params.date = this.dateyes;
       params.number = this.pageNumber;
+      params.oid = this.userOid;
       this.nowday = this.dateyes;
+
       this.$http
-        .post(`${getUrl()}/user/getResult`, JSON.stringify(params))
+        .post(`${getUrl()}/getinfo/record`, JSON.stringify(params))
         .then(res => {
-          this.isday = false;
+          this.isShowCalendar = false;
           this.lotteryList = res.data.result;
           if (Number(res.data.allnumb) > Number(this.pageNumber)) {
             this.pagenmb = true;
-            this.pagenmblength = Math.ceil(res.data.allnumb / this.pageNumber);
+            this.totalPage = Math.ceil(res.data.allnumb / this.pageNumber);
           }
-          this.isday = false;
+          this.isShowCalendar = false;
           this.isReady = true;
           this.datatrueq = true;
         });
+      */
+
+      this.getTransactionData({date: this.dateyes});
+      this.isShowCalendar = false;
     },
     datashow() {
-      this.isday = !this.isday;
+      this.isPressedChoiceDay = false;
+      this.isShowCalendar = !this.isShowCalendar;
       this.daymargin(this.getWeek(this.daynian, this.dayyue));
+      console.log('debug this.dayday=', this.dayday)
       for (var i = 0; i < this.l; i++) {
         this.$refs.tenli[this.daytian - this.l + i].style = "color:black";
-        if (i == this.l - 1) {
-          this.$refs.tenli[this.daytian - this.l + i].style.backgroundColor =
-            "#2e65d4";
-          this.$refs.tenli[this.daytian - this.l + i].style.color = "#fff";
-        }
+        // if (i == this.l - 1) {
+        //   this.$refs.tenli[this.dayday - this.l + i].style.backgroundColor =
+        //     "#2e65d4";
+        //   this.$refs.tenli[this.dayday - this.l + i].style.color = "#fff";
+        // }
       }
+      this.$refs.tenli[this.dayday - 1].style.backgroundColor = "#2e65d4";
+      this.$refs.tenli[this.dayday - 1].style.color = "#fff";
+
       this.dayyue = String(new Date().getMonth() + 1);
       this.yearyue = this.daynian + "年" + this.dayyue + "月";
     },
-    datahide() {
-      this.isday = false;
+    dateCancel() {
+      if (this.isPressedChoiceDay) {
+        this.daynian = this.tempDaynian;
+        this.dayyue = this.tempDayyue;
+        this.dayday = this.tempDaytian;
+        this.daydata = this.tempDaydata;
+      }
+      this.isShowCalendar = false;
       this.dayyue = String(new Date().getMonth() + 1);
     },
     nextdata() {
@@ -945,6 +1002,11 @@ export default {
       this.yearyue = this.daynian + "年" + this.dayyue + "月";
       if (this.dayyue == this.dayyue1) {
         this.yearyue = this.daynian + "年" + this.dayyue + "月";
+        // 将每一天的颜色先初始化为灰色
+        this.$refs.tenli.forEach(item => {
+          item.style.color = '#ccc'
+        })
+        // 然后再将可点击的变为黑色
         for (var i = 0; i < this.l; i++) {
           this.$refs.tenli[this.daytian - this.l + i].style = "color:black";
           if (i == this.l - 1) {
@@ -959,8 +1021,7 @@ export default {
         this.daycount = new Date(year, month, 0).getDate();
         this.daymargin(this.getWeek(year, this.dayyue));
         for (var i = 0; i < this.yesyue; i++) {
-          this.$refs.tenli[parseInt(this.daycount - 1 - i)].style =
-            "color:#373737";
+          this.$refs.tenli[parseInt(this.daycount - 1 - i)].style.color = '#373737'
         }
       } else {
         this.$refs.tenli.map(value => {
@@ -1092,20 +1153,25 @@ export default {
       if (type == 1) {
         pathinfo += "Lo";
         this.daywen = "彩票游戏";
+        this.cruGameName = this.GAME_NAME_LO;
       } else if (type == 2) {
         pathinfo += "AG";
         this.daywen = "真人视讯";
+        this.cruGameName = this.GAME_NAME_AG;
       } else if (type == 3) {
         pathinfo += "sport";
         this.daywen = "体育游戏";
+        this.cruGameName = this.GAME_NAME_SPORT;
       } else if (type == 4) {
         pathinfo += "chess";
         this.daywen = "棋牌游戏";
+        this.cruGameName = this.GAME_NAME_CHESS;
       }
       this.lis = false;
-      this.$router.push({
-        path: "order" + pathinfo
-      });
+      // this.$router.push({
+      //   path: "order" + pathinfo
+      // });
+      this.curSelectedDate = '';
       this.handleTabChange("paid", true);
     },
     getState(item) {
@@ -1118,7 +1184,7 @@ export default {
           } else {
             return this.$route.query.GameName=='Lo'?"取出":"转出";
           }
-         
+
         }
       } else if (item.transfer == "1") {
         if (item.type_code == "0") {
@@ -1132,6 +1198,10 @@ export default {
         } else {
           return "转出";
         }
+      } else if (item.transfer == "3") {
+        return item.type_code == "0" ? "WH存入彩票" : "彩票提到WH"
+      } else {
+        return '--'
       }
     },
     findBankListUrl(bank_name) {
@@ -1179,19 +1249,19 @@ export default {
       )}:${this.p(s)}`;
     },
     loadMore() {
+
+      /*
       if (this.page * 10 <= this.zongshu) {
         this.loading = true;
         this.page++;
         let param = {};
-        let userOid = sessionStorage.getItem('im_token');
-        param.oid = userOid;
+        param.oid = this.userOid;
         param.page = this.page;
         param.number = this.number;
         let _this = this;
         this.$http
           .post(`${getUrl()}/getinfo/record`, JSON.stringify(param))
           .then(res => {
-            this.successshow = false;
             if (res.data.msg == "4001") {
               sessionStorage.clear();
               this.panelShow = true;
@@ -1214,6 +1284,255 @@ export default {
       } else {
         return null;
       }
+      */
+    },
+     showPagerNumPanel() {
+      this.isShowPagerNumPanel = !this.isShowPagerNumPanel;
+      if (this.isShowPagerNumPanel) {
+        this.boxshadow = "";
+      } else {
+        this.boxshadow = "0 0.06rem 0.8rem rgba(0, 0, 0, 0.2)";
+      }
+    },
+    // 取某一页的注单
+    toPage(index) {
+      this.curPage = index;
+      let params = {
+        page: this.curPage
+      };
+      if (this.curSelectedDate) {
+        params.date = this.curSelectedDate;
+      }
+      this.getTransactionData(params);
+      this.isShowPagerNumPanel = false;
+    },
+    // 上一页
+    lastPage() {
+      if (this.curPage <= 1) return;
+      this.curPage--
+      let params = {
+        page: this.curPage
+      };
+      if (this.curSelectedDate) {
+        params.date = this.curSelectedDate;
+      }
+      this.getTransactionData(params);
+    },
+    // 下一页
+    nextPage() {
+      if (this.curPage >= this.totalPage) return;
+      this.curPage++
+      let params = {
+        page: this.curPage
+      };
+      if (this.curSelectedDate) {
+        params.date = this.curSelectedDate;
+      }
+      this.getTransactionData(params);
+    },
+    /**
+     * 获取彩票交易记录
+     */
+    getLotteryTransactionList(params = {}) {
+      params.oid = this.userOid;
+      params.date = params.date || moment().format('YYYY-MM-DD')
+      let paramsStr = JSON.stringify(params);
+      // this.$http.post(`${getUrl()}/getinfo/record`, paramsStr)\
+      this.$http.post(`${getUrl()}/getinfo/record`, paramsStr)
+          .then(res => {
+              let data = res.data;
+              this.successshow = false;
+              if (this.isLoginExpired(data.msg)) {
+                this.loginExpired(data.msg);
+              } else {
+                this.list = data.res;
+                this.loading = false;
+                this.totalPage = Math.ceil(data.page.allnmb / this.pageSize);
+              }
+          });
+    },
+    /**
+     * AG
+     */
+    getAGTransationList(params = {}) {
+      params.oid = this.userOid;
+      params.GameName = params.gameName != undefined ? params.gameName : this.GAME_NAME_AG;
+      let paramsStr = JSON.stringify(params);
+      this.$http.post(`${getUrl()}/getinfo/ag_record`, paramsStr)
+        .then(res => {
+          let data = res.data,
+              item = data.res;
+          if (this.isLoginExpired(data.msg)) {
+            this.loginExpired(data.msg);
+          } else {
+            this.totalPage = Math.ceil(data.page.allnmb / this.pageSize);
+            this.list = data.res;
+          }
+        });
+    },
+    /**
+     * 体育
+     */
+    getSportTransationList(params = {}) {
+      params.oid = this.userOid;
+      params.GameName = this.GAME_NAME_SPORT;
+      let paramsStr = JSON.stringify(params);
+      this.$http.post(`${getUrl()}/getinfo/ty_record`, paramsStr)
+        .then(res => {
+          let data = res.data;
+          if (this.isLoginExpired(data.msg)) {
+            this.loginExpired(data.msg);
+          } else if (data.msg == 2006) {
+            this.list = data.res || [];
+            this.list = this.list.filter((value, index) => {
+              return value.transfer == "0";
+            });
+            this.zongshu = Number(data.page.allnmb);
+            this.totalPage = Math.ceil(data.page.allnmb / this.pageSize);
+          }
+        });
+    },
+    /**
+     * 棋牌
+     */
+    getChessTransationList(params = {}) {
+      let that = this
+      this.list = []// 请求前先清空数据
+      params.oid = this.userOid;
+      params.size = 30;
+      if (params.date) {
+        // 有传时间就用传过来的
+        params.stime = moment(params.date).format('YYYY-MM-DD 00:00:00')
+        params.etime = moment(params.date).format('YYYY-MM-DD 23:59:59')
+        delete params.date
+      } else {
+        // 没传时间就用日期插件选中的那个
+        params.stime = moment(this.dateOptions.selectedDate).format('YYYY-MM-DD 00:00:00')
+        params.etime = moment(this.dateOptions.selectedDate).format('YYYY-MM-DD 23:59:59')
+      }
+      // params.GameName = this.GAME_NAME_CHESS;
+      let paramsStr = JSON.stringify(params);
+      // this.$http.post(`${getUrl()}/Wh_H5_Api/SearchCreditBill`, paramsStr)
+      // this.$http.post(`${getUrl()}/Wh_APP_Api/SearchCreditBill`, paramsStr)
+      this.$http.post(`${getUrl()}/Wh_APP_Api/SearchCreditBill`, paramsStr)
+        .then(res => {
+          let data = res.data,
+              item = data.data;
+          if (!item) {
+            that.list = data.data || []
+            return
+          }
+
+          if (that.isLoginExpired(data.msg)) {
+            that.loginExpired(data.msg);
+          } else if (data.msg == 2006) {
+            that.list = data.data || [];
+            /*for (let i in item) {
+              that.list[i] = item[i] || [];
+              that.list = that.list[i].filter((value, index) => {
+                return value.transfer == "2";
+              });
+            }*/
+            that.zongshu = Number(res.data.page.allnmb);
+            that.totalPage = Math.ceil(data.page.allnmb / that.pageSize);
+            // 页数大于1页才显示分页器
+            /*if (res.data.page.allnmb / res.data.page.number > 1) {
+              this.isShowPager = true
+            } else {
+              this.isShowPager = false
+            }*/
+          } else {
+            that.totalPage = Math.ceil(data.page.allnmb / that.pageSize);
+            that.pagenmb = Math.ceil(data.page.allnmb / that.pageSize);
+          }
+
+        });
+    },
+    isLoginExpired(code) {
+       return code == 4001;
+    },
+    loginExpired(code) {
+      if (this.isLoginExpired(code)) {
+        sessionStorage.clear();
+        this.panelShow = true;
+        this.promptboxtext = "您的账户已失效，请重新登录";
+        setTimeout(() => {
+          this.panelShow = false;
+          this.$router.push({
+            path: "/login"
+          });
+        }, 1000);
+      }
+    },
+    /**
+     * 获交易数据
+     */
+    getTransactionData(params = {}) {
+      params.number = this.pageSize;
+      // params.date = this.tempDaynian ? moment().format('YYYY-MM-DD') : `${ this.tempDaynian }-${ this.}-${}`
+      // let gameName = this.$route.query.GameName;
+      // 有选中日期则格式化日期
+      if (this.tempDaynian) params.date = `${ this.tempDaynian }-${ this.tempDayyue }-${ this.dayday }`
+       let gameName = this.cruGameName;
+      switch(gameName) {
+        case this.GAME_NAME_LO:
+          this.getLotteryTransactionList(params);
+        break;
+        case this.GAME_NAME_AG:
+          this.getAGTransationList(params);
+        break;
+        case this.GAME_NAME_SPORT:
+          this.getSportTransationList(params);
+        break;
+        case this.GAME_NAME_CHESS:
+          this.getChessTransationList(params);
+        break;
+        case this.GAME_NAME_FISH:
+          params.GameName = '';
+          this.getAGTransationList(params);
+        break;
+        default:
+        break;
+      }
+    },
+    handleTabChange(val, flag) {
+      this.page = 0;
+      if (val == "paid") {
+        this.isShowPager = true;
+        let gameName = this.cruGameName;
+        // let gameName = this.$route.query.GameName || 'Lo';
+        // if (!flag) {
+        //   this.$router.push({
+        //     path: "order" + ":2?GameName="+ gameName
+        //   });
+        // }
+        this.curPage = 1;
+        let params = {};
+            params.page = this.curPage;
+        switch(gameName) {
+          case this.GAME_NAME_LO:
+            this.daywen = "彩票游戏";
+          break;
+          case this.GAME_NAME_AG:
+            this.daywen = "真人视讯";
+          break;
+          case this.GAME_NAME_SPORT:
+            this.daywen = "体育游戏";
+          break;
+          case this.GAME_NAME_CHESS:
+             this.daywen = "棋牌游戏";
+          break;
+          case this.GAME_NAME_FISH:
+            this.daywen = "捕鱼游戏";
+          break;
+          default:
+          break;
+        }
+        this.getTransactionData(params);
+      } else {
+        this.isShowPager = false;
+      }
+      this.activeTab = val;
     },
     submit2() {
       this.successshow = false;
@@ -1237,8 +1556,7 @@ export default {
 
       if (this.payMoney >= 100) {
         let params = {};
-        let userOid = sessionStorage.getItem('im_token');
-        params.oid = userOid;
+        params.oid = this.userOid;
         params.money = this.payMoney;
         params.paypasswd = this.paypassWd;
         params.bankname = this.resDate.bank_name;
@@ -1352,143 +1670,6 @@ export default {
       this.$router.push({
         path: "/hahaMoney"
       });
-    },
-    handleTabChange(val, flag) {
-      this.page = 0;
-      if (val == "paid") {
-        if (!flag) {
-          this.$router.push({
-            path: "order" + ":2?GameName=Lo"
-          });
-        }
-
-        let param = {};
-        let userOid = sessionStorage.getItem('im_token');
-        param.oid = userOid;
-        param.page = this.page;
-        param.number = this.number;
-        let _param = location.href.split("?")[1];
-        if (_param == "GameName=Lo") {
-          // 请求彩票游戏数据
-          this.loadMore();
-        }
-        if (_param == "GameName=AG") {
-          param.GameName = "AG";
-          let _this = this;
-          this.$http
-            .post(`${getUrl()}/getinfo/ag_record`, JSON.stringify(param))
-            .then(res => {
-              let item = res.data.res;
-              if (res.data.msg == 4001) {
-                sessionStorage.clear();
-                this.panelShow = true;
-                this.promptboxtext = "您的账户已失效，请重新登录";
-                setTimeout(() => {
-                  this.panelShow = false;
-                  this.$router.push({
-                    path: "/login"
-                  });
-                }, 1000);
-              } else if (res.data.msg == 2006) {
-                this.$router.replace("/order");
-                this.list = res.data.data || [];
-                for (let i in item) {
-                  this.list[i] = item[i] || [];
-                  this.list = this.list[i].filter((value, index) => {
-                    return value.transfer == "0";
-                  });
-                }
-                this.zongshu = Number(res.data.page.allnmb);
-              }
-              _this.list = res.data.res;
-            });
-        }
-        if (_param == "GameName=sport") {
-          let _this = this;
-          param.GameName = "sport";
-          this.$http
-            .post(`${getUrl()}/getinfo/ty_record`, JSON.stringify(param))
-            .then(res => {
-              if (res.data.msg == 4001) {
-                sessionStorage.clear();
-                this.panelShow = true;
-                this.promptboxtext = "您的账户已失效，请重新登录";
-                setTimeout(() => {
-                  this.panelShow = false;
-                  this.$router.push({
-                    path: "/login"
-                  });
-                }, 1000);
-              } else if (res.data.msg == 2006) {
-                this.list = res.data.res || [];
-                this.list = this.list.filter((value, index) => {
-                  return value.transfer == "0";
-                });
-                this.zongshu = Number(res.data.page.allnmb);
-              }
-              _this.list = res.data.res;
-            });
-        }
-
-        if (_param == "GameName=chess") {
-          param.GameName = "chess";
-          this.$http
-            .post(
-              `${getUrl()}/Wh_H5_Api/SearchCreditBill`,
-              JSON.stringify(param)
-            )
-            .then(res => {
-              let item = res.data.data;
-              if (res.data.msg == 4001) {
-                sessionStorage.clear();
-                this.panelShow = true;
-                this.promptboxtext = "您的账户已失效，请重新登录";
-                setTimeout(() => {
-                  this.panelShow = false;
-                  this.$router.push({
-                    path: "/login"
-                  });
-                }, 1000);
-              } else if (res.data.msg == 2006) {
-                this.list = res.data.data || [];
-                for (let i in item) {
-                  this.list[i] = item[i] || [];
-                  this.list = this.list[i].filter((value, index) => {
-                    return value.transfer == "2";
-                  });
-                }
-                this.zongshu = Number(res.data.page.allnmb);
-              }
-            });
-        } else if (_param == "GameName=fish") {
-          this.$http
-            .post(`${getUrl()}/getinfo/ag_record`, JSON.stringify(param))
-            .then(res => {
-              this.successshow = false;
-              if (res.data.msg == "4001") {
-                sessionStorage.clear();
-                this.panelShow = true;
-                this.promptboxtext = "您的账户已失效，请重新登录";
-                setTimeout(() => {
-                  this.panelShow = false;
-                  this.$router.push({
-                    path: "/login"
-                  });
-                }, 1000);
-              } else {
-                for (let i = 0; i < res.data.res.length; i++) {
-                  this.list.push(res.data.res[i]);
-                  console.log(this.list);
-                }
-                this.num += 10;
-                this.loading = false;
-              }
-            });
-        }
-        if (_param == "Lo") {
-        }
-      }
-      this.activeTab = val;
     },
     checkTransactionStatus(singeMoney) {
       var status = "";
@@ -1632,8 +1813,8 @@ export default {
 }
 .mu-tabs {
   background: #fff;
-  position: relative;
-  z-index: 100;
+  // position: static;
+  z-index: 11;
   border-bottom: 1px solid #e4e4e4;
   border-top: 1px solid #e4e4e4;
   button {
@@ -1970,6 +2151,7 @@ span.mu-tab-link-highlight {
 
 .cun_qu_list {
   overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
   height: 1008/@zoom;
 }
 
@@ -2043,6 +2225,68 @@ span.mu-tab-link-highlight {
   margin: 0 !important;
   padding: 0 !important;
 }
+#pager{
+    width: 100%;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background: white;
+    opacity: 0.95;
+    z-index: 102;
+    div:nth-child(1){
+      width: 100%;
+      max-height: 320/46.875rem;
+      overflow: auto;
+      ul{
+        width: 100%;
+        li{
+          width: 100%;
+          height: 80/46.875rem;
+          border-bottom: 1px solid #eee;
+          text-align: center;
+          line-height: 80/46.875rem;
+          position: relative;
+          img{
+            position: absolute;
+              width: 37/46.875rem;
+              height: 30/46.875rem;
+              top: 0.45rem;
+            margin-left: 0.3rem;
+          }
+        }
+        // li:nth-child(1){
+        //   color: #2f64d4;
+        // }
+      }
+  }
+  div:nth-child(2){
+    width: 100%;
+    height: 100/46.875rem;
+    line-height: 100/46.875rem;
+    text-align: center;
+
+    a{
+      display: inline-block;
+      width: 33%;
+      height: 100%;
+      text-align: center;
+      float: left;
+      position: relative;
+      color: #000000;
+    }
+    i{
+      width:0;
+      height:0;
+      border-color: #fff #fff #2f64d4 #fff;
+      border-style: solid solid solid solid;
+      border-width: 0.3rem;
+      position: absolute;
+      right: 0.75rem;
+      top: 0.6rem;
+    }
+  }
+}
+
 </style>
 <style>
 .mu-tab-link-highlight {
@@ -2060,6 +2304,9 @@ span.mu-tab-link-highlight {
   /* transform: translate3d(200%, 0px, 0px)!important;*/
 }
 
+.cz_list{
+  position: relative;
+}
 .cz_list ul {
   background: #fff;
   overflow: hidden;
@@ -2092,5 +2339,49 @@ span.mu-tab-link-highlight {
 .img_data {
   filter: alpha(#0066ff);
   width: 20px;
+}
+.selected-page-num { color:#196fde; }
+.header-sec .tohop_head {
+  z-index: 15;
+}
+</style>
+
+<style lang='less'>
+.date-picker-x{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 33%;
+  height: 1.2rem;
+  & > div:last-child{
+    display: none;
+  }
+}
+.date-picker-x .mu-text-field{
+  width: 100%;
+  min-height: initial;
+  margin: 0;
+}
+.mu-text-field-input{
+  height: initial;
+}
+.date-picker-x .mu-text-field-content{
+  padding: 0;
+  opacity: 0;
+}
+.mu-date-display{
+  background-color: #146cdc;
+}
+.mu-day-button-bg{
+  background-color: #146cdc;
+}
+.mu-flat-button-primary{
+  color: #146cdc;
+}
+.mu-day-button.now .mu-day-button-text{
+  color: #146cdc;
+}
+.mu-day-button.selected .mu-day-button-text{
+  color: white;
 }
 </style>

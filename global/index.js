@@ -1,5 +1,5 @@
 // 网站分类
-//import api from '@/api'
+import api from '@/api'
 import _ from 'lodash'
 export default class Lottery {
   constructor(options = {}) {
@@ -28,7 +28,8 @@ export default class Lottery {
       case 'klc':
         return {
           type: 'klc',
-          url: process.env.NODE_ENV === 'production' ? ApiUrl : '//www.lebole5.com',
+          // url: process.env.NODE_ENV === 'production' ? ApiUrl : '//www.lebole5.com',
+          url: process.env.NODE_ENV === 'production' ? ApiUrl : '//klc.lebole5.com',
           // iosUrl: '//api.caitou999.com/download/apk',
           title: '万游彩票',
           // androidUrl: '//api.caitou999.com/download/apk'
@@ -40,6 +41,7 @@ export default class Lottery {
           iosUrl: '//api.gdcp188.com/download/apk',
           title: '光大彩票',
           androidUrl: '//api.gdcp188.com/download/apk'
+
         }
       case 'yiren':
         return {
@@ -89,13 +91,61 @@ export default class Lottery {
           title: '天天彩票',
           androidUrl: '//app.titicp.com/download/apk'
         }
-      case 'crown':
+      case 'yile':
         return {
-          type: 'crown',
-          url: process.env.NODE_ENV === 'production' ? ApiUrl : '//crowncai.lebole5.com',
-          // iosUrl: 'https://www.ag33333.cc/download/apk',
-          title: '皇冠彩票',
-          // androidUrl: 'https://www.ag33333.cc/download/apk'
+          type: 'yile',
+          url: process.env.NODE_ENV === 'production' ? ApiUrl : '//yile.lebole5.com',
+          iosUrl: 'https://app.163774.com/download/apk',
+          title: 'e乐彩票',
+          androidUrl: 'https://app.163774.com/download/apk'
+        }
+      case 'fulicai':
+        return {
+          type: 'fulicai',
+          url: process.env.NODE_ENV === 'production' ? ApiUrl : '//fulicai.lebole5.com',
+          iosUrl: 'https://app.fuli520.app/download/apk ',
+          title: '福利彩票',
+          androidUrl: 'https://app.fuli520.app/download/apk '
+        }
+        case '618cp':
+          return {
+            type: '618cp',
+            url: process.env.NODE_ENV === 'production' ? ApiUrl : '//618cp.lebole5.com',
+            iosUrl: 'https://app.618cpcp.com/download/apk ',
+            title: '618彩票',
+            androidUrl: 'https://app.618cpcp.com/download/apk '
+          }
+      case 'ylh':
+        return {
+          type: 'ylh',
+          url: process.env.NODE_ENV === 'production' ? ApiUrl : '//ylh.lebole5.com',
+          iosUrl: 'https://app.ylh066.com/download/apk',
+          title: '永利会彩票',
+          androidUrl: 'https://app.ylh066.com/download/apk'
+        }
+      case 'yy':
+        return {
+          type: 'yy',
+          url: process.env.NODE_ENV === 'production' ? ApiUrl : '//yy.lebole5.com',
+          iosUrl: 'https://app.yycpcom1.com/download/apk',
+          title: 'YY彩票',
+          androidUrl: 'https://app.yycpcom1.com/download/apk'
+        }
+      case 'yiteng':
+        return {
+          type: 'yiteng',
+          url: process.env.NODE_ENV === 'production' ? ApiUrl : '//yiteng.lebole5.com',
+          iosUrl: 'https://it441.com/download/apk',
+          title: '亿腾彩票',
+          androidUrl: 'https://it441.com/download/apk'
+        }
+      case 'letian':
+        return {
+          type: 'letian',
+          url: process.env.NODE_ENV === 'production' ? ApiUrl : '//letian.lebole5.com',
+          iosUrl: 'https://app.lt238.com/download/apk',
+          title: '乐天彩票',
+          androidUrl: 'https://app.lt238.com/download/apk'
         }
       default:
         return {}
@@ -139,5 +189,14 @@ export default class Lottery {
       })
     }
     return []
+  }
+  getOid() {
+    var d = sessionStorage.getItem("im_token");
+    if (d) {
+      var c = d.length - 2;
+      return d.substr(1, c)
+    } else {
+      return false
+    }
   }
 }

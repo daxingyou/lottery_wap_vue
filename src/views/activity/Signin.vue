@@ -24,16 +24,16 @@
 		</div>
 		<div class="signinly" v-show="is_gd_ali=='ly'||is_gd_ali=='lv'">
 			<ul>
-				<li v-for="(item,index) in daycount"   ref ="lybgimg">
+				<li v-for="(item,index) in daycount" class="daylist" ref ="lybgimg">
 					<font>{{item}}</font>
 					<i @click='yesimg' v-show='item==day&&statusArr[day]==0'>可签到</i>
 					<img v-show="statusArr[item]=='1'||statusArr[item]=='3'" :src="lyimgsrc" alt="" />
 				</li>
 			</ul>
 		</div>
-	
+
 	</div>
-	<promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" 
+	<promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow"
    		:promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
 </template>
@@ -101,7 +101,7 @@
      			this.month=12
      		}
      		this.daycount = new Date(this.year,this.month,0).getDate();
-   
+
      },
      yesimg(){
      	 this.isWan = sessionStorage.getItem('im_username')
@@ -145,7 +145,7 @@
           	this.imghide = false
 						this.imMoney=this.imMoney+Number(res.data.money)
         		sessionStorage.setItem('im_money', this.imMoney)
-          	this.panelShow = true;       	
+          	this.panelShow = true;
           	this.successshow=true
           	if(res.data.money==0){
           		this.promptboxtext = "该帐号或IP今日已经领取过";
@@ -161,8 +161,13 @@
 								this.$refs.bgimg[parseInt(this.daycount)-1].style='background:url(../../../wap/images/gd/moneyyl.png) no-repeat;background-size: 100% 100%;'
 							}else if(this.is_gd_ali=='ali'){
 								this.$refs.aliimg[parseInt(this.daycount)-1].style='background:url(../../../wap/images/ali/moneybi.png) no-repeat;background-size: 100% 100%;'
-							}else if(this.is_gd_ali=='ly'||this.is_gd_ali=='lv'){
+							}else if(this.is_gd_ali=='ly'){
 								this.$refs.lybgimg[parseInt(this.daycount)-1].style='background:url(../../../wap/images/pn/moneylv.png) no-repeat;background-size: 100% 100%;'
+							}else if(this.is_gd_ali=='lv'){
+								if (this.is_gd_ali=='lv' && this.$refs.lybgimg.length > 28){
+									this.$refs.lybgimg[28].style = 'background:url(../../../wap/images/pn/moneylv.png) no-repeat;background-size: 100% 100%;';
+								}
+								// this.$refs.lybgimg[parseInt(this.daycount)-1].style='background:url(../../../wap/images/pn/moneylv.png) no-repeat;background-size: 100% 100%;'
 							}
 						}
 						break
@@ -178,12 +183,17 @@
 										if(this.is_gd_ali=='gd'){
 										this.$refs.bgimg[this.c-2].style='background:url(../../../wap/images/gd/moneyyl.png) no-repeat;background-size: 100% 100%;'
 									}else if(this.is_gd_ali=='ali'){
-										this.$refs.aliimg[this.c-2].style='background:url(../../../wap/images/ali/moneybi.png) no-repeat;background-size: 100% 100%;'	
-									}else if(this.is_gd_ali=='ly'||this.is_gd_ali=='lv'){
+										this.$refs.aliimg[this.c-2].style='background:url(../../../wap/images/ali/moneybi.png) no-repeat;background-size: 100% 100%;'
+									}else if(this.is_gd_ali=='ly'){
 											this.$refs.lybgimg[this.c-2].style='background:url(../../../wap/images/pn/moneylv.png) no-repeat;'
+									}else if(this.is_gd_ali=='lv'){
+										this.$refs.lybgimg[this.c-2].style='background:url(../../../wap/images/pn/moneylv.png) no-repeat;'
+										if (this.is_gd_ali=='lv' && this.$refs.lybgimg.length > 28){
+											this.$refs.lybgimg[27].style = 'background:none';
+										}
 									}
 								}
-							}							  
+							}
 						}
 					}
           		}else if(res.data.msg==9005){
@@ -224,7 +234,8 @@
 			            	path: '/login'
 			          	})
 			          },1000)
-		          	}
+					  }
+					  console.log(res.statusArr);
 					this.statusArr=res.data.statusArr
 					for(var a in this.statusArr){
 						if(this.statusArr[a]==1){
@@ -234,15 +245,20 @@
 									this.$refs.bgimg[parseInt(this.daycount)-1].style='background:url(../../../wap/images/gd/moneyyl.png) no-repeat;background-size: 100% 100%;'
 								}else if(this.is_gd_ali=='ali'){
 									this.$refs.aliimg[parseInt(this.daycount)-1].style='background:url(../../../wap/images/ali/moneybi.png) no-repeat;background-size: 100% 100%;'
-								}else if(this.is_gd_ali=='ly'||this.is_gd_ali=='lv'){
+								}else if(this.is_gd_ali=='ly'){
 									this.$refs.lybgimg[parseInt(this.daycount)-1].style='background:url(../../../wap/images/pn/moneylv.png) no-repeat;background-size: 100% 100%;'
+								}else if(this.is_gd_ali=='lv'){
+									if (this.is_gd_ali=='lv' && this.$refs.lybgimg.length > 28){
+										this.$refs.lybgimg[28].style = 'background:url(../../../wap/images/pn/moneylv.png) no-repeat;background-size: 100% 100%;';
+									}
+									// this.$refs.lybgimg[parseInt(this.daycount)-1].style='background:url(../../../wap/images/pn/moneylv.png) no-repeat;background-size: 100% 100%;'
 								}
 							}
 							break
 						}
 					}
 					this.dayj=a
-					if(this.dayj!=''){			   	 				
+					if(this.dayj!=''){
 						let b=parseInt((this.daycount-this.dayj)/7)
 							for (var i = 1; i <= b; i++){
 									this.c=Number(this.dayj) +i*7;
@@ -251,18 +267,23 @@
 											if(this.is_gd_ali=='gd'){
 												this.$refs.bgimg[this.c-2].style='background:url(../../../wap/images/gd/moneyyl.png) no-repeat;background-size: 100% 100%;'
 										}else if(this.is_gd_ali=='ali'){
-											this.$refs.aliimg[this.c-2].style='background:url(../../../wap/images/ali/moneybi.png) no-repeat;background-size: 100% 100%;'	
-										}else if(this.is_gd_ali=='ly'||this.is_gd_ali=='lv'){
+											this.$refs.aliimg[this.c-2].style='background:url(../../../wap/images/ali/moneybi.png) no-repeat;background-size: 100% 100%;'
+										}else if(this.is_gd_ali=='ly'){
 											this.$refs.lybgimg[this.c-2].style='background:url(../../../wap/images/pn/moneylv.png) no-repeat;'
+										}else if(this.is_gd_ali=='lv'){
+											this.$refs.lybgimg[this.c-2].style='background:url(../../../wap/images/pn/moneylv.png) no-repeat;'
+											if (this.is_gd_ali=='lv' && this.$refs.lybgimg.length > 28){
+												this.$refs.lybgimg[27].style = 'background:none';
+											}
 										}
 									}
-								}							  
+								}
 							}
 						}
 		   	 		}).catch(err => {
           				console.log(err)
           			})
-		   
+
 	    		}
 	 		 }
 </script>
@@ -281,7 +302,7 @@
     line-height: 90/46.875rem;
     text-align: center;
     z-index: 10;
-    position: fixed;
+    /*position: fixed;*/
     left: 0;
     top: 0;
     >i{
@@ -344,7 +365,7 @@
 						margin-top: 0.18rem;
 						position: absolute;
 						z-index:4;
-						
+
 					}
 				}
 			}
@@ -352,7 +373,7 @@
 		/*光大乐盈签到活动*/
 		.signingd{
 			width: 690/46.875rem;
-			height: 440/46.875rem;			
+			height: 440/46.875rem;
 			position: absolute;
 			left: 50%;
 			top: 13.7rem;
@@ -375,7 +396,7 @@
 					margin-left: 0.5rem;
 					color: #7f031c;
 					border-radius:50%;
-					position: relative;				
+					position: relative;
 					>img{
 						position: absolute;
    					left: 15%;
@@ -478,6 +499,6 @@
 				}
 			}
 		}
-	
+
 	}
 </style>

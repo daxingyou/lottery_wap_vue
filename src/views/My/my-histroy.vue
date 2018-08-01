@@ -103,13 +103,13 @@
           </li>
           <li class="clearfix">
             <span>下注金额</span>
-            <span>{{groups.money.toFixed(2)}}</span>
+            <span>{{groups.money}}</span>
           </li>
           <li class="gexian"></li>
 
           <li class="clearfix">
             <span>可赢金额</span>
-            <span>{{groups.win_money.toFixed(2)}}</span>
+            <span>{{groups.win_money}}</span>
           </li>
         </ul>
       </div>
@@ -133,16 +133,16 @@
           </li>
           <li class="clearfix">
             <span>下注金额</span>
-            <span>{{groups.money.toFixed(2)}}</span>
+            <span>{{groups.money}}</span>
           </li>
           <li class="gexian"></li>
           <li class="clearfix">
             <span>输赢结果</span>
-            <span style="color:#446fd4;">{{groups.win_money.toFixed(2)}}</span>
+            <span style="color:#446fd4;">{{groups.win_money}}</span>
           </li>
           <li class="clearfix">
             <span>下注退水</span>
-            <span>{{groups.retreat.toFixed(2)}}</span>
+            <span>{{groups.retreat}}</span>
           </li>
         </ul>
       </div>

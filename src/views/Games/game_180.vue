@@ -1,908 +1,90 @@
-
-<style lang="less" rel="stylesheet/less" scoped>
-@import "../../assets/less/variable.less";
-.bjkl8-view {
-  height: 100%;
-}
-button {
-  outline: none;
-}
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s;
-}
-/* .fade-leave-active in <2.1.8 */
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
-h3 {
-  display: block;
-  background: red;
-  width: 100%;
-  height: 1.5rem;
-  line-height: 1.5rem;
-  font-size: 12/20rem;
-  margin: 0;
-  text-align: center;
-  background: #666;
-  color: #fcfcfc;
-}
-.cqList {
-  display: flex;
-  flex-flow: row wrap;
-  li {
-    width: 180/45rem;
-    div {
-      text-align: center;
-      width: 3.5rem;
-      height: 89/45rem;
-      border: 1px solid #e5e5e5;
-      margin: 18/45rem auto;
-      background: #fff;
-      line-height: 40/45rem;
-      border-radius: 3/20rem;
-      span {
-        color: #5084e2;
-        font-size: 0.6rem;
-        font-family: Arial !important;
-        display: block;
-        width: 100%;
-        height: 40%;
-        line-height: 0.9rem;
-        background: linear-gradient(#eef1f5, #fff);
-        background: -webkit-linear-gradient(#eef1f5, #fff);
-      }
-
-      strong {
-        line-height: 1.5;
-        height: 60%;
-        display: block;
-        font-size: 0.7rem;
-        font-weight: normal;
-      }
-    }
-    .active {
-      border: 1/20rem solid #156bda;
-      span:nth-of-type(1) {
-        background: red;
-        color: #fff;
-      }
-    }
-    .isred {
-      border: 1/20rem solid #156bda;
-      box-sizing: border-box;
-      span:nth-of-type(2) {
-        background: #3261d8;
-        color: #fff;
-      }
-    }
-  }
-}
-.cqList1 {
-  min-height: 320/20rem;
-  li {
-    width: 100%;
-    text-align: center;
-    > span {
-      display: block;
-      background: red;
-      width: 100%;
-      height: 1.5rem;
-      line-height: 1.5rem;
-      font-size: 12/20rem;
-      text-align: center;
-      border: 1px solid #fff;
-      background: -webkit-radial-gradient(#555, #2a2926);
-      color: #fcfcfc;
-    }
-    ul {
-      li {
-        display: inline-block;
-        // width: 3.75rem;
-        width: 2.8rem;
-        button {
-          position: relative;
-
-          outline: 0;
-          text-align: center;
-          // width: 3.5rem;
-          width: 100%;
-          margin: 0 auto;
-          height: 89/45rem;
-          padding: 0;
-          border: 1px solid #e5e5e5;
-          margin: 18/45rem auto 0;
-          background: #fff;
-          line-height: 40/45rem;
-          border-radius: 3/20rem;
-          > span:nth-child(2) {
-            color: #5084e2;
-            font-size: 14/40rem;
-            font-family: Arial !important;
-            display: block;
-            width: 100%;
-            height: 40%;
-            line-height: 0.9rem;
-            background: linear-gradient(#eef1f5, #fff);
-            background: -webkit-linear-gradient(#eef1f5, #fff);
-          }
-          > span:nth-child(1) {
-            line-height: 1.5;
-            height: 60%;
-            display: block;
-            font-size: 32/40rem;
-          }
-          > span:first-child {
-            line-height: 1.2rem;
-            height: 1.2rem;
-            margin: 0 auto;
-            width: 1.2rem;
-            display: block;
-            font-size: 0.65rem;
-            border-radius: 50%;
-            color: #fff;
-          }
-          > span.icon-gray-f-ball {
-            background: url("@{public_img}/images/gray_f_ball.png") no-repeat;
-            background-size: 100%;
-            color: #000;
-          }
-          > span.icon-blue-f-ball {
-            background: url("@{public_img}/images/blue_f_ball.png") no-repeat;
-            background-size: 100%;
-            color: #fff;
-          }
-        }
-        .active {
-          border: 2px solid #1366dc;
-          box-sizing: border-box;
-
-          background-size: 16/45rem 16/45rem;
-        }
-
-        .active {
-          border: 1/20rem solid #156bda;
-          span:nth-of-type(2) {
-            background: #3261d8;
-            color: #fff;
-          }
-        }
-        .isred {
-          border: 2px solid #ff2312;
-          box-sizing: border-box;
-        }
-      }
-    }
-  }
-}
-.cqList {
-  > li {
-    .active {
-      border: 1/20rem solid red;
-      position: relative;
-      border-radius: 3/20rem;
-    }
-  }
-}
-.fp {
-  width: 100%;
-  height: 40/20rem;
-  position: fixed;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0);
-  display: flex;
-  justify-content: center;
-  color: white;
-  font-size: 30/20rem;
-  text-shadow: -2px 1px 1px rgba(0, 0, 0, 0.6);
-  align-items: center;
-  letter-spacing: 15/20rem;
-  box-sizing: border-box;
-  z-index: 1000;
-}
-
-.mu-appbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: #146cdc;
-  color: #fff;
-  height: 44px;
-}
-
-.jtcaizg {
-  background: #fff;
-  clear: both;
-  height: auto;
-  overflow: hidden;
-  padding: 10px;
-  margin-top: 44px;
-}
-.indexkjdt {
-  height: auto;
-  clear: both;
-}
-.indexkjdt h3 {
-  font-size: 14px;
-  height: 29px;
-  line-height: 25px;
-  margin: 0;
-}
-.indexkjdt img {
-  width: 100%;
-  -webkit-border-radius: 50%;
-  -moz-border-radius: 50%;
-  border-radius: 50%;
-}
-.spaninri a {
-  float: right;
-  color: #fff;
-  padding: 0 10px;
-  margin-right: 10px;
-  font-size: 12px;
-  height: 21px;
-  line-height: 21px;
-  font-weight: 500;
-  background: #f00;
-  -webkit-border-radius: 18px;
-  -moz-border-radius: 18px;
-  border-radius: 18px;
-}
-.indexkjdt p span {
-  color: #f00;
-}
-.indexkjdc {
-  display: flex;
-  height: 27/20rem;
-}
-.font_s {
-  width: 42/20rem;
-}
-.indexkjdc .title {
-  height: 29/20rem;
-}
-.indexkjdc i {
-  float: right;
-}
-.indexkjdc i a {
-  padding: 2px 6px;
-  color: #fff;
-  background: #36aafb;
-  font-size: 12px;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
-}
-.pcznavc {
-  clear: both;
-  background: white;
-  display: flex;
-  justify-content: space-between;
-  border-top: 1px solid #e67074;
-  padding: 5/20rem;
-}
-.pcznavc a {
-  padding: 0 11px;
-  font-size: 12px;
-  background: #fff;
-  color: #333;
-  -webkit-border-radius: 15px;
-  -moz-border-radius: 15px;
-  border-radius: 15px;
-  border: 1px solid #36aafb;
-}
-.pcznavc .a {
-  background: #36aafb;
-  color: #fff;
-}
-.pcznavc i {
-  border-right: 1px solid #e67074;
-}
-.form {
-  display: block;
-  margin-top: 0;
-}
-.font_b {
-  width: 52/20rem;
-  display: inline-block;
-}
-.pptitle {
-  clear: both;
-  font-size: 16px;
-  font-weight: 600;
-}
-.title_b {
-  width: 51/20rem;
-  display: inline-block;
-  color: rgb(54, 170, 251);
-}
-
-.form {
-  > ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    width: 100%;
-    background: #fff;
-    padding-bottom: 110/20rem;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
-
-    > h3 {
-      width: 100%;
-      padding: 5/20rem;
-      margin-top: 5/20rem;
-      margin-bottom: 5/20rem;
-      color: #d1506d;
-      background: -webkit-linear-gradient(
-        right,
-        rgba(255, 255, 255, 1) 0%,
-        #ffe8e8 100%
-      );
-      /* Chrome10-25,Safari5.1-6 */
-    }
-    > li {
-      width: 50%;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      margin-bottom: 3/20rem;
-      input {
-        width: 40%;
-      }
-      > span:nth-of-type(1) {
-        width: 22/20rem;
-      }
-    }
-    span {
-      font-size: 16/20rem;
-      display: inline-block;
-    }
-  }
-}
-.odds_class {
-  color: #c35f62;
-}
-.bet_bar {
-  width: 100%;
-  z-index: 999;
-  // position: fixed;
-  bottom: 52px;
-  display: flex;
-  justify-content: space-around;
-  height: 55/20rem;
-  padding: 9/20rem;
-  background: -webkit-linear-gradient(
-    top,
-    #e67074 0%,
-    #e67074 24%,
-    #e67074 44%,
-    #e67074 100%
-  );
-  /* Chrome10-25,Safari5.1-6 */
-  font-size: 16/20rem;
-  input {
-    outline: 0;
-    background: rgba(255, 255, 255, 0.9);
-    border: 0;
-    margin-right: 10/20rem;
-    line-height: 1.25rem;
-    padding: 0;
-  }
-  button {
-    border: 0;
-    /* border-radius: 2px;*/
-  }
-  button:nth-of-type(1) {
-    color: white;
-    background: #2f64d4;
-    margin-right: 7/20rem;
-  }
-  button:nth-of-type(2) {
-    color: white;
-    background: #78c401;
-  }
-  .disable {
-    background: #376cd4;
-  }
-  > div:nth-of-type(3) {
-    position: relative;
-    font-size: 15/20rem;
-    > span {
-      font-size: 12/20rem;
-      position: absolute;
-      top: -11/20rem;
-      left: -7/20rem;
-      color: #fff;
-      width: 20/20rem;
-      height: 20/20rem;
-      border-radius: 10/20rem;
-      background: red;
-      box-shadow: 0 2/20rem 1/20rem rgba(0, 0, 0, 0.5);
-    }
-  }
-}
-.header_bar {
-  z-index: 990;
-  background: #146cdc;
-  color: #fff;
-  font-size: 16/20rem;
-  width: 100%;
-  position: fixed;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 5/20rem;
-  height: 38/20rem;
-  box-shadow: 0 0.06rem 0.6rem rgba(0, 0, 0, 0.3);
-  .header_title {
-    display: flex;
-    align-items: center;
-  }
-  .back {
-    padding: 4/20rem;
-  }
-}
-.jtc_titl {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  > div:nth-of-type(1) {
-    width: 15%;
-  }
-  > div:nth-of-type(2) {
-    > div:nth-of-type(2) {
-      font-size: 12/20rem;
-    }
-  }
-  .font_b {
-    width: 30/20rem;
-  }
-  .font_a {
-    display: inline-block;
-    width: 55/20rem;
-  }
-}
-.indexkjdc {
-  margin-top: 5/20rem;
-}
-.bet {
-  /*   margin-bottom: 39/20rem;*/
-  background: #dde5ec;
-  margin-top: 0.3rem;
-  > ul {
-    > li {
-      width: 20%;
-      float: left; // display: inline-block;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      background: #f6f6f6;
-      > span {
-        display: block;
-        background: #666666;
-        width: 100%;
-        height: 1.5rem;
-        line-height: 1.5rem;
-        font-size: 12/20rem;
-        text-align: center;
-        color: #cccccc;
-      }
-      > ul {
-        button {
-          outline: 0;
-          border: 1/20rem solid #eaeaea;
-          // display: flex;
-          // justify-content: space-around;
-          // flex-direction: column;
-          width: 2.85rem;
-          height: 41/20rem;
-          padding: 0;
-          align-items: center;
-          margin: 4/20rem 0;
-          position: relative;
-          background: #fff;
-          border-radius: 3/20rem;
-          > span:nth-of-type(2) {
-            color: #5084e2;
-            font-size: 12/20rem;
-            font-family: Arial !important;
-            display: block;
-            width: 100%;
-            height: 40%;
-            line-height: 0.9rem;
-            background: #f2f2f2;
-          }
-          > span:nth-of-type(1) {
-            line-height: 1.5;
-            height: 60%;
-            display: block;
-            font-size: 32/40rem;
-          }
-        }
-        > li:nth-last-of-type(1) {
-          margin-bottom: 9/20rem;
-        }
-        .active {
-          border: 1/20rem solid #156bda;
-          span:nth-of-type(2) {
-            background: #3261d8;
-            color: #fff;
-          }
-        }
-      }
-    }
-  }
-}
-.bet_bar {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  display: flex;
-  justify-content: space-between;
-  height: 39/20rem;
-  background: white;
-  align-items: center;
-  padding: 0;
-  box-shadow: 0 0.06rem 1rem rgba(0, 0, 0, 0.5);
-  > div {
-    width: 33.33%;
-    text-align: center;
-    input {
-      width: 86/20rem;
-      padding: 0;
-      margin: 0;
-    }
-  }
-  > div:nth-of-type(1) {
-    width: 130/46.875rem;
-    background-color: #eeeeee;
-    height: 66/46.875rem;
-    line-height: 66/46.875rem;
-    border-radius: 10%;
-    border: 1px solid #eaeaea;
-    box-sizing: border-box;
-    text-align: center;
-    margin-left: 2%;
-  }
-  > div:nth-of-type(2) {
-    width: 382/46.875rem;
-    /* line-height:1rem;*/
-    border: 1px solid #dedede;
-    border-radius: 5/20rem;
-    > span {
-      left: 0.2rem;
-      top: 0.2rem;
-      z-index: 5;
-      position: absolute;
-      color: #ffffff;
-      width: 45/46.875rem;
-      height: 45/46.875rem;
-      line-height: 1.15rem;
-      margin-right: 0.2rem;
-      display: inline-block;
-      background: url("@{public_img}/images/moneybao.png") no-repeat;
-      background-size: 100% 100%;
-      font-size: 0.5rem;
-    }
-    // background-color: red;
-    input {
-      width: 80%;
-      padding: 0rem;
-      margin: 0;
-    }
-  }
-  > div:nth-of-type(3) {
-    width: 180/46.875rem;
-  }
-  button {
-    display: block;
-    width: 100%;
-    height: 39/20rem;
-    border: 0;
-    background: #177bdd;
-    padding: 0 !important;
-    color: white;
-  }
-}
-.iconfont_reset {
-  width: 1rem;
-  height: 1rem;
-  display: inline-block;
-  vertical-align: middle;
-  margin-right: 0.3rem;
-  margin-top: -2px;
-  background: url("@{public_img}/images/resx.png") no-repeat;
-  background-size: 100% 100%;
-}
-.lottery_nav_bar {
-  width: 320/20rem;
-  z-index: 1;
-  ul {
-    height: 30/20rem;
-    color: white;
-    box-sizing: border-box;
-    font-size: 0;
-    display: flex;
-    button {
-      font-size: 14/20rem;
-      text-align: center;
-      padding: 0;
-      background: #1366dc;
-      border: 0;
-      outline: 0;
-      color: white;
-      padding: 8/20rem 0;
-    }
-    .active {
-      background: #1f97f6;
-    }
-  }
-}
-.gyh {
-  > ul {
-    flex-direction: column;
-    > li {
-      width: 100%;
-      > ul {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        padding: 0 10/20rem;
-        justify-content: space-between;
-        > li {
-          width: 63/20rem;
-          height: 50/20rem;
-          margin: 5/20rem;
-        }
-        > li:nth-last-of-type(1),
-        > li:nth-last-of-type(3),
-        > li:nth-last-of-type(4),
-        > li:nth-last-of-type(5),
-        > li:nth-last-of-type(2) {
-          width: 50/20rem;
-          height: 50/20rem;
-        }
-      }
-    }
-    > li:nth-of-type(2) {
-      > ul {
-        > li {
-          width: 63/20rem;
-          height: 50/20rem;
-          margin: 5/20rem;
-        }
-      }
-    }
-  }
-}
-.icon-lajitong {
-  font-size: 25/20rem;
-}
-.qin {
-  /*margin-left:-8px;*/
-}
-.lajiton-active {
-  color: #36aafb;
-}
-.cqnc_lmp {
-  > ul {
-    > li {
-      // background: white!important;
-      width: 25%;
-      > ul {
-        > li {
-          > button {
-            width: 3.5rem;
-          }
-        }
-      }
-    }
-    > li:nth-of-type(1) {
-      width: 100%;
-      ul {
-        width: 100%;
-        display: flex;
-        flex-wrap: wrap;
-        padding: 0 7/20rem;
-        justify-content: space-between;
-        > li {
-          display: inline-block;
-          margin: 0 3/20rem;
-          button {
-            // width: 70/20rem;
-            width: 95/20rem;
-            height: 45/20rem;
-          }
-        }
-      }
-    }
-  }
-}
-.cqnc_ys {
-  > ul {
-    > li {
-      width: 25%;
-      button {
-        width: 3.5rem !important;
-      }
-    }
-  }
-}
-.regulation {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(7, 17, 27, 0.8);
-  z-index: 999;
-  top: 0;
-  color: white;
-  font-size: 12/20rem;
-  overflow-y: scroll;
-  > div {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    > div {
-      padding-left: 15/20rem;
-      padding-right: 15/20rem;
-      margin-top: 5/20rem;
-      margin-bottom: 5/20rem;
-    }
-  }
-  h5 {
-    font-size: 14/20rem;
-  }
-  .header_regu {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20/20rem;
-    padding-left: 0;
-    h5 {
-      margin: 0;
-    }
-    > div:nth-of-type(1) {
-      border-bottom: 1/20rem solid white;
-      width: 80/20rem;
-      transform: translate(29/20rem, -9/20rem);
-    }
-    > div:nth-last-of-type(1) {
-      border-bottom: 1/20rem solid white;
-      width: 80/20rem;
-      transform: translate(-29/20rem, -9/20rem);
-    }
-  }
-  .icon {
-    position: absolute;
-    right: 4/20rem;
-    top: 0;
-    font-size: 26/20rem;
-  }
-}
-.game_main {
-  height: 568/20rem;
-  overflow: scroll;
-}
-
-.main-panel {
-  position: absolute;
-  top: 0;
-  bottom: 2.45rem;
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
-  width: 100%;
-}
-
-.bjkl8-view {
-  .nav-wp {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    button {
-      width: 50%;
-    }
-  }
-  .zheng-ls-wp {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-  }
-  .bet {
-    margin-top: 0;
-  }
-}
-.visab-h {
-  visibility: hidden;
-}
-
-</style>
-
 <template>
     <article class="bjkl8-view">
         <dailog-q :gametoken="gametoken" :type_code="activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
         <dailog-s :gametoken="gametoken" :type_code="activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" :typecode="activeSubId" v-if="showDailogS" v-on:listenToChildEvent="showMsgFromChild"></dailog-s>
         <lotteryHeader :title="title" :game_code="game_code" @regulation_click="regulation_control=true"></lotteryHeader>
 
-         <div class="main-panel">
+        <gameChat>
+          <div class="main-panel" style=" overflow-x: hidden; overflow-y: auto; padding-bottom: 2rem;">
             <lotteryArea class="game_180" :gameCode="game_code" :lotteryObj="body" :zMoney="zMoney" :fenpan="fengpan" :endtime="endtime" :fentime="fentime" v-if="isOk" gameType="180"></lotteryArea>
             <div class="lottery_nav_bar"  :style='de==true||loadpage==true?"display:none":"display:block"'>
               <ul >
                 <li class="nav-wp">
-                <button class="trapezoid color1" v-for="(item,i) in bjkl8Classify" :class="{active8: activeClassifyId === item.type_code}" @click="changeDate(item,i)">
-                  <span>{{item.name}}</span>
-                </button>
+                  <button class="trapezoid color1" v-for="(item,i) in bjkl8Classify" :class="{active8: activeClassifyId === item.type_code}" @click="changeDate(item,i)">
+                    <span>{{item.name}}</span>
+                  </button>
                 </li>
               </ul>
             </div>
             <section  :style='de==true||loadpage==true?"display:none":"display:block"' :class='setSectionClass' ref="seller">
-                <ul class="clearfix">
-                    <li> 
-                          <template v-if="activeClassifyId == 5000 && currentGame.length > 0">
-                            <span class="colortitle">总和、总和过关</span>
-                            <ul >
-                              <li v-for="(ite,i) in currentGame[0].list[0]">
-                                <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(ite, '总和、总和过关')" :disabled="fengpan||round=='loading'">
-                                  <span>{{ite.name}}</span>
-                                  <span  v-if='ite.odds?true:false'  class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
-                                  <span  v-if="(fengpan||round=='loading')&&(ite.odds?false:true)" class="odd">封盘</span>
-                                </button>
-                              </li>
-                            </ul>
+              <ul class="clearfix">
+                <li>
+                  <template v-if="activeClassifyId == 5000 && currentGame.length > 0">
+                    <span class="colortitle">总和、总和过关</span>
+                    <ul >
+                      <li v-for="(ite,i) in currentGame[0].list[0]">
+                        <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(ite, '总和、总和过关')" :disabled="fengpan||round=='loading'">
+                          <span>{{ite.name}}</span>
+                          <span  v-if='ite.odds?true:false'  class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
+                          <span  v-if="(fengpan||round=='loading')&&(ite.odds?false:true)" class="odd">封盘</span>
+                        </button>
+                      </li>
+                    </ul>
 
-                            <span class="colortitle">前后和</span>
-                            <ul>
-                              <li v-for="(ite,i) in currentGame[0].list[1]">
-                                <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(ite, '前后和')" :disabled="fengpan||round=='loading'">
-                                  <span>{{ite.name}}</span>
-                                  <span  v-if='ite.odds?true:false'  class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
-                                  <span  v-if="(fengpan||round=='loading')&&(ite.odds?false:true)" class="odd">封盘</span>
-                                </button>
-                              </li>
-                            </ul>
-                            
-                            <span class="colortitle">单双和</span>
-                            <ul>
-                              <li v-for="(ite,i) in currentGame[0].list[2]">
-                                <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(ite, '单双和')" :disabled="fengpan||round=='loading'">
-                                  <span>{{ite.name}}</span>
-                                  <span  v-if='ite.odds?true:false'  class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
-                                  <span  v-if="(fengpan||round=='loading')&&(ite.odds?false:true)" class="odd">封盘</span>
-                                </button>
-                              </li>
-                            </ul>
+                    <span class="colortitle">前后和</span>
+                    <ul>
+                      <li v-for="(ite,i) in currentGame[0].list[1]">
+                        <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(ite, '前后和')" :disabled="fengpan||round=='loading'">
+                          <span>{{ite.name}}</span>
+                          <span  v-if='ite.odds?true:false'  class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
+                          <span  v-if="(fengpan||round=='loading')&&(ite.odds?false:true)" class="odd">封盘</span>
+                        </button>
+                      </li>
+                    </ul>
 
-                            <span class="colortitle">五行</span>
-                            <ul>
-                              <li v-for="(ite,i) in currentGame[0].list[3]">
-                                <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(ite, '五行')" :disabled="fengpan||round=='loading'">
-                                  <span>{{ite.name}}</span>
-                                  <span  v-if='ite.odds?true:false'  class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
-                                  <span  v-if="(fengpan||round=='loading')&&(ite.odds?false:true)" class="odd">封盘</span>
-                                </button>
-                              </li>
-                              <li class="visab-h"><button>&nbsp;</button></li>
-                            </ul>
-                          </template>
-                          
-                          <template v-if="activeClassifyId == 5035 && currentGame.length > 0">
-                            <ul class="zheng-ls-wp">
-                              <li v-for="(ite,i) in currentGame[0].list">
-                                <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(ite, '正码')" :disabled="fengpan||round=='loading'">
-                                  <span :class="ite.name <= 40 ? 'icon-gray-f-ball' : 'icon-blue-f-ball'">{{ite.name}}</span>
-                                  <span v-if='ite.odds?true:false'  class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
-                                  <span v-if="(fengpan||round=='loading')&&(ite.odds?false:true)" class="odd">封盘</span>
-                                </button>
-                              </li>
-                            </ul>
-                          </template>
-                    </li>
-                </ul>
+                    <span class="colortitle">单双和</span>
+                    <ul>
+                      <li v-for="(ite,i) in currentGame[0].list[2]">
+                        <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(ite, '单双和')" :disabled="fengpan||round=='loading'">
+                          <span>{{ite.name}}</span>
+                          <span  v-if='ite.odds?true:false'  class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
+                          <span  v-if="(fengpan||round=='loading')&&(ite.odds?false:true)" class="odd">封盘</span>
+                        </button>
+                      </li>
+                    </ul>
+
+                    <span class="colortitle">五行</span>
+                    <ul>
+                      <li v-for="(ite,i) in currentGame[0].list[3]">
+                        <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(ite, '五行')" :disabled="fengpan||round=='loading'">
+                          <span>{{ite.name}}</span>
+                          <span  v-if='ite.odds?true:false'  class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
+                          <span  v-if="(fengpan||round=='loading')&&(ite.odds?false:true)" class="odd">封盘</span>
+                        </button>
+                      </li>
+                      <li class="visab-h"><button>&nbsp;</button></li>
+                    </ul>
+                  </template>
+
+                  <template v-if="activeClassifyId == 5035 && currentGame.length > 0">
+                    <ul class="zheng-ls-wp">
+                      <li v-for="(ite,i) in currentGame[0].list">
+                        <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(ite, '正码')" :disabled="fengpan||round=='loading'">
+                          <span :class="ite.name <= 40 ? 'icon-gray-f-ball' : 'icon-blue-f-ball'">{{ite.name}}</span>
+                          <span v-if='ite.odds?true:false'  class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
+                          <span v-if="(fengpan||round=='loading')&&(ite.odds?false:true)" class="odd">封盘</span>
+                        </button>
+                      </li>
+                    </ul>
+                  </template>
+                </li>
+              </ul>
             </section>
             <Loadpage v-if='loadpage'></Loadpage>
             <luzhu gameCode="180"/>
-        </div>
-      
-        <section class="bet_bar"  ref="bet_bar">
+          </div>
+
+          <section class="bet_bar"  ref="bet_bar">
             <div>
               <span class="qin" @click="qingkong">重置</span>
             </div>
@@ -912,13 +94,15 @@ h3 {
               </div>
             </div>
             <div><button class="gdcolor"  :class="{color1:isBlue}" type="button"   @click="subMit">确认下注</button></div>
-        </section>
+          </section>
 
-        <div :style='de?"display:block":"display:none"' style="position: fixed;top:0;left:0;background:rgba(0,0,0,0.5);opacity:.8;width:100%;height:100%;z-index:6">
-          <div style='position: fixed;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;'>
+          <div :style='de?"display:block":"display:none"' style="position: fixed;top:0;left:0;background:rgba(0,0,0,0.5);opacity:.8;width:100%;height:100%;z-index:6">
+            <div style='position: fixed;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;'>
               <mu-circular-progress style="" :size="40" />
+            </div>
           </div>
-        </div>
+        </gameChat>
+
         <promptbox  @panelShow="panelShow=false" :promptboxshow="promptboxshow" :panelShow="panelShow" :promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
 
     </article>
@@ -937,6 +121,7 @@ import { getEvenCode } from "./klsf.config";
 import api from "@/api";
 import promptbox from "../../components/promptbox";
 import luzhu from '../../components/luzhu';
+import gameChat from '@/components/game-chat/index';
 export default {
   data() {
     return {
@@ -1319,6 +504,7 @@ export default {
               Number(res.data.next.round.split("-")[1]) -
               Number(res.data.last.round.split("-")[1]);
             localStorage.setItem("gd_roundCha", JSON.stringify(this.roundCha));
+            console.log(this.roundCha)
           }
         })
         .catch(() => {
@@ -1453,7 +639,824 @@ export default {
     dailogS,
     Loadpage,
     promptbox,
-    luzhu
+    luzhu,
+    gameChat
   }
 };
 </script>
+<style lang="less" rel="stylesheet/less" scoped>
+  @import "../../assets/less/variable.less";
+  .bjkl8-view {
+    height: 100%;
+  }
+  button {
+    outline: none;
+  }
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.2s;
+  }
+  /* .fade-leave-active in <2.1.8 */
+  .fade-enter,
+  .fade-leave-to {
+    opacity: 0;
+  }
+  h3 {
+    display: block;
+    background: red;
+    width: 100%;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    font-size: 12/20rem;
+    margin: 0;
+    text-align: center;
+    background: #666;
+    color: #fcfcfc;
+  }
+  .cqList {
+    display: flex;
+    flex-flow: row wrap;
+    li {
+      width: 180/45rem;
+      div {
+        text-align: center;
+        width: 3.5rem;
+        height: 89/45rem;
+        border: 1px solid #e5e5e5;
+        margin: 18/45rem auto;
+        background: #fff;
+        line-height: 40/45rem;
+        border-radius: 3/20rem;
+        span {
+          color: #5084e2;
+          font-size: 0.6rem;
+          font-family: Arial !important;
+          display: block;
+          width: 100%;
+          height: 40%;
+          line-height: 0.9rem;
+          background: linear-gradient(#eef1f5, #fff);
+          background: -webkit-linear-gradient(#eef1f5, #fff);
+        }
+
+        strong {
+          line-height: 1.5;
+          height: 60%;
+          display: block;
+          font-size: 0.7rem;
+          font-weight: normal;
+        }
+      }
+      .active {
+        border: 1/20rem solid #156bda;
+        span:nth-of-type(1) {
+          background: red;
+          color: #fff;
+        }
+      }
+      .isred {
+        border: 1/20rem solid #156bda;
+        box-sizing: border-box;
+        span:nth-of-type(2) {
+          background: #3261d8;
+          color: #fff;
+        }
+      }
+    }
+  }
+  .cqList1 {
+    min-height: 320/20rem;
+    li {
+      width: 100%;
+      text-align: center;
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      ul {
+        li {
+          display: inline-block;
+          // width: 3.75rem;
+          width: 2.8rem;
+          button {
+            position: relative;
+
+            outline: 0;
+            text-align: center;
+            // width: 3.5rem;
+            width: 100%;
+            margin: 0 auto;
+            height: 89/45rem;
+            padding: 0;
+            border: 1px solid #e5e5e5;
+            margin: 18/45rem auto 0;
+            background: #fff;
+            line-height: 40/45rem;
+            border-radius: 3/20rem;
+            > span:nth-child(2) {
+              color: #5084e2;
+              font-size: 14/40rem;
+              font-family: Arial !important;
+              display: block;
+              width: 100%;
+              height: 40%;
+              line-height: 0.9rem;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+            }
+            > span:nth-child(1) {
+              line-height: 1.5;
+              height: 60%;
+              display: block;
+              font-size: 32/40rem;
+            }
+            > span:first-child {
+              line-height: 1.2rem;
+              height: 1.2rem;
+              margin: 0 auto;
+              width: 1.2rem;
+              display: block;
+              font-size: 0.65rem;
+              border-radius: 50%;
+              color: #fff;
+            }
+            > span.icon-gray-f-ball {
+              background: url("@{public_img}/images/gray_f_ball.png") no-repeat;
+              background-size: 100%;
+              color: #000;
+            }
+            > span.icon-blue-f-ball {
+              background: url("@{public_img}/images/blue_f_ball.png") no-repeat;
+              background-size: 100%;
+              color: #fff;
+            }
+          }
+          .active {
+            border: 2px solid #1366dc;
+            box-sizing: border-box;
+
+            background-size: 16/45rem 16/45rem;
+          }
+
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+          .isred {
+            border: 2px solid #ff2312;
+            box-sizing: border-box;
+          }
+        }
+      }
+    }
+  }
+  .cqList {
+    > li {
+      .active {
+        border: 1/20rem solid red;
+        position: relative;
+        border-radius: 3/20rem;
+      }
+    }
+  }
+  .fp {
+    width: 100%;
+    height: 40/20rem;
+    position: fixed;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0);
+    display: flex;
+    justify-content: center;
+    color: white;
+    font-size: 30/20rem;
+    text-shadow: -2px 1px 1px rgba(0, 0, 0, 0.6);
+    align-items: center;
+    letter-spacing: 15/20rem;
+    box-sizing: border-box;
+    z-index: 1000;
+  }
+
+  .mu-appbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #146cdc;
+    color: #fff;
+    height: 44px;
+  }
+
+  .jtcaizg {
+    background: #fff;
+    clear: both;
+    height: auto;
+    overflow: hidden;
+    padding: 10px;
+    margin-top: 44px;
+  }
+  .indexkjdt {
+    height: auto;
+    clear: both;
+  }
+  .indexkjdt h3 {
+    font-size: 14px;
+    height: 29px;
+    line-height: 25px;
+    margin: 0;
+  }
+  .indexkjdt img {
+    width: 100%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+  }
+  .spaninri a {
+    float: right;
+    color: #fff;
+    padding: 0 10px;
+    margin-right: 10px;
+    font-size: 12px;
+    height: 21px;
+    line-height: 21px;
+    font-weight: 500;
+    background: #f00;
+    -webkit-border-radius: 18px;
+    -moz-border-radius: 18px;
+    border-radius: 18px;
+  }
+  .indexkjdt p span {
+    color: #f00;
+  }
+  .indexkjdc {
+    display: flex;
+    height: 27/20rem;
+  }
+  .font_s {
+    width: 42/20rem;
+  }
+  .indexkjdc .title {
+    height: 29/20rem;
+  }
+  .indexkjdc i {
+    float: right;
+  }
+  .indexkjdc i a {
+    padding: 2px 6px;
+    color: #fff;
+    background: #36aafb;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+  }
+  .pcznavc {
+    clear: both;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #e67074;
+    padding: 5/20rem;
+  }
+  .pcznavc a {
+    padding: 0 11px;
+    font-size: 12px;
+    background: #fff;
+    color: #333;
+    -webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+    border: 1px solid #36aafb;
+  }
+  .pcznavc .a {
+    background: #36aafb;
+    color: #fff;
+  }
+  .pcznavc i {
+    border-right: 1px solid #e67074;
+  }
+  .form {
+    display: block;
+    margin-top: 0;
+  }
+  .font_b {
+    width: 52/20rem;
+    display: inline-block;
+  }
+  .pptitle {
+    clear: both;
+    font-size: 16px;
+    font-weight: 600;
+  }
+  .title_b {
+    width: 51/20rem;
+    display: inline-block;
+    color: rgb(54, 170, 251);
+  }
+
+  .form {
+    > ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      width: 100%;
+      background: #fff;
+      padding-bottom: 110/20rem;
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+
+      > h3 {
+        width: 100%;
+        padding: 5/20rem;
+        margin-top: 5/20rem;
+        margin-bottom: 5/20rem;
+        color: #d1506d;
+        background: -webkit-linear-gradient(
+          right,
+          rgba(255, 255, 255, 1) 0%,
+          #ffe8e8 100%
+        );
+        /* Chrome10-25,Safari5.1-6 */
+      }
+      > li {
+        width: 50%;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 3/20rem;
+        input {
+          width: 40%;
+        }
+        > span:nth-of-type(1) {
+          width: 22/20rem;
+        }
+      }
+      span {
+        font-size: 16/20rem;
+        display: inline-block;
+      }
+    }
+  }
+  .odds_class {
+    color: #c35f62;
+  }
+  .bet_bar {
+    width: 100%;
+    z-index: 999;
+    // position: fixed;
+    bottom: 52px;
+    display: flex;
+    justify-content: space-around;
+    height: 55/20rem;
+    padding: 9/20rem;
+    background: -webkit-linear-gradient(
+      top,
+      #e67074 0%,
+      #e67074 24%,
+      #e67074 44%,
+      #e67074 100%
+    );
+    /* Chrome10-25,Safari5.1-6 */
+    font-size: 16/20rem;
+    input {
+      outline: 0;
+      background: rgba(255, 255, 255, 0.9);
+      border: 0;
+      margin-right: 10/20rem;
+      line-height: 1.25rem;
+      padding: 0;
+    }
+    button {
+      border: 0;
+      /* border-radius: 2px;*/
+    }
+    button:nth-of-type(1) {
+      color: white;
+      background: #2f64d4;
+      margin-right: 7/20rem;
+    }
+    button:nth-of-type(2) {
+      color: white;
+      background: #78c401;
+    }
+    .disable {
+      background: #376cd4;
+    }
+    > div:nth-of-type(3) {
+      position: relative;
+      font-size: 15/20rem;
+      > span {
+        font-size: 12/20rem;
+        position: absolute;
+        top: -11/20rem;
+        left: -7/20rem;
+        color: #fff;
+        width: 20/20rem;
+        height: 20/20rem;
+        border-radius: 10/20rem;
+        background: red;
+        box-shadow: 0 2/20rem 1/20rem rgba(0, 0, 0, 0.5);
+      }
+    }
+  }
+  .header_bar {
+    z-index: 990;
+    background: #146cdc;
+    color: #fff;
+    font-size: 16/20rem;
+    width: 100%;
+    position: fixed;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5/20rem;
+    height: 38/20rem;
+    box-shadow: 0 0.06rem 0.6rem rgba(0, 0, 0, 0.3);
+    .header_title {
+      display: flex;
+      align-items: center;
+    }
+    .back {
+      padding: 4/20rem;
+    }
+  }
+  .jtc_titl {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    > div:nth-of-type(1) {
+      width: 15%;
+    }
+    > div:nth-of-type(2) {
+      > div:nth-of-type(2) {
+        font-size: 12/20rem;
+      }
+    }
+    .font_b {
+      width: 30/20rem;
+    }
+    .font_a {
+      display: inline-block;
+      width: 55/20rem;
+    }
+  }
+  .indexkjdc {
+    margin-top: 5/20rem;
+  }
+  .bet {
+    /*   margin-bottom: 39/20rem;*/
+    background: #dde5ec;
+    margin-top: 0.3rem;
+    > ul {
+      > li {
+        width: 20%;
+        float: left; // display: inline-block;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        background: #f6f6f6;
+        > span {
+          display: block;
+          background: #666666;
+          width: 100%;
+          height: 1.5rem;
+          line-height: 1.5rem;
+          font-size: 12/20rem;
+          text-align: center;
+          color: #cccccc;
+        }
+        > ul {
+          button {
+            outline: 0;
+            border: 1/20rem solid #eaeaea;
+            // display: flex;
+            // justify-content: space-around;
+            // flex-direction: column;
+            width: 2.85rem;
+            height: 41/20rem;
+            padding: 0;
+            align-items: center;
+            margin: 4/20rem 0;
+            position: relative;
+            background: #fff;
+            border-radius: 3/20rem;
+            > span:nth-of-type(2) {
+              color: #5084e2;
+              font-size: 12/20rem;
+              font-family: Arial !important;
+              display: block;
+              width: 100%;
+              height: 40%;
+              line-height: 0.9rem;
+              background: #f2f2f2;
+            }
+            > span:nth-of-type(1) {
+              line-height: 1.5;
+              height: 60%;
+              display: block;
+              font-size: 32/40rem;
+            }
+          }
+          > li:nth-last-of-type(1) {
+            margin-bottom: 9/20rem;
+          }
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+  .bet_bar {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    height: 39/20rem;
+    background: white;
+    align-items: center;
+    padding: 0;
+    box-shadow: 0 0.06rem 1rem rgba(0, 0, 0, 0.5);
+    > div {
+      width: 33.33%;
+      text-align: center;
+      input {
+        width: 86/20rem;
+        padding: 0;
+        margin: 0;
+      }
+    }
+    > div:nth-of-type(1) {
+      width: 130/46.875rem;
+      background-color: #eeeeee;
+      height: 66/46.875rem;
+      line-height: 66/46.875rem;
+      border-radius: 10%;
+      border: 1px solid #eaeaea;
+      box-sizing: border-box;
+      text-align: center;
+      margin-left: 2%;
+    }
+    > div:nth-of-type(2) {
+      width: 382/46.875rem;
+      /* line-height:1rem;*/
+      border: 1px solid #dedede;
+      border-radius: 5/20rem;
+      > span {
+        left: 0.2rem;
+        top: 0.2rem;
+        z-index: 5;
+        position: absolute;
+        color: #ffffff;
+        width: 45/46.875rem;
+        height: 45/46.875rem;
+        line-height: 1.15rem;
+        margin-right: 0.2rem;
+        display: inline-block;
+        background: url("@{public_img}/images/moneybao.png") no-repeat;
+        background-size: 100% 100%;
+        font-size: 0.5rem;
+      }
+      // background-color: red;
+      input {
+        width: 80%;
+        padding: 0rem;
+        margin: 0;
+      }
+    }
+    > div:nth-of-type(3) {
+      width: 180/46.875rem;
+    }
+    button {
+      display: block;
+      width: 100%;
+      height: 39/20rem;
+      border: 0;
+      background: #177bdd;
+      padding: 0 !important;
+      color: white;
+    }
+  }
+  .iconfont_reset {
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.3rem;
+    margin-top: -2px;
+    background: url("@{public_img}/images/resx.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .lottery_nav_bar {
+    width: 320/20rem;
+    z-index: 1;
+    ul {
+      height: 30/20rem;
+      color: white;
+      box-sizing: border-box;
+      font-size: 0;
+      display: flex;
+      button {
+        font-size: 14/20rem;
+        text-align: center;
+        padding: 0;
+        background: #1366dc;
+        border: 0;
+        outline: 0;
+        color: white;
+        padding: 8/20rem 0;
+      }
+      .active {
+        background: #1f97f6;
+      }
+    }
+  }
+  .gyh {
+    > ul {
+      flex-direction: column;
+      > li {
+        width: 100%;
+        > ul {
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          padding: 0 10/20rem;
+          justify-content: space-between;
+          > li {
+            width: 63/20rem;
+            height: 50/20rem;
+            margin: 5/20rem;
+          }
+          > li:nth-last-of-type(1),
+          > li:nth-last-of-type(3),
+          > li:nth-last-of-type(4),
+          > li:nth-last-of-type(5),
+          > li:nth-last-of-type(2) {
+            width: 50/20rem;
+            height: 50/20rem;
+          }
+        }
+      }
+      > li:nth-of-type(2) {
+        > ul {
+          > li {
+            width: 63/20rem;
+            height: 50/20rem;
+            margin: 5/20rem;
+          }
+        }
+      }
+    }
+  }
+  .icon-lajitong {
+    font-size: 25/20rem;
+  }
+  .qin {
+    /*margin-left:-8px;*/
+  }
+  .lajiton-active {
+    color: #36aafb;
+  }
+  .cqnc_lmp {
+    > ul {
+      > li {
+        // background: white!important;
+        width: 25%;
+        > ul {
+          > li {
+            > button {
+              width: 3.5rem;
+            }
+          }
+        }
+      }
+      > li:nth-of-type(1) {
+        width: 100%;
+        ul {
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          padding: 0 7/20rem;
+          justify-content: space-between;
+          > li {
+            display: inline-block;
+            margin: 0 3/20rem;
+            button {
+              // width: 70/20rem;
+              width: 95/20rem;
+              height: 45/20rem;
+            }
+          }
+        }
+      }
+    }
+  }
+  .cqnc_ys {
+    > ul {
+      > li {
+        width: 25%;
+        button {
+          width: 3.5rem !important;
+        }
+      }
+    }
+  }
+  .regulation {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: rgba(7, 17, 27, 0.8);
+    z-index: 999;
+    top: 0;
+    color: white;
+    font-size: 12/20rem;
+    overflow-y: scroll;
+    > div {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      > div {
+        padding-left: 15/20rem;
+        padding-right: 15/20rem;
+        margin-top: 5/20rem;
+        margin-bottom: 5/20rem;
+      }
+    }
+    h5 {
+      font-size: 14/20rem;
+    }
+    .header_regu {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20/20rem;
+      padding-left: 0;
+      h5 {
+        margin: 0;
+      }
+      > div:nth-of-type(1) {
+        border-bottom: 1/20rem solid white;
+        width: 80/20rem;
+        transform: translate(29/20rem, -9/20rem);
+      }
+      > div:nth-last-of-type(1) {
+        border-bottom: 1/20rem solid white;
+        width: 80/20rem;
+        transform: translate(-29/20rem, -9/20rem);
+      }
+    }
+    .icon {
+      position: absolute;
+      right: 4/20rem;
+      top: 0;
+      font-size: 26/20rem;
+    }
+  }
+  .game_main {
+    height: 568/20rem;
+    overflow: scroll;
+  }
+
+  .main-panel {
+    /*position: absolute;*/
+    top: 0;
+    bottom: 2.45rem;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  .bjkl8-view {
+    .nav-wp {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      button {
+        width: 50%;
+      }
+    }
+    .zheng-ls-wp {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+    .bet {
+      margin-top: 0;
+    }
+  }
+  .visab-h {
+    visibility: hidden;
+  }
+</style>

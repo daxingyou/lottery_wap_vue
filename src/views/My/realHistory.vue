@@ -437,7 +437,8 @@
         prams.page = this.pagenum;
        	prams.number = this.pageNumber;
 				prams.time = this.pageday;
-        this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
+        // this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/Wh_APP_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;

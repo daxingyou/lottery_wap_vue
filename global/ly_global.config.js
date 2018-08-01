@@ -1,24 +1,29 @@
-import Lottery from "./index";
-import _ from "lodash";
-const classLy = new Lottery({ type: "ly" });
+import Lottery from './index'
+import _ from 'lodash'
+const classLy = new Lottery({type: 'ly'})
 // type: 'pn',
 
 // 获取url地址
 window.getUrl = () => {
-  return classLy.getApiUrl();
-};
+	// console.log('ly')
+
+  return classLy.getApiUrl()
+}
+window.getOid = () => {
+  return classLy.getOid()
+}
 window.is_gd_ali = () => {
-  return classLy.getIsGdAli();
-};
-window.getIos = () => {
-  return classLy.getIosUrl();
-};
-window.getTitle = () => {
-  return classLy.getTitle();
-};
+  return classLy.getIsGdAli()
+}
+window.getIos =  () => {
+  return classLy.getIosUrl()
+}
+window.getTitle =  () => {
+  return classLy.getTitle()
+}
 window.getAndroid = () => {
-  return classLy.getAndroidUrl();
-};
+    return classLy.getAndroidUrl()
+}
 // // 获取 pk10 子导航
 // window.global_getBjpkClassify = () => {
 //   return classLy.getPk10Classify()

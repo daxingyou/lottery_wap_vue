@@ -9,6 +9,12 @@ function resolve (dir) {
 }
 console.log(Object.assign({}, entryObj, { app: ['./build/polyfills.js', './src/main.js'] }));
 module.exports = {
+  externals: {  
+    'vue': 'Vue',  
+    'vue-router': 'VueRouter',  
+    'vuex': 'Vuex',  
+    'axios': 'axios'  
+  },
   entry: Object.assign({}, entryObj, {app: ['./build/polyfills.js', './src/main.js']}),
   output: {
     path: config.build.assetsRoot,

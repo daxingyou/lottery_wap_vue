@@ -22,7 +22,6 @@
         </select>
       </div>
     </div>
-    <!--<iframe ref="kefu" src=""></iframe>-->
     <form ref="formPay" method="post" target="_blank" onsubmit="return false">
       <div class="content">
         <label>
@@ -34,11 +33,14 @@
         </ul>
         <p v-html="minmax_info"></p>
       </div>
+      <p>
+        <span style="color:#9a9a9a!important" v-show="moneyMin">单笔下限<span style="color:#9a9a9a!important">{{moneyMin}}.00</span></span>
+        <span style="color:#9a9a9a!important" v-show="moneyMax">单笔上限<span style="color:#9a9a9a!important">{{moneyMax}}.00</span></span>
+      </p>
     </form>
     <div class="submit_div_a">
-      <button class="color1" @click.prevent.stop="submitM" :disabled="!isBlue">确认充值</button>
+      <button class="color1" @click.prevent.stop="submitM()">确认充值</button>
       <button class="color1" @click="chongzhi()">重置金额</button>
-      <!--<button class="color_money" @click.stop='chongzhi'>重置充值</button>-->
     </div>
     <promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" 
    	:promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
@@ -112,6 +114,16 @@ export default {
       min_text:"",
       max_text:"",
       minmax_info:"",
+      type_list:{
+        0:"55",
+        1:"77",
+        2:"66",
+        3:"88",
+        4:"99",
+        6:"33",
+        7:"22"
+      },
+      payUrls:''
     }
   },
   methods: {
@@ -119,13 +131,44 @@ export default {
       if (i == undefined){
         i = 0
       }
-      this.navIndex = i;
-      this.isShowBank = Number(j.split("isShowBank=")[1]);
+      this.navIndex = i; 
       this.paramsL = j;
+      this.moneyMin = j.min;
+      this.moneyMax = j.max;
+      if(j.isShowBank == 1){
+        this.isShowBank = j.isShowBank
+      }
+      if(j.isShowBank == 0){
+        this.isShowBank = ''
+      }
+      this.min_text = "最少输入"+this.moneyMin+"元,";
+      this.max_text = "最多输入"+this.moneyMax+"元,";
+      if(this.is_gd_ali == 'agcai'){
+        this.moneyMin = Number(this.moneyMin);
+        if (this.moneyMin <= 50) {
+          this.data = [50, 100, 300, 500, 800, 1000, 2000, 3000]
+        } else if (this.moneyMin > 50 && this.moneyMin < 500) {
+          this.data = [100, 200, 300, 500, 800, 1000, 2000, 3000]
+        } else if (this.moneyMin >= 500 && this.moneyMin <= 600) {
+          this.data = [this.moneyMin, this.moneyMin + 100, this.moneyMin + 200, this.moneyMin + 300, 1000, 2000, 3000, 5000]
+        } else { 
+          this.data = [this.moneyMin + 500, this.moneyMin + 1000, this.moneyMin + 1500, this.moneyMin + 2000, this.moneyMin + 2500, this.moneyMin + 3000, this.moneyMin + 3500, this.moneyMin + 4000]
+        }
+      }else{
+        this.moneyMin = Number(this.moneyMin);
+        if (this.moneyMin <= 50) {
+          this.data = [51, 102, 304, 502, 801, 1005, 2002, 3003]
+        } else if (this.moneyMin > 50 && this.moneyMin < 500) {
+          this.data = [102, 201, 301, 502, 801, 1002, 2003, 3004]
+        } else if (this.moneyMin >= 500 && this.moneyMin <= 600) {
+          this.data = [this.moneyMin, this.moneyMin + 101, this.moneyMin + 202, this.moneyMin + 304, 1001, 2002, 3004, 5001]
+        } else { 
+          this.data = [this.moneyMin + 501, this.moneyMin + 1002, this.moneyMin + 1503, this.moneyMin + 2001, this.moneyMin + 2504, this.moneyMin + 3004, this.moneyMin + 3504, this.moneyMin + 4001]
+        }
+      }
     },
     submitM(){
-  
-      if (this.isShowBank){
+      if (this.isShowBank == 1){
       	this.successshow=false
         if (Number(this.shu) < Number(this.moneyMin)) {
           this.promptboxtext = `存款金额不能少于${this.moneyMin}`
@@ -143,49 +186,25 @@ export default {
             this.canSubmitMax = false
             this.promptboxtext = `存款金额不能大于${this.moneyMax}`
             this.panelShow = true
-      		  return
+      		  return;
           }
-        } else {
-          this.canSubmitMax = true
-        }
+        } 
         if (this.shu < this.alipaymin) {
           this.promptboxtext = `取款金额不能少于${this.alipaymin}`
           this.panelShow = true
-          return
+          return;
         } else if (this.isEnd == false) {
           this.promptboxtext = "支付信息获取中"
           this.panelShow = true
-          return
-        } else if (this.shu >= this.alipaymin && this.isEnd == true) {
+          return;
+        } else {
         	this.showCurtion = true;
           let t = this.paramsL;
-          this.payUrl = `${t}&money=${this.shu}`;
-          let payUrl = `${getUrl()}/user/payTheTransfer2?transfer=${this.payUrl}&PayID=${this.bankName}&is_json=yes`;
-          console.log(payUrl)
+          this.payUrl = `&money=${this.shu}`;
           if(location.href.split('?')[1]=='GameName=AG'){
-          	payUrl+='&GameName=AG';
+          	this.payUrl+='&GameName=AG';
           }
-          // this.$http.post(`${payUrl}&is_json=yes`).then(res => {
-          //   return 0;
-          // 		if(res.data.code==1){
-          // 			this.$router.push({
-          // 					path:`/zf:${this.urlId}`
-          // 			})
-          // 		}else{
-          // 			window.location.href = payUrl;
-          // 		}
-          // }).catch(err => {
-          // 	window.location.href = payUrl;
-          // })
-          window.location.href = this.payUrl+"&PayID="+this.bankName+"&is_json=yes";
-        } else {
-          this.promptboxtext = "操作异常，请重试"
-          this.panelShow = true;
-          setTimeout(() => {
-            this.panelShow = false;
-            return;
-          }, 600)
-          return
+          window.location.href = this.payUrls+this.payUrl+"&PayId="+this.bankName;
         }
       } else {
         if (Number(this.shu) < Number(this.moneyMin)) {
@@ -216,25 +235,10 @@ export default {
         	this.showCurtion = true;
           let t = this.paramsL;
           this.payUrl = `${t}&money=${this.shu}` ;
-          let payUrl = `${getUrl()}/user/payTheTransfer2?transfer=${this.payUrl}`;
           if(location.href.split('?')[1]=='GameName=AG'){
-          	payUrl+='&GameName=AG';
+          	this.payUrl+='&GameName=AG';
           }
-          //  this.$http.post(`${payUrl}&is_json=yes`).then(res => {
-          //    console.log(res);
-          //    return false;
-          // 	if(res.data.code==1){
-          // 		sessionStorage.setItem('zfurl', JSON.stringify(res.data));
-          // 			this.$router.push({
-          // 				path:`/zf:${this.urlId}`
-          // 			})          			
-          // 	}else{
-          // 			window.location.href = payUrl;
-          // 		}
-          // }).catch(err => {
-          // 	window.location.href = payUrl;
-          // })
-          window.location.href = payUrl;
+          window.location.href = this.payUrls+this.payUrl;
         } else {
           this.promptboxtext = "操作异常，请重试";
           this.panelShow = true;
@@ -255,49 +259,22 @@ export default {
         this.$refs.amount.children[i].style.border = '1px solid #aaa';
       }
     },
-    hui() {
-      this.$router.push({
-        path: '/order:0'
-      })
-    }
   },
   created() {
     this.urlId = this.$route.params.id.split(':')[1];
     this.pay_img_url = this.$getPublicImg(`/images/pay_${this.urlId}.png`)
+    if(this.urlId == 22){
+      this.pay_img_url = '/wap/images/pay_22.png'
+    }
+    if(this.urlId == 33){
+      this.pay_img_url = '/wap/images/pay_33.png'
+    }
     let urlId = "";
     let urlIds = "";
-    switch (this.urlId) {
-      case '55':
-        urlId = 'online_bankU';
-        urlIds = 'online_bank';
-        this.titleH = "在线支付"
-        break;
-      case '66':
-        urlId = 'online_wechatU';
-        urlIds = 'online_wechat';
-        this.titleH = "微信支付"
-        break;
-      case '77':
-        urlId = 'online_alipayU';
-        urlIds = 'online_alipay';
-        this.titleH = "支付宝支付"
-        break;
-      case '88':
-        urlId = 'online_cftU';
-        urlIds = 'online_cft';
-        this.titleH = "财付通支付"
-        break;
-      case '99':
-        urlId = 'online_quickpayU';
-        urlIds = 'online_quickpay';
-        this.titleH = "快捷支付"
-        break;
-      default:
-    }
     let params = {};
     let userOid = sessionStorage.getItem('im_token');
     params.oid = userOid;
-    this.$http.post(`${getUrl()}/user/payin`, JSON.stringify(params)).then(res => {
+    this.$http.post(`${getUrl()}/user/newPayin`, JSON.stringify(params)).then(res => {
     	if(res.data.msg=='4003'){
 	        		this.$router.push({
 	            	path: '/weihu'
@@ -314,37 +291,20 @@ export default {
           })
         }, 1000)
       } else {
-        switch (this.urlId) {
-          case '55':
-            this.iframe = res.data.online_iframe[0];
-            break;
-          case '66':
-            this.iframe = res.data.online_iframe[1];
-	
-            break;
-          case '77':
-            this.iframe = res.data.online_iframe[2];
-            break;
-          case '88':
-            this.iframe = res.data.online_iframe[3];
-
-          	 break;
-           case '99':
-            this.iframe = res.data.online_iframe[4];
-            break;
-          default:
-        }; 
-        this.resDate = eval("res.data.online_limit[res.data."+urlIds+"[0]]");
+        for (let i = 0; i < res.data.online_pay_limit.length; i++) {
+          if (this.urlId == this.type_list[res.data.online_pay_limit[i].pay_type]) {
+            this.aliPayId.push(res.data.online_pay_limit[i])
+            this.payUrls = res.data.online_pay_limit[i].payUrl
+          }
+        }
+        let money_ss =  this.aliPayId[0]
+        this.resDate = eval("money_ss");
         this.moneyMin = this.resDate.min;
         this.moneyMax = this.resDate.max;
         this.min_text = "最少输入"+this.moneyMin+"元,";
         this.max_text = "最多输入"+this.moneyMax+"元,";
-        if (this.moneyMin) {
-          this.minmax_info += '单笔下限<span class="color_money">'+this.moneyMin+'.00</span>';
-        }
-        if (this.moneyMax)
-        {
-          this.minmax_info += '单笔上限<span class="color_money">'+this.moneyMax+'.00</span>';
+        if(this.resDate.isShowBank == 1){
+          this.isShowBank = this.resDate.isShowBank
         }
         if(this.moneyMin == 0){
           this.min_text = "";
@@ -355,10 +315,6 @@ export default {
         if(this.moneyMin == 0 && this.moneyMax == 0){
           this.min_text = "请输入充值金额";
         }
-
-        this.aliPayId = res.data[urlId];
-        this.payonline(this.aliPayId[0])
-        this.isBlue = true;
         this.isEnd = true;
       }
       if(this.is_gd_ali == 'agcai'){

@@ -1,86 +1,87 @@
 <template>
 	<div>
 		<i-header title="MG游戏"></i-header>
-		<div class="mg-games">
-			<div class="mg-games-top">
-				<div class="mg-games-banner-top" v-show="loginState==2">
-					<div>
+
+      <div class="mg-games">
+        <div class="mg-games-top">
+          <div class="mg-games-banner-top" v-show="loginState==2">
+            <div>
 						<span style="color:#26d45f">
 							当前余额:
 						</span>
-						<span>
+              <span>
 							{{balance}}
 						</span>
-					</div>
-					<div class="mg-games-transaction-record" @click="gotoBetHistory">
-						下注记录
-					</div>
-				</div>
-			</div>
-			<div class="mg-games-search-area">
-				<div>
-					<div class="mg-search-input-box">
-						<div>
-							<img src="../../../static/images/icon/search.png" alt="">
-						</div>
-						<div class="mg-search-input-wrap">
-							<input type="search" placeholder="请输入搜索内容" ref="searchMgGames" @keyup="(e)=>{handleInputFilter(e.target.value)}" @focus="handleInputFocus" @blur="handleInputBlur" />
-						</div>
-						<div class="mg-search-input-clear" v-show="searchFocus" @click="clearInputText">
-							<img src="../../../static/images/icon/close.png" alt="">
-						</div>
-					</div>
-					<transition name="fade">
-						<div class="mg-search-cancel" v-show="searchFocus" @click="clearInputText">
-							取消
-						</div>
-					</transition>
-				</div>
+            </div>
+            <div class="mg-games-transaction-record" @click="gotoBetHistory">
+              下注记录
+            </div>
+          </div>
+        </div>
+        <div class="mg-games-search-area">
+          <div>
+            <div class="mg-search-input-box">
+              <div>
+                <img src="../../../static/images/icon/search.png" alt="">
+              </div>
+              <div class="mg-search-input-wrap">
+                <input type="search" placeholder="请输入搜索内容" ref="searchMgGames" @keyup="(e)=>{handleInputFilter(e.target.value)}" @focus="handleInputFocus" @blur="handleInputBlur" />
+              </div>
+              <div class="mg-search-input-clear" v-show="searchFocus" @click="clearInputText">
+                <img src="../../../static/images/icon/close.png" alt="">
+              </div>
+            </div>
+            <transition name="fade">
+              <div class="mg-search-cancel" v-show="searchFocus" @click="clearInputText">
+                取消
+              </div>
+            </transition>
+          </div>
 
-				<div class="mg-search-history" v-show="searchFocus">
-					<ul>
-						<li v-for="(item,index) in searchHistoryArr">
-							<div class="mg-search-history-text" @click="selectTextToSearch(item)">
-								{{item}}
-							</div>
-							<div class="mg-search-history-clear" @click="clearHistory(index)">
-								<img src="../../../static/images/icon/agsw.png" alt="">
-							</div>
-						</li>
-					</ul>
-				</div>
-			</div>
-			<div>
-				<div>
-					<mu-tabs :value="currentTab" @change="handleTabChange" style="overflow-x:auto;border-bottom:solid thin #cccccc">
-						<mu-tab :value="index" :title="item.title" v-for="(item,index) in tabArray" />
-					</mu-tabs>
-				</div>
-				<div>
-					<ul class="mg-game-list">
-						<li v-for="game in filteredGamesArray">
-							<div class="mg-game-title">
-								{{game.title}}
-							</div>
-							<div class="mg-game-bg" :style="{'background-image':`url(../../../wap/images/mg-games/${game.picPrefix}.png)`}">
-							</div>
-							<div>
-								<div class="mg-play" @click="getGameLink(game.id,'真钱')">
-									真钱模式
-								</div>
-								<div class="mg-try" @click="getGameLink(game.id,'试玩')">
-									试玩
-								</div>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		<mu-dialog :open="dialogShow" @close="closeDialog">
-			{{dialogText}}
-			<mu-flat-button slot="actions" primary @click="closeDialog" label="确定" />
-		</mu-dialog>
+          <div class="mg-search-history" v-show="searchFocus">
+            <ul>
+              <li v-for="(item,index) in searchHistoryArr">
+                <div class="mg-search-history-text" @click="selectTextToSearch(item)">
+                  {{item}}
+                </div>
+                <div class="mg-search-history-clear" @click="clearHistory(index)">
+                  <img src="../../../static/images/icon/agsw.png" alt="">
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div>
+            <mu-tabs :value="currentTab" @change="handleTabChange" style="overflow-x:auto;border-bottom:solid thin #cccccc">
+              <mu-tab :value="index" :title="item.title" v-for="(item,index) in tabArray" />
+            </mu-tabs>
+          </div>
+          <div>
+            <ul class="mg-game-list">
+              <li v-for="game in filteredGamesArray">
+                <div class="mg-game-title">
+                  {{game.title}}
+                </div>
+                <div class="mg-game-bg" :style="{'background-image':`url(../../../wap/images/mg-games/${game.picPrefix}.png)`}">
+                </div>
+                <div>
+                  <div class="mg-play" @click="getGameLink(game.id,'真钱')">
+                    真钱模式
+                  </div>
+                  <div class="mg-try" @click="getGameLink(game.id,'试玩')">
+                    试玩
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <mu-dialog :open="dialogShow" @close="closeDialog">
+        {{dialogText}}
+        <mu-flat-button slot="actions" primary @click="closeDialog" label="确定" />
+      </mu-dialog>
 	</div>
 </template>
 
@@ -94,6 +95,7 @@ import {
   clearSearchHistory
 } from "../../utils/storeSearchHistory";
 import { getMgGameLink } from "../../api/index";
+
 export default {
   data() {
     return {
@@ -138,7 +140,7 @@ export default {
     }
   },
   components: {
-    iHeader
+    iHeader,
   },
   methods: {
     setBalance() {
@@ -260,7 +262,7 @@ export default {
   padding: 10px;
 }
 .mg-game-list > li {
-  width: 32%;
+  width: 31%;
   border: solid thin #cccccc;
   border-radius: 6px;
   margin-bottom: 10px;

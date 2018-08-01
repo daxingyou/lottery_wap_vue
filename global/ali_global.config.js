@@ -7,6 +7,9 @@ const classLy = new Lottery({type: 'al'})
 window.getUrl = () => {
   return classLy.getApiUrl()
 }
+window.getOid = () => {
+  return classLy.getOid()
+}
 window.is_gd_ali = () => {
   return classLy.getIsGdAli()
 }

@@ -6,47 +6,45 @@
       <div class="m11">
         <div>
           <div class="hand_pay_from">
-            <div class="bank-user-info">
+            <div class="bank-user-info" v-for="(item,i) in imgss">
               <div class="list_1" v-if="activePay=='bankpay_array'">
                 <span>开户行:</span>
-                <span>{{resDate.bank_name}}</span>
+                <span>{{item.bank_user}}</span>
               </div>
               <div class="list_1" v-if="activePay=='bankpay_array'">
-                <span>{{(resDate.id==70)?'卡&nbsp;&nbsp;号':"卡&nbsp;&nbsp;&nbsp;号"}}:</span>
-                <span id="hk" style="width: auto;">{{resDate.bank_account}}</span>
-                <button  @click="showkh" class="btn" type="button" data-clipboard-action="copy" data-clipboard-target="#hk" :data-clipboard-text="resDate.bank_account">
+                <span>{{(item.id==70)?'卡&nbsp;&nbsp;号':"卡&nbsp;&nbsp;&nbsp;号"}}:</span>
+                <span id="hk" style="width: auto;">{{item.bank_account}}</span>
+                <button  @click="showkh" class="btn" type="button" data-clipboard-action="copy" data-clipboard-target="#hk">
             			复制
             		</button>
               </div>
               <div class="list_1">
                 <span>收款人:</span>
-
-                <span id="hkuser" style="width: auto">{{resDate.bank_user}}</span>
-
-                <button v-show="alipaycopy" @click="showkh" class="btn" type="button" data-clipboard-action="copy" data-clipboard-target="#hkuser" :data-clipboard-text="resDate.bank_user">
+                <span id="hkuser" style="width: auto">{{item.bank_user}}</span>
+                <button v-show="alipaycopy" @click="showkh" class="btn" type="button" data-clipboard-action="copy" data-clipboard-target="#hkuser" :data-clipboard-text="item.bank_user">
             			复制
             		</button>
               </div>
               <div class="list_1"  v-if="imgurl">
                 <span>银行卡号:</span>
-                <span id="hk1" style="width: auto">{{resDate.bank_account}}</span>
-                <button  @click="showkh" class="btn" type="button" data-clipboard-action="copy" data-clipboard-target="#hk1" :data-clipboard-text="resDate.bank_account">
+                <span id="hk1" style="width: auto">{{item.bank_account}}</span>
+                <button  @click="showkh" class="btn" type="button" data-clipboard-action="copy" data-clipboard-target="#hk1" :data-clipboard-text="item.bank_account">
             			复制
             		</button>
               </div>
               <div class="list_1" v-if="imgurl">
                 <span>开户行:</span>
-                <span>{{resDate.bank_addres}}</span>
+                <span>{{item.bank_addres}}</span>
               </div>
-              <div class="ewm1" v-if="resDate.bank_image_url">
+              <div class="ewm1" v-if="item.bank_image_url">
                 <div class="barcode-container">
-                  <img :src="resDate.bank_image_url" alt="">
+                  <img :src="item.bank_image_url" alt="">
                 </div>
               </div>
             </div>
             <div class="bank-user-form">
               <div class="bank-form-title">
-                		付款账户
+                	付款账户
               </div>
               <div class="m1">
                 <span>{{username}}:</span>
@@ -54,14 +52,13 @@
               </div>
               <div class="m1">
                 <span style="position:relative;top:-5px;">存款金额:</span>
-                <input type="text" name="exchangeamount"  style="ime-mode:disabled" :placeholder="`${min_x} ${max_x}`" v-model.trim="payMoney" @keyup="show($event)" class="inp" />
-                <!-- <span class="math" v-show="is_gd_ali!=='fh'"  v-if="routezf == 'wechat_array'">{{math}}</span> -->
+                <input type="text" name="exchangeamount" onkeyup="value=value.replace(/[^\d]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\d]/g,''))" style="ime-mode:disabled" :placeholder="`${min_x} ${max_x}`" v-model.trim="payMoney" @keyup="show($event)" class="inp" />
               </div>
               <div class="m1">
                 <span style="padding-left: 1px;">汇款日期:</span>
                 <span style="margin-left: 0.3rem;">{{nowdate}}</span>
               </div>
-              <div class="m1" v-if="resDate.bank_image_url">
+              <div class="m1"  v-if="resDate.bank_image_url">
                 <span>{{business}}</span>
                 <input type="" name="" :placeholder="`请输入${business}`" v-model="amoutF" minlength="4" maxlength="4"  style="width: 10rem;">
               </div>
@@ -149,6 +146,16 @@ export default {
       routezf:"",
       min_x:"",
       max_x:"",
+      imgss:[],
+      mmm:'',
+      type_list:{
+        0:"bankpay_array",
+        1:"alipay_array",
+        2:"wechat_array",
+        3:"cft_array",
+        6:"yl_array",
+        7:"jdpay_array"
+      },
     }
   },
   mounted() {
@@ -176,7 +183,7 @@ export default {
     let params = {};
     let userOid = sessionStorage.getItem('im_token');
     params.oid = userOid;
-    this.$http.post(`${getUrl()}/user/payin`, JSON.stringify(params)).then(res => {
+    this.$http.post(`${getUrl()}/user/newPayin`, JSON.stringify(params)).then(res => {
     	this.successshow=false
     	if(res.data.msg=='4003'){
 	        		this.$router.push({
@@ -194,37 +201,36 @@ export default {
           })
         }, 1000)
       } else {
-        this.a = res.data.bankpay_array[0];
-        this.b = res.data.alipay_array[0];
-        this.c = res.data.wechat_array[0];
-        this.d = res.data.quickpay_array[0];
-        this.resDate = res.data.bankpay_array[0];
-        this.resDateS = res.data.linedown;
-        this.linedownmin = res.data.moneylimit.linedownmin;
-        this.min = eval("res.data."+routezf+"[0].min");
-        this.max = eval("res.data."+routezf+"[0].max");
-        this.min_x = "最低输入"+this.min+"元";
-        this.max_x = "最高输入"+this.max+"元";
+        for (let i = 0; i < res.data.linedown_pay_limit.length; i++) {
+          this.resDate = res.data.linedown_pay_limit[i]
+          if (this.routezf == this.type_list[res.data.linedown_pay_limit[i].pay_type]) {
+            this.imgss.push(res.data.linedown_pay_limit[i])
+            for (let j = 0; j < this.imgss.length; j++) {
+             this.mmm = this.imgss[j]
+            }
+          }  
+        }
+        this.min_x = "最低输入"+this.mmm.min+"元";
+        this.max_x = "最高输入"+this.mmm.max+"元";
         if(this.max == 0){
           this.max_x = "";
         }
         if(this.min == 0){
           this.min_x = "";
         }
-        var _type = res.data[routezf];//支付对象
-        this.changeUrl(_type, routezf);//调用点击事件
-        for (var key in this.resDateS) {
-          if (this.resDateS[key].length > 0) {
-          }
-        }
-      	if(routezf=='alipay_array'){
+        this.changeUrl(routezf)
+      	if(this.routezf=='alipay_array'){
       		this.alipaycopy=true;
       		this.imgurl=true
-      	}else if(routezf=='wechat_array'){
+      	}else if(this.routezf=='wechat_array'){
       		this.imgurl=true
       		this.username = '微信昵称'
           this.wxname ="请输入您的微信昵称"
-      	}else{
+        }else if(this.routezf=='yl_array'){
+          this.imgurl=true
+        }else if(this.routezf=='jdpay_array'){
+          this.imgurl=true
+        }else{
       		this.imgurl=false
       		this.business="订单号后四位"
       	}
@@ -255,8 +261,7 @@ export default {
 	      }
       }
    },
-    changeUrl(payType, j) {
-      this.resDate = payType[0];
+   changeUrl(j) {
       if(j == 'alipay_array'){
       	this.resDate.showBankInfo = true	
       }else{
@@ -264,6 +269,7 @@ export default {
       }
       this.activePay = j
     },
+
     tanBank() {
       this.promptboxtext = "不支持这种充值方式"
       this.panelShow = true
@@ -281,12 +287,27 @@ export default {
           this.panelShow = true
           return
         }
+        if(isNaN(this.payMoney) == true){
+          this.promptboxtext = `存款金额只能输入数字`
+	        this.panelShow = true
+	        return
+        }
     	}else{
-	    		if (!(/^[\u4E00-\u9FA5·]{2,}$/.test(this.payUer))) {
+	    	if (!(/^[\u4E00-\u9FA5·]{2,}$/.test(this.payUer))) {
 	        this.promptboxtext = `请输入正确姓名`
 	        this.panelShow = true
 	        return
-	      }
+        }
+        if(this.payMoney == ""){
+          this.promptboxtext = `请输入存款金额`
+	        this.panelShow = true
+	        return
+        }
+        if(isNaN(this.payMoney) == true){
+          this.promptboxtext = `存款金额只能输入数字`
+	        this.panelShow = true
+	        return
+        }
       }
       if (this.payMoney < Number(this.min)) {
           this.promptboxtext = `金额最少${this.min}元`
@@ -312,12 +333,9 @@ export default {
           params.oid = userOid;
           params.realname = this.payUer;      // 真实姓名 real name
           params.amount = this.payMoney;    // amount
-          // if(this.is_gd_ali !== 'fh' && this.routezf == 'wechat_array'){
-          //   params.amount = this.payMoney + this.math;
-          // }
           
           params.orderNo = this.amoutF;     // last 4 numbers of the order
-          params.bank_id = this.resDate.id; // bank id
+          params.bank_id = this.mmm.id; // bank id
           params.typeName = this.activePay;  // 支付方式 payment way
           params.payReason = this.payRea;  // notes
           params.date = this.nowdate// date
@@ -341,9 +359,13 @@ export default {
               }, 1000)
             } else {
               if (res.data.msg == 5007) {
-                this.promptboxtext = "请您在上一笔交易完成后再试，谢谢！"
+                this.promptboxtext = res.data.info
                 this.panelShow = true
-              }else if (res.data.msg == 2006) {
+              }else if (res.data.msg == 2003) {
+                this.promptboxtext = res.data.info;
+                this.panelShow = true
+              }
+              else if (res.data.msg == 2006) {
                 this.promptboxtext = "订单提交成功"
                 this.panelShow = true
                 this.successshow=true
@@ -355,7 +377,10 @@ export default {
                   this.$router.push('/index');    // 订单提交成功后返回到首页
                 }, 1200);
               } else if (res.data.msg == 5006) {
-                this.promptboxtext = "您的操作过于频繁，请稍后再试！"
+                this.promptboxtext = res.data.info
+                this.panelShow = true
+              }else if (res.data.msg == 9006) {
+                this.promptboxtext = res.data.info
                 this.panelShow = true
               } else if (res.data.msg == 4001) {
                 this.$router.push({
@@ -364,8 +389,7 @@ export default {
               } else if (res.data.msg == 3003) {
               	this.erreocode='3003'
 								this.panelShow = true
-				        this.promptsystem = "您的网络连接超时，请稍后再试！" 
-               
+				        this.promptboxtext = res.data.info
               }
             }
           })
@@ -373,16 +397,8 @@ export default {
           this.promptboxtext = "请输入单号后四位"
           this.panelShow = true
           this.successshow=false
-//        setTimeout(() => {
-//          this.panelShow = false
-//        }, 1200);
         }
       }
-    },
-    hui() {
-      this.$router.push({
-        path: '/order:0'
-      })
     },
 }
 </script>

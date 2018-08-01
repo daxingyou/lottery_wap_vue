@@ -287,7 +287,7 @@ export default {
 }
 </script>
 <style lang='less' rel="stylesheet/less">
-@import url(../icon/iconfont.css);
+/*@import url(../icon/iconfont.css);*/
 @import '../assets/less/variable.less';
 .fade-enter-active,
 .fade-leave-active {

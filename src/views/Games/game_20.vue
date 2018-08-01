@@ -4,97 +4,101 @@
     <dailog-w :gametoken="gametoken" :type_code="activeClassifyId > 50 ? 13 : activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :indeT="indexT" :lotteryM="objects" v-if="showDailogW" v-on:listenToChildEvent="showMsgFromChild"></dailog-w>
     <dailog-s :gametoken="gametoken" :type_code="13" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" :typecode="Number(activeClassifyId)" v-if="showDailogS" v-on:listenToChildEvent="showMsgFromChild"></dailog-s>
     <lotteryHeader :title="title" :game_code="game_code" @regulation_click="regulation_control=true"></lotteryHeader>
-    <div style='position:absolute;top:0;bottom:2.45rem;    overflow: auto; -webkit-overflow-scrolling: touch;width:100%'>
-      <lotteryArea class="game_20" :zMoney="Number(zMoney)" :lotteryObj="body" :endtime="endtime" :fenpan="fengpan" :fentime="fentime" v-if="isOk" gameType="20"></lotteryArea>
-      <div :style='de==true||loadpage==true?"display:none":"display:block"' class="nav_o">
-        <ul :class="`${indexF} ${isShowNavf?'isShowNav':''}`" ref="firstNav">
-          <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav<4" :class="{active8:itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
-            <span v-if="nav_i<4" @click.stop='updown()'></span>
-          </li>
-        </ul>
-        <ul :class="`${indexS} ${isShowNavs?'isShowNav':''}`" ref="secondNav">
-          <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav>=4&&indexNav<8" :class="{active8 :itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
-            <span v-if="nav_i>=4&&nav_i<8" @click.stop='updown()'></span>
-          </li>
-        </ul>
-        <ul :class="`${indexTh} ${isShowNavt?'isShowNav':''}`" ref="threeNav">
-          <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav>=8" :class="{active8:itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
-            <span v-if="nav_i>=8" @click.stop='updown()'></span>
-          </li>
-        </ul>
-      </div>
-      <section v-for="(itemZ,indexZ) in datas" :class="`cqList${indexZ}`" v-if="de==false&&nav_i==indexZ&&loadpage==false">
-        <div style="width: 100%;" v-if="indexZ!=3&&indexZ!=5&&indexZ!=6&&indexZ!=7">
-          <ul>
-            <li class="li_4" v-for='(item,index) in itemZ.datasT'>
-              <button :class="{isred: activeClassifyId === item.type_code}" @click="one(item,index,itemZ.datasT)">{{item._name}}</button>
+
+    <gameChat>
+      <div style='overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch;width:100%;padding-bottom:2rem;'>
+        <lotteryArea class="game_20" :zMoney="Number(zMoney)" :lotteryObj="body" :endtime="endtime" :fenpan="fengpan" :fentime="fentime" v-if="isOk" gameType="20"></lotteryArea>
+        <div :style='de==true||loadpage==true?"display:none":"display:block"' class="nav_o">
+          <ul :class="`${indexF} ${isShowNavf?'isShowNav':''}`" ref="firstNav">
+            <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav<4" :class="{active8:itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
+              <span v-if="nav_i<4" @click.stop='updown()'></span>
+            </li>
+          </ul>
+          <ul :class="`${indexS} ${isShowNavs?'isShowNav':''}`" ref="secondNav">
+            <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav>=4&&indexNav<8" :class="{active8 :itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
+              <span v-if="nav_i>=4&&nav_i<8" @click.stop='updown()'></span>
+            </li>
+          </ul>
+          <ul :class="`${indexTh} ${isShowNavt?'isShowNav':''}`" ref="threeNav">
+            <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav>=8" :class="{active8:itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
+              <span v-if="nav_i>=8" @click.stop='updown()'></span>
             </li>
           </ul>
         </div>
-        <ul v-if="activeClassifyId < 50">
-          <li v-for="(item,j) in filteredList" :key="j">
-            <span v-if="item.list && item.list.length==49?false:true" class='o_title'>{{item.name}}</span>
+        <section v-for="(itemZ,indexZ) in datas" :class="`cqList${indexZ}`" v-if="de==false&&nav_i==indexZ&&loadpage==false">
+          <div style="width: 100%;" v-if="indexZ!=3&&indexZ!=5&&indexZ!=6&&indexZ!=7">
             <ul>
-              <li v-for="(ite,i) in item.list">
-                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                  <span v-bind:class="setRoundNumberClass(ite.name)">{{ite.name}}</span>
-                  <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                </button>
+              <li class="li_4" v-for='(item,index) in itemZ.datasT'>
+                <button :class="{isred: activeClassifyId === item.type_code}" @click="one(item,index,itemZ.datasT)">{{item._name}}</button>
               </li>
             </ul>
-          </li>
-        </ul>
-        <ul v-else class="evencode">
-          <li v-for="j in 1" :key="j">
-            <ul>
-              <li v-for="(item, i) in evenCodeList" :key="i">
-                <button :class="{active3:item.isCheck}" @click="isCheck(j,i,item)" :disabled="fengpan">
-                  <span v-bind:class="setRoundNumberClass(item.name)">{{item.name}}</span>
-                  <span v-if="item.odds!=''" class="color_money">{{fengpan?"封盘":item.odds}}</span>
-                </button>
-              </li>
-            </ul>
-          </li>
-        </ul>
+          </div>
+          <ul v-if="activeClassifyId < 50">
+            <li v-for="(item,j) in filteredList" :key="j">
+              <span v-if="item.list && item.list.length==49?false:true" class='o_title'>{{item.name}}</span>
+              <ul>
+                <li v-for="(ite,i) in item.list">
+                  <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                    <span v-bind:class="setRoundNumberClass(ite.name)">{{ite.name}}</span>
+                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <ul v-else class="evencode">
+            <li v-for="j in 1" :key="j">
+              <ul>
+                <li v-for="(item, i) in evenCodeList" :key="i">
+                  <button :class="{active3:item.isCheck}" @click="isCheck(j,i,item)" :disabled="fengpan">
+                    <span v-bind:class="setRoundNumberClass(item.name)">{{item.name}}</span>
+                    <span v-if="item.odds!=''" class="color_money">{{fengpan?"封盘":item.odds}}</span>
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <Loadpage v-if='loadpage'></Loadpage>
+      </div>
+      <section class="bet_bar" ref="bet_bar">
+
+        <div>
+          <span class="qin" @click="qingkong">重置</span>
+        </div>
+        <div style='position:relative'>
+          <span style="color:#FFFFFF;" v-if="xshuzi>0">{{xshuzi}}</span>
+          <span style="background:`url(${getPublicImg('/images/small_m.png')}) no-repeat`;background-size:100% 100%;" v-else="xshuzi=0">{{xshuzi}}</span>
+          <div style='position:relative;height:1.4rem'><input style='position:absolute;left:0;padding-left:1.5rem;line-height:1.4rem;' type="number" pattern="\d*" v-model="money_s" placeholder="输入金额" @input="changes_m()" @focus='fours()' @blur='blur()' min="1" />
+            <img @click='cleanmoney' v-show="money_s!=null" style="width: 0.8rem;height: 0.8rem;float: right;margin-top: 0.32rem;margin-right: 0.3rem;" :src="$getPublicImg('/images/tzgb.png')" alt="" />
+          </div>
+        </div>
+        <div>
+          <button class="gdcolor" :class="{color1:isBlue}" type="button" @click="subMit">确认下注</button>
+        </div>
       </section>
-      <Loadpage v-if='loadpage'></Loadpage>
-    </div>
-    <section class="bet_bar" ref="bet_bar">
 
-      <div>
-        <span class="qin" @click="qingkong">重置</span>
-      </div>
-      <div style='position:relative'>
-        <span style="color:#FFFFFF;" v-if="xshuzi>0">{{xshuzi}}</span>
-        <span style="background:`url(${getPublicImg('/images/small_m.png')}) no-repeat`;background-size:100% 100%;" v-else="xshuzi=0">{{xshuzi}}</span>
-        <div style='position:relative;height:1.4rem'><input style='position:absolute;left:0;padding-left:1.5rem;line-height:1.4rem;' type="number" pattern="\d*" v-model="money_s" placeholder="输入金额" @input="changes_m()" @focus='fours()' @blur='blur()' min="1" />
-          <img @click='cleanmoney' v-show="money_s!=null" style="width: 0.8rem;height: 0.8rem;float: right;margin-top: 0.32rem;margin-right: 0.3rem;" :src="$getPublicImg('/images/tzgb.png')" alt="" />
+      <div :style='de?"display:block":"display:none"' style="position: fixed;top:0;left:0;background:rgba(0,0,0,0.5);opacity:.8;width:100%;height:100%;z-index:6">
+        <div style='position: fixed;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;'>
+          <mu-circular-progress style="" :size="40" />
         </div>
       </div>
-      <div>
-        <button class="gdcolor" :class="{color1:isBlue}" type="button" @click="subMit">确认下注</button>
-      </div>
-    </section>
-
-    <div :style='de?"display:block":"display:none"' style="position: fixed;top:0;left:0;background:rgba(0,0,0,0.5);opacity:.8;width:100%;height:100%;z-index:6">
-      <div style='position: fixed;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;'>
-        <mu-circular-progress style="" :size="40" />
-      </div>
-    </div>
-    <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
-      <div class="loading">
-        <div class="loader-inner line-spin-fade-loader">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
+      <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
+        <div class="loading">
+          <div class="loader-inner line-spin-fade-loader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
         </div>
       </div>
-    </div>
+    </gameChat>
+
     <promptbox @panelShow="panelShow=false" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" :promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
 </template>
@@ -109,6 +113,7 @@ import dailogS from "../../components/dailogS.vue";
 import Loadpage from "../../components/Loadpage.vue";
 import { getEvenCode } from "./marksixe.config";
 import promptbox from "../../components/promptbox";
+import gameChat from '@/components/game-chat/index';
 import api from "@/api";
 import {
   parseOddsList,
@@ -1059,7 +1064,7 @@ export default {
             }, 1000);
           } else {
             let timeStamp = res.data.next.timestap;
-            this.fengpan = res.data.next.isclose;
+            this.fengpan = res.data.next.isclose||!res.data.next.endtime;
             let l = res.data;
             l.last.number.splice(6, 0, "+");
             this.body = l;
@@ -1186,7 +1191,8 @@ export default {
     dailogW,
     dailogS,
     Loadpage,
-    promptbox
+    promptbox,
+    gameChat
     // 'ex-simple': model,
   }
 };
@@ -3286,7 +3292,7 @@ h3 {
 .bet_bar {
   width: 100%;
   z-index: 999;
-  position: absolute;
+  position: fixed;
   bottom: 52px;
   display: flex;
   justify-content: space-around;

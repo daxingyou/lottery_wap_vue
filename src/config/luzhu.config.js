@@ -218,5 +218,23 @@ export default [
         "ctype": 6
       }
     ]
+  },
+  {
+    "title": "广东11选5",
+    "game_code": "133",
+    "typecode": "0",
+    "tabs": [{
+      "title": "总和大小",
+      "ctype": 1
+    }, {
+      "title": "总和单双",
+      "ctype": 2
+    }, {
+      "title": "总和尾数大小",
+      "ctype": 3
+    }, {
+      "title": "龙虎",
+      "ctype": 4
+    }]
   }
 ]

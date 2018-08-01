@@ -54,6 +54,12 @@ export default {
 	},
 	hideDailogW:({ commit} ) =>{
 			commit(types.HIDDE_DAILOGW);
+	},
+	showDailogZ:({ commit} ) =>{
+		commit(types.SHOW_DAILOGZ);
+	},
+	hideDailogZ:({ commit} ) =>{
+			commit(types.HIDDE_DAILOGZ);
 	}
 
 }

@@ -1,114 +1,130 @@
 <template>
-  <div class="box">
-  <div class="title color1">
+  <div class="box chess-page">
+    <div class="title color1">
 		  <i @click="goBack()"></i>
 		  <span>棋牌游戏</span>
 		</div>
-    <div class='bgImg' ref="bgagimg">
-    	<div class="edzh" v-show="isWan!='游客'" style="z-index: 2;position: fixed;left: 0;top:1.92rem;">
-    		<div class="top_t">
-		      <p>棋牌余额 :<span>{{chessMoney}}</span></p>
-		      <p>彩票余额:<span>{{balance}}</span></p>
-		    </div>
-		    <div class="headerChoose">
-		    	<button @click="edzhag">额度转换</button>
-		    	<button @click="gotoPayAddress('/qpHistory')">下注记录</button>
-		    	<button @click="gotoPayAddresscz">交易记录</button>
-		    </div>
-    	</div>
-        <div class="qp_logo">
+
+      <div class="box">
+        <div class="edzh" v-show="isWan!='游客'" style="z-index: 2;">
+          <div class="top_t">
+            <p>棋牌余额 :<span>{{chessMoney}}</span></p>
+            <p>彩票余额:<span>{{balance}}</span></p>
+          </div>
+          <div class="headerChoose">
+            <button @click="edzhag">额度转换</button>
+            <button @click="gotoPayAddress('/qpHistory')">下注记录</button>
+            <button @click="gotoPayAddresscz">交易记录</button>
+          </div>
+        </div>
+        <div class='bgImg' ref="bgagimg">
+          <div class="qp_logo">
             <img src="../../../wap/images/logo.png" alt="">
+          </div>
+          <!--<div class="anNiu">
+                  <button @click="ykzr">
+                      <img src="../../../wap/images/start-button.png"/>
+                  </button>
+                  <span  class="start">
+                          <img src="../../../wap/images/start-button-light-effects.png" alt="">
+                  </span>
+              </div>-->
+
+          <div class="download-tips">
+            <p>请使用彩票账密登录棋牌APP进行游戏</p>
+            <span>进行游戏</span>
+          </div>
+
+          <div class="app-download">
+            <button @click="downloadApp">点击下载APP</button>
+            <!--<button @click="checkAppHelp">查看教程</button>-->
+          </div>
+
+          <div class="edzhmodel" v-show="isEdzh">
+            <div class="edzhdiv">
+              <div class="edzhTop color1" >
+                <span style="margin-left: 1rem;">额度转换</span>
+                <a style="float: right;text-align:center;line-height: 1rem;margin-right: 0.3rem;margin-top:0.3rem;display:block;width: 1rem;height: 1rem;" @click="gbedzh">
+                  <img  style="width: 100%;"  :src="$getPublicImg('/images/agsw.png')"/></a>
+              </div>
+              <div class="edzhFood">
+                <label><input type="radio" class="radio" name="1"  v-model="transferType" value="0"/><i class="checkboxinput"></i><a>彩票余额</a><img :src="$getPublicImg('/images/edzhjt.png')"/><a>棋牌余额</a></label>
+                <label>
+                  <input type="radio" class="radio" v-model="transferType" value="1"/>
+                  <i class="checkboxinput"></i><a>棋牌余额</a>
+                  <img :src="$getPublicImg('/images/edzhjt.png')"/><a>彩票余额</a></label>
+                <div class="numberMoney"><span></span>
+                  <input type="tel"
+                         pattern="\d*"
+                         placeholder="请输入转换金额"
+                         @input.stop.prevent="zhengshu"
+                         v-model="nut"/>
+                </div>
+                <div class="edzhbtn">
+                  <button @click="submit">确认</button>
+                  <button @click="chongzhi">重置</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-		<div class="anNiu">
-			<button @click="ykzr">
-				<img src="../../../wap/images/start-button.png"/>
-			</button>
-			<span  class="start">
-					<img src="../../../wap/images/start-button-light-effects.png" alt="">
-			</span>
-		</div>
-		 <div class="edzhmodel" v-show="isEdzh">
-		 	<div class="edzhdiv">
-	    		<div class="edzhTop color1" >
-	    			 <span style="margin-left: 1rem;">额度转换</span>
-	    			  <a style="float: right;text-align:center;line-height: 1rem;margin-right: 0.3rem;margin-top:0.3rem;display:block;width: 1rem;height: 1rem;" @click="gbedzh">
-	    			  		<img  style="width: 100%;"  :src="$getPublicImg('/images/agsw.png')"/></a>
-	    		</div>
-	    		<div class="edzhFood">
-	    			<label><input type="radio" class="radio" name="1"  v-model="transferType" value="0"/><i class="checkboxinput"></i><a>彩票余额</a><img :src="$getPublicImg('/images/edzhjt.png')"/><a>棋牌余额</a></label>
-	    			<label>
-	    				<input type="radio" class="radio" v-model="transferType" value="1"/>
-	    				<i class="checkboxinput"></i><a>棋牌余额</a>
-	    				<img :src="$getPublicImg('/images/edzhjt.png')"/><a>彩票余额</a></label>
-	    			<div class="numberMoney"><span></span>
-	    				<input type="tel"  
-	    					pattern="\d*"
-	    					placeholder="请输入转换金额" 
-	    					@input.stop.prevent="zhengshu" 
-	    					v-model="nut"/>
-	    			</div>
-	    			<div class="edzhbtn">
-	    				<button @click="submit">确认</button>
-	    				<button @click="chongzhi">重置</button>
-	    			</div>
-	    		</div>
-    		</div>
-   		</div>
-    </div>
-      <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
-      <div class="loading">
-        <div class="loader-inner line-spin-fade-loader">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
+        <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
+          <div class="loading">
+            <div class="loader-inner line-spin-fade-loader">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+        <div v-show="istx">
+          <div class="modal_box_feedback">
+            <div class="modal_div">
+              <div class="modal_header color1">
+                <span style="margin-left: 1rem;">通知</span>
+                <a style="float: right;text-align:center;line-height: 1rem;margin-right: 0.3rem;margin-top:0.45rem;display:block;width: 1rem;height: 1rem;"></a>
+              </div>
+              <div class="modal_foot">
+                <div  clss="gantan"><img style="width: 100%;height: 100%;" :src="$getPublicImg('/images/gantan.png')"/></div>
+                <p>试玩模式金额不能提现</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-show="isykag">
+          <div class="modal_box_feedback">
+            <div class="modal_div">
+              <div class="modal_header color1">
+                <span>通知</span>
+              </div>
+              <div class="modal_foot">
+                <div  clss="gantan" style="margin-top: 0.2rem;"><img style="width: 100%;height: 100%;" :src="$getPublicImg('/images/gantan.png')"/></div>
+                <p>请先注册</p>
+                <button style="background: #2e64d2;margin-left: 2rem;" @click="agzc">注册</button>
+                <button style="background: #da524d;margin-left: 1rem;" @click="gbzr">关闭</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-     <div v-show="istx">
-      <div class="modal_box_feedback">
-        <div class="modal_div">
-          <div class="modal_header color1">
-            <span style="margin-left: 1rem;">通知</span>
-            <a style="float: right;text-align:center;line-height: 1rem;margin-right: 0.3rem;margin-top:0.45rem;display:block;width: 1rem;height: 1rem;"></a>
-          </div>
-          <div class="modal_foot">
-            <div  clss="gantan"><img style="width: 100%;height: 100%;" :src="$getPublicImg('/images/gantan.png')"/></div>
-            <p>试玩模式金额不能提现</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-show="isykag">
-      <div class="modal_box_feedback">
-        <div class="modal_div">
-          <div class="modal_header color1">
-            <span>通知</span>
-          </div>
-          <div class="modal_foot">
-            <div  clss="gantan" style="margin-top: 0.2rem;"><img style="width: 100%;height: 100%;" :src="$getPublicImg('/images/gantan.png')"/></div>
-            <p>请先注册</p>
-            <button style="background: #2e64d2;margin-left: 2rem;" @click="agzc">注册</button>
-            <button style="background: #da524d;margin-left: 1rem;" @click="gbzr">关闭</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    	<promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" 
-   	:promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
+
+    <promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :successicon="successicon" :promptboxshow="promptboxshow" :panelShow="panelShow"
+   	:promptboxtext="promptboxtext" :promptsubtitle="promptsubtitle" :promptbottomtips="promptbottomtips" :erreocode="erreocode" :autohide="false" @bottom-clicked="downloadApp"></promptbox>
   </div>
 </template>
 <script>
   import iHeader from '../../components/j-header'
   import promptbox from '../../components/promptbox'
+
   export default {
     components: {
       iHeader,
-      promptbox
+      promptbox,
     },
     data() {
       return {
@@ -118,6 +134,9 @@
       	isUser:false,
       	panelShow: false,
       	promptboxtext:'',
+        promptsubtitle: [],
+        promptbottomtips: '',
+        successicon: false,
       	chessMoney: null,          // ag余额
         balance: null,           // 彩票余额
 				isEdzh:false,
@@ -138,6 +157,53 @@
       }
     },
     methods:{
+      // 检测是否创建了棋牌账号,没创建的话就创建账号
+      // 不用创建，一调用棋牌其它接口就自动创建
+      /*isCreatedAccount() {
+        this.$http.post("Wh_APP_Api/is_open", JSON.stringify({oid: sessionStorage.getItem('im_token')})).then(res => {
+          if (res.data && !res.data.data.whopen) {
+            // 还没创建账号，开始创建
+            this.createAccount()
+          }
+        })
+      },
+      // 创建账号
+      createAccount() {
+        this.$http.post("Wh_APP_Api/index", JSON.stringify({oid: sessionStorage.getItem('im_token')})).then(res => {
+          if (!res.data.msg == '2006') {
+            console.log('创建账号成功')
+          } else {
+            console.log('创建账号失败')
+          }
+        })
+      },*/
+      // 点击下载APP
+      downloadApp() {
+        /*const UA = window.navigator.userAgent.toLowerCase();
+        const isIOS = UA && /iphone|ipad|ipod|ios/.test(UA);
+
+        if (isIOS) {
+          window.location.href = getIos();
+        } else {
+          this.$http.post("download/wh_app_down").then(res => {
+            if (res.data) {
+              window.open( res.data.data.wh_apk_url, '_blank' )
+            }
+          })
+        }*/
+        window.open('download/wh_download_mobile_client', '_blank')
+      },
+      // 查看教程
+      /*checkAppHelp() {
+        const UA = window.navigator.userAgent.toLowerCase();
+        const isIOS = UA && /iphone|ipad|ipod|ios/.test(UA);
+
+        if (isIOS) {
+          window.location.href = getIos();
+        } else {
+          window.location.href = getAndroid();
+        }
+      },*/
     	gbzr(){
     		this.isykag=false
     	},
@@ -155,7 +221,7 @@
            // 后退
            this.$router.go(-1)
          }
-    },			    	
+    },
     	ykzr(){
     		this.successshow=false
     		if(this.isWan=='游客'){
@@ -169,7 +235,8 @@
     			let params ={};
 						params.oid = sessionStorage.getItem('im_token');
 							params.oid = sessionStorage.getItem('im_token');
-							this.$http.post(`${getUrl()}/Wh_H5_Api/RedirectLogin`, JSON.stringify(params)).then(res => {
+							// this.$http.post(`${getUrl()}/Wh_H5_Api/RedirectLogin`, JSON.stringify(params)).then(res => {
+							this.$http.post(`${getUrl()}/Wh_APP_Api/RedirectLogin`, JSON.stringify(params)).then(res => {
 									this.showCurtion=false
 		         	if(res.data.msg == 4001){
 				          sessionStorage.clear();
@@ -215,6 +282,8 @@
 	       console.log();
       	},
       	submit(){
+          document.getElementsByClassName('chess-page')[0].classList.remove('bold-success-title')// 每次打开窗口时，要去掉“转换成功！”的标题的加粗效果
+
 					console.log()
       		this.successshow=false
 	        let params ={};
@@ -225,7 +294,7 @@
 	        if(this.nut == 0){
 	          this.panelShow = true;
 	          this.promptboxtext = '金额必须是整数且最少是1元';
-	          this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')"
+	          // this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')"
 	          setTimeout(()=>{
 	            this.panelShow = false;
 	          },1200);
@@ -234,7 +303,7 @@
 	        if(this.nut ==null){
 	          this.panelShow = true;
 	          this.promptboxtext = '请输入转换金额';
-	          this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')"
+	          // this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')"
 	          setTimeout(()=>{
 	            this.panelShow = false;
 	          },1200);
@@ -243,8 +312,9 @@
 					if(this.transferType == 1){// 棋牌转彩票转
 	          if(Number(this.chessMoney) < Number(this.nut)){
 	            this.panelShow = true;
+              this.initPanel()
 	            this.promptboxtext = '棋牌余额不足';
-	            this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')"
+	            // this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')"
 	            setTimeout(()=>{
 	              this.panelShow = false;
 	            },1200)
@@ -255,8 +325,9 @@
 					}else if(this.transferType ==0){  // 彩票转棋牌
 	          if(Number(this.balance) < Number(this.nut)){
 	            this.panelShow = true;
+              this.initPanel()
 	            this.promptboxtext = '彩票余额不足';
-	            this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')";
+	            // this.$refs.rscenter.style.backgroundImage = "url('../../../wap/images/erreo.png')";
 	            setTimeout(()=>{
 	              this.panelShow = false;
 	            },1200)
@@ -271,7 +342,10 @@
       },
       getData(params){
       	this.successshow=false
-      		this.$http.post(getUrl()+'/Wh_H5_Api/PrepareCreditOrder',JSON.stringify(params)).then(res => {
+          debugger
+      		// this.$http.post(getUrl()+'/Wh_H5_Api/PrepareCreditOrder',JSON.stringify(params)).then(res => {
+      		this.$http.post(getUrl()+'/Wh_APP_Api/PrepareCreditOrder',JSON.stringify(params)).then(res => {
+            debugger
    				this.showCurtion = false;
           if(res.data.msg == 4001){
             sessionStorage.clear();
@@ -283,7 +357,7 @@
                 path: '/login'
               })
             },1000)
-          
+
 
 					}else if(res.data.msg == 7001){
 						 this.panelShow = true;
@@ -292,9 +366,7 @@
                 this.panelShow = false;
               },1200)
 					}else if(res.data.msg == 2006){
-          	this.successshow=true
-            this.promptboxtext = "转换成功";
-            this.nut = '';
+            // 余额不足
             if(res.data.amount == 'undefined'){
               this.panelShow = true;
               this.promptboxtext = '余额不足,请充值'
@@ -304,6 +376,22 @@
               },1200)
               return;
             }
+            // 余额足够
+            document.getElementsByClassName('chess-page')[0].classList.add('bold-success-title')// 只有转换成功时标题才要加粗，所以这里单独定制
+          	this.successshow=false
+            this.promptboxtext = "转换成功!";
+
+            if (params.type == '0') {
+              // 彩票转棋牌需要这些额外提示
+              this.promptsubtitle = ['请登录棋牌APP进行游戏', '（使用彩票登录账密即可）']
+              this.promptbottomtips = '没有棋牌APP？去下载'
+            } else {
+              this.promptsubtitle.length = 0
+              this.promptbottomtips = ''
+            }
+            this.successicon = true
+            this.nut = '';
+
             if(this.transferType == 0){
               this.chessMoney = parseFloat(this.chessMoney) +  parseFloat(res.data.data.amount);
               this.balance = parseFloat(this.balance) - parseFloat(res.data.data.amount);
@@ -317,7 +405,7 @@
             this.balance = this.balance.toFixed(2);
             sessionStorage.setItem('im_money', this.balance)
             this.panelShow = true;
-           
+
             this.isEdzh=false
           }
         })
@@ -355,19 +443,25 @@
       gotoPayAddresscz(path){
 				 this.$router.push('/order:2?GameName=chess')
       },
+      initPanel() {
+        this.promptsubtitle = []
+        this.promptbottomtips = ''
+        this.successicon = false
+      }
 			},
 
     created() {
 				let params = {};
      		params.oid = sessionStorage.getItem('im_token');
-				this.$http.post(`${getUrl()}/Wh_H5_Api/index`, JSON.stringify(params)).then(res => {
+				// this.$http.post(`${getUrl()}/Wh_H5_Api/index`, JSON.stringify(params)).then(res => {
+				this.$http.post(`${getUrl()}/Wh_APP_Api/index`, JSON.stringify(params)).then(res => {
 						if(res.data.msg == 7001){
 							this.promptboxtext = res.data.info;
 			          this.panelShow = true;
 			          setTimeout(() => {
 			            this.panelShow = false
 			          },1200)
-						}	
+						}
 				});
 
        	if(this.isWan=='游客'){
@@ -375,7 +469,8 @@
        	}else{
        	let params = {};
      		params.oid = sessionStorage.getItem('im_token');
-				this.$http.post(`${getUrl()}/Wh_H5_Api/getWhInfo`, JSON.stringify(params)).then(res => {
+				// this.$http.post(`${getUrl()}/Wh_H5_Api/getWhInfo`, JSON.stringify(params)).then(res => {
+				this.$http.post(`${getUrl()}/Wh_APP_Api/getWhInfo`, JSON.stringify(params)).then(res => {
 				this.showCurtion = false;
 				 if(res.data.msg == 4001){
 			          sessionStorage.clear();
@@ -396,7 +491,7 @@
 			              this.$router.push('/index');
 			            },1200)
 		          }
-			          this.chessMoney = Number(res.data.balance.whBalance).toFixed(2);			          
+			          this.chessMoney = Number(res.data.balance.whBalance).toFixed(2);
 			          this.balance = Number(res.data.balance.userBalance).toFixed(2);
 			          sessionStorage.setItem('im_money', this.balance)
 		        }else if(res.data.msg == 7001){
@@ -427,15 +522,15 @@
 @import '../../assets/less/variable.less';
   @zoom: 46.875rem;
   .title{
+    position: relative;
     width: 100%;
-    height: 90/46.875rem;
     background:#196fde;
     line-height: 90/46.875rem;
     text-align: center;
     z-index: 4;
-    position: fixed;
-    left: 0;
-    top:0;
+    /*position: fixed;*/
+    /*left: 0;*/
+    /*top:0;*/
     >i{
     	display: block;
 	    width: 0.7rem;
@@ -453,69 +548,74 @@
 	  }
 .box{
 	height: 100%;
+  flex: 1;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  >.edzh{
+    width: 100%;
+    height:196/@zoom;
+    background: #FFFFFF;
+    >.top_t{
+      height:84/46.875rem;
+      /*line-height:84/46.875rem;*/
+      /*padding:0.6rem;*/
+      padding:0.4rem 0.6rem 0;
+      border-bottom: 1px solid #E0E2E7;
+    }
+    >.top_t p{
+      display: inline-block;
+      width:49%;
+      text-align: center;
+      font-size:28/46.875rem;
+      color:#000;
+    }
+
+    >.top_t p:nth-of-type(1){
+      text-align: left;
+    }
+    >.top_t p:nth-of-type(2){
+      text-align:right;
+    }
+    >.top_t p span{
+      margin-left:.3rem;
+      color:#507BD9;
+    }
+
+    >.headerChoose{
+      height:112/46.875rem;
+      line-height:112/46.875rem;
+      >button{
+        border: none;
+        background: none;
+        float: left;
+        margin-left: 30/@zoom;
+        width: 206/@zoom;
+        height: 76/@zoom;
+        color: #fff;
+        font-size: 28/@zoom;
+        border-radius:0.2rem;
+        line-height:76/@zoom;
+        margin-top: 18/@zoom;
+      }
+      >button:nth-child(1){
+        background: #2e65d4;
+      }
+      >button:nth-child(2){
+        background: #e74d62;
+      }
+      >button:nth-child(3){
+        background: #e8a14c;
+      }
+    }
+  }
 	>.bgImg{
 		width: 100%;
-		height: 1334/46.875rem;
-		background: url(../../../wap/images/chess_bj.jpg) no-repeat;
+		/*height:25.5rem;*/
+		height:100%;
+		background: url(../../../wap/images/chess_bj_2.png) no-repeat;
 		background-size: 100% 100%;
-		position:fixed;
-		top:0;
-		>.edzh{
-			width: 100%;
-			height:196/@zoom;
-			background: #FFFFFF;
-			>.top_t{
-			    height:84/46.875rem;
-			    /*line-height:84/46.875rem;*/
-			    padding:0.6rem;
-			    border-bottom: 1px solid #E0E2E7;
-			  }
-			>.top_t p{
-			    display: inline-block;
-			    width:49%;
-			    text-align: center;
-			    font-size:28/46.875rem;
-			    color:#000;
-			  }
-
-			 >.top_t p:nth-of-type(1){
-			    text-align: left;
-			  }
-			  >.top_t p:nth-of-type(2){
-			    text-align:right;
-			  }
-			  >.top_t p span{
-			    margin-left:.3rem;
-			    color:#507BD9;
-			  }
-
-			>.headerChoose{
-				 height:112/46.875rem;
-			    line-height:112/46.875rem;
-			    >button{
-			    	border: none;
-			    	background: none;
-			    	float: left;
-			    	margin-left: 30/@zoom;
-			    	width: 206/@zoom;
-			    	height: 76/@zoom;
-			    	color: #fff;
-			    	font-size: 28/@zoom;
-			    	border-radius:0.2rem;
-			    	line-height:76/@zoom;
-			    	margin-top: 18/@zoom;
-			    }
-			    >button:nth-child(1){
-			    	background: #2e65d4;
-			    }
-			    >button:nth-child(2){
-			    	background: #e74d62;
-			    }
-			    >button:nth-child(3){
-			    	background: #e8a14c;
-			    }
-			}
-		}
+		/*position:fixed;*/
+		/*top:0;*/
 		>.anNiu{
 			width: 100%;
 			position: absolute;
@@ -796,11 +896,11 @@
 	left: 0;top: 1.92rem;
 }
 .qp_logo{
-    margin-top: 10.5rem;
+    padding-top: 5rem;
     text-align: center;
     >img{
-        width:100%;
-        height:350/@zoom;
+        width:85%;
+        // height:350/@zoom;
     }
 }
 .start img{
@@ -821,10 +921,10 @@
 }
 @keyframes ripple {
 	0% {
-		transform: scale(1.2);  
+		transform: scale(1.2);
 	}
 	100% {
-	transform: scale(1);  
+	transform: scale(1);
 	}
 }
 .start{
@@ -834,5 +934,39 @@
     display:inline-block;
 		position: absolute;
     margin-top: -.75rem;
+}
+.download-tips{
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  span{
+    font-size: 16px;
+    text-shadow: 2px;
+  }
+}
+.app-download{
+  margin-top: 50px;
+  text-align: center;
+  button{
+    width: 109px;
+    height: 34px;
+    border-radius: 2px;
+    border: 0;
+    color: white;
+    font-size: 12px;
+    &:first-child{
+      background: linear-gradient(to bottom, #feb423, #dc8001);
+    }
+    /*&:last-child{
+      margin-left: 20px;
+      background-color: transparent;
+      border: 1px solid;
+    }*/
+  }
+}
+</style>
+<style>
+.bold-success-title .prompttitle{
+  font-weight: bold;
 }
 </style>

@@ -102,25 +102,25 @@ export default {
         return "luzhu-he";
       }
       if (item == '前') {
-        return 'luzhu-front'; 
+        return 'luzhu-front';
       }
       if (item == '后') {
-        return 'luzhu-back'; 
+        return 'luzhu-back';
       }
       if (item == '金') {
-        return 'luzhu-gold'; 
+        return 'luzhu-gold';
       }
       if (item == '木') {
-        return 'luzhu-wood'; 
+        return 'luzhu-wood';
       }
       if (item == '水') {
-        return 'luzhu-water'; 
+        return 'luzhu-water';
       }
       if (item == '火') {
-        return 'luzhu-fire'; 
+        return 'luzhu-fire';
       }
       if (item == '土') {
-        return 'luzhu-soil'; 
+        return 'luzhu-soil';
       }
     }
   }

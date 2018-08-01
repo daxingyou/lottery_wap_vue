@@ -13,5 +13,13 @@ export default new Vuex.Store({
     modules: {
         mutations
     },
-    actions
+    actions,
+    state: {
+        confirmShow:false
+    },
+    mutations: {
+        toggleConfirm(state,bool){
+            state.confirmShow = bool
+        }
+    }
 })

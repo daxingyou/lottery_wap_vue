@@ -28,8 +28,8 @@
             <li class="money"> 账户余额
               <span style="color:#0b76fa;">￥{{Number(money).toFixed(2)}}</span>
             </li>
-            <li @click='gotoAddress("/Order:0")'>我要充值<img :src="$getPublicImg('/images/jiantou.png')" alt="" /></li>
-            <li @click='gotoAddress("/Order:1")'>我要提现<img :src="$getPublicImg('/images/jiantou.png')" alt="" /></li>
+            <li @click='gotoAddress("/Order:0?GameName=Lo")'>我要充值<img :src="$getPublicImg('/images/jiantou.png')" alt="" /></li>
+            <li @click='gotoAddress("/Order:1?GameName=Lo")'>我要提现<img :src="$getPublicImg('/images/jiantou.png')" alt="" /></li>
             <li @click='gotoAddress("/myHistroy")'>下注记录<img :src="$getPublicImg('/images/jiantou.png')" alt="" /></li>
             <li @click='gotoAddress("/game99")'>开奖大厅<img :src="$getPublicImg('/images/jiantou.png')" alt="" /></li>
             <li>开奖音效
@@ -60,6 +60,7 @@
     </header>
     <div class="mask" @click="mask=false;isOpen=false" v-show="mask">
     </div>
+    <!--<div class="swiper_group" :style="{'marginTop': swiperMajgin}">-->
     <div class="swiper_group" :style="{'marginTop': swiperMajgin}">
       <div style="height:150px" class="swiper-box">
         <swiper :options="swiperOption">
@@ -93,11 +94,16 @@
           </button>
         </li>
       </ul>
-      <ul v-show="is_gd_ali == 'ly'" class="recom">
+      <ul class="recom">
         <li v-for="(item, index) in listsTj">
           <img :src='listsTj[index].tjImg' @click='gotoAddress(listsTj[index].game)' />
         </li>
       </ul>
+      <!-- <ul v-show="is_gd_ali == 'ly'" class="recom">
+        <li v-for="(item, index) in listsTj">
+          <img :src='listsTj[index].tjImg' @click='gotoAddress(listsTj[index].game)' />
+        </li>
+      </ul> -->
     </div>
     <div class="foot_swiper">
       <h4 v-show="activet.length != 0">
@@ -489,7 +495,7 @@ export default {
         .post(`${getUrl()}/user/signdemo`)
         .then(res => {
           if (res.data.oid) {
-            this.promptboxtext = "试玩账号登陆成功";
+            this.promptboxtext = "试玩账号登录成功";
             this.panelShow = true;
             this.successshow = true;
             sessionStorage.setItem("im_token", res.data.oid);
@@ -504,6 +510,10 @@ export default {
                 this.title_control = false;
               }
             }, 0);
+
+            setTimeout(()=>{
+              this.panelShow=false
+            },1000);
           } else {
             this.promptboxtext = "试玩账号登录失败";
             this.panelShow = true;
@@ -663,7 +673,7 @@ export default {
     })
     // 处理pc端token格式和wap端不一样的问题
     // pc端存的是'token'，wap端存的'"token"'
-    
+
     this.is_gd_ali == "ali" || this.is_gd_ali == "gd"
       ? (this.closeGG = true)
       : (this.closeGG = false);
@@ -759,6 +769,11 @@ export default {
       img: require("../../../wap/images/game_180_icon.png"),
       game: "/game_180"
     };
+    lis_nam[133] = {
+      title: "广东11选5",
+      img: require("../../../wap/images/game_133_icon.png"),
+      game: "/game_133"
+    };
     lis_nam[0] = {
       title: "在线客服",
       img: require("../../../wap/images/kefu_icon.png"),
@@ -769,30 +784,57 @@ export default {
       img: require("../../../wap/images/k3_icon.png"),
       game: "/game_881"
     };
-    // if (this.is_gd_ali !== "ali" && this.is_gd_ali !== "gd") {
-      lis_nam[4] = {
-        title: "体育游戏",
-        img: require("../../../wap/images/sportgame.png"),
-        game: "/sport"
-      };
-    // }
-    if (this.is_gd_ali !== "ali" && this.is_gd_ali !== "gd") {
+    lis_nam[220] = {
+      title: "福彩3D",
+      img: require("../../../wap/images/game_220_icon.png"),
+      game: "/game_220"
+    };
+    lis_nam[4] = {
+      title: "体育游戏",
+      img: require("../../../wap/images/sportgame.png"),
+      game: "/sport"
+    };
+    lis_nam[5] = {
+      title: "捕鱼游戏",
+      img: require("../../../wap/images/game_by_icon.png"),
+      tjImg: require("../../../wap/images/tj_by.png"),
+      game: "/fish"
+    };
+    /*
+    lis_nam[0] = {
+      title: "Game Chat",
+      img: require("../../../wap/images/kefu_icon.png"),
+      game: "/game-chat"
+    }; */
+    // lis_nam[0] = {
+    //   title: "Mobile Chat",
+    //   img: require("../../../wap/images/kefu_icon.png"),
+    //   game: "/mobile-chat"
+    // };
+    if(this.is_gd_ali == "ali" || this.is_gd_ali == "gd"){
       lis_nam[5] = {
         title: "捕鱼游戏",
         img: require("../../../wap/images/game_by_icon.png"),
-        tjImg: require("../../../wap/images/tj_by.png"),
+        tjImg: require("../../../wap/images/buyualdg.jpg"),
         game: "/fish"
       };
     }
-    //  lis_nam[6] = {
-    //   title: "棋牌游戏",
-    //   img:require("../../../wap/images/game_chess_icon.png"),
-    //   game: "/chess"
-    // };
-    
+    if(this.is_gd_ali == "yiteng"){
+      lis_nam[5] = {
+        title: "捕鱼游戏",
+        img: require("../../../wap/images/game_by_icon.png"),
+        tjImg: require("../../../wap/images/ytbu.jpg"),
+        game: "/fish"
+      };
+    }
+     lis_nam[6] = {
+      title: "棋牌游戏",
+      img:require("../../../wap/images/game_chess_icon.png"),
+      game: "/chess"
+    };
+
     if (
       this.is_gd_ali !== "agcai" &&
-      
       this.is_gd_ali !== "yiren" &&
       this.is_gd_ali !== "ali" &&
       this.is_gd_ali !== "gd"
@@ -1005,7 +1047,7 @@ export default {
 
 
 <style lang="less" rel="stylesheet/less" scoped>
-@import "../../icon/iconfont.css";
+/*@import "../../icon/iconfont.css";*/
 @import "../../assets/less/variable.less";
 .recom {
   width: 100%;
@@ -1144,7 +1186,7 @@ export default {
   height: 100%;
 
   > img {
-    margin-top: 8/20rem;
+    margin-top: 0.4rem;
 
     width: 27/46.875rem;
     margin-left: 30/46.875rem;
@@ -1152,7 +1194,7 @@ export default {
 }
 
 .announcement {
-  height: 30/20rem;
+  min-height: 35px;
   /*position: absolute;
     left: 0;
     bottom: 0;*/
@@ -1406,6 +1448,7 @@ header {
   width: 100%;
   height: 39/20rem;
   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+  -webkit-transform: translateZ(0);
   h1 {
     float: left;
     margin: 0;

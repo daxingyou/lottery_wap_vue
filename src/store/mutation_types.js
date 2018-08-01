@@ -18,8 +18,9 @@ export const HIDDE_DRAWER =  'HIDDE_DRAWER'
 //dailog
 export const SHOW_DAILOGQ =  'SHOW_DAILOGQ'
 export const HIDDE_DAILOGQ =  'HIDDE_DAILOGQ'
-
 export const SHOW_DAILOGS =  'SHOW_DAILOGS'
 export const HIDDE_DAILOGS =  'HIDDE_DAILOGS'
 export const SHOW_DAILOGW =  'SHOW_DAILOGW'
 export const HIDDE_DAILOGW =  'HIDDE_DAILOGW'
+export const SHOW_DAILOGZ =  'SHOW_DAILOGZ'
+export const HIDDE_DAILOGZ =  'HIDDE_DAILOGZ'

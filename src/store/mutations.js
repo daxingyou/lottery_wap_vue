@@ -15,7 +15,9 @@ import {
   SHOW_DAILOGS,
   HIDDE_DAILOGS,
   SHOW_DAILOGW,
-  HIDDE_DAILOGW
+  HIDDE_DAILOGW,
+  SHOW_DAILOGZ,
+  HIDDE_DAILOGZ
 } from './mutation_types.js'
 
 // 1 : 定义默认的 监测状态
@@ -28,6 +30,7 @@ const state = {
   showDailogQ:false,
   showDailogS:false,
   showDailogW:false,
+  showDailogZ:false,
 
 }
 
@@ -80,6 +83,12 @@ const mutations = {
   },
   [HIDDE_DAILOGW](state){
     state.showDailogW=false;
+  },
+  [SHOW_DAILOGZ](state){
+    state.showDailogZ=true;
+  },
+  [HIDDE_DAILOGZ](state){
+    state.showDailogZ=false;
   }
 
 };
@@ -110,6 +119,9 @@ const getters = {
   },
   showDailogW(state){
     return state.showDailogW
+  },
+  showDailogZ(state){
+    return state.showDailogZ
   }
 
 }

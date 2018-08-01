@@ -1,8 +1,8 @@
 <template>
 	<!--当新用户或者没选择门店用户进来时  会让选择默认门店-->
-	<div>		
+	<div>
 		<i-header class="color1" title="在线客服"></i-header>
-		<div style="height: 26.5rem;width: 100%;position: fixed;left: 0;bottom: 0;">
+		<div style="width: 100%;position: fixed;left: 0;bottom: 0;top:2rem;">
        	 	<iframe ref="kefu" :src="kefuUrl" style="height:100%;width: 100%;border: 0;" ></iframe>
 		</div>
         <div style="position: fixed; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 2;" v-show='urlqingqiu'>
@@ -18,7 +18,7 @@
 			      <div></div>
 			    </div>
 			  </div>
-        </div>				
+        </div>
 	</div>
 </template>
 <script>
@@ -32,11 +32,11 @@
 				kufuUrl: '',
 				kefuHeight: '',
 				urlqingqiu:true,
-				
+
 			}
 		},
 		created() {
-			
+
 			this.$http.post(`${getUrl()}/user/getCustomerService`, "").then(res => {
 				this.urlqingqiu = false
 				this.kefuUrl = res.data.kefu;

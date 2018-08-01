@@ -5,6 +5,11 @@ import { getGamesCache } from '@/utils'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 // config
 axios.interceptors.request.use(config => {
+  let params = JSON.parse(config.data || "{}");
+  config.data = JSON.stringify({
+    oid: sessionStorage.getItem("im_token"),
+    ...params
+  });
   return config
 }, error => {
   return Promise.reject(error)
@@ -18,7 +23,7 @@ axios.interceptors.response.use(response => {
 })
 
 // 检查请求状态
-function checkStatus(response) {
+function checkStatus (response) {
   if (response.status >= 200 && response.status < 300) {
     return response
   } else {
@@ -36,7 +41,7 @@ const checkCode = (response) => {
 }
 
 // 解析参数
-function _formatParams(method = 'GET', params) {
+function _formatParams (method = 'GET', params) {
   const headers = {
     // 'Content-Type': 'application/json'
   }
@@ -69,11 +74,11 @@ function _formatParams(method = 'GET', params) {
 }
 
 export default {
-  getOddsList(params) {
+  getOddsList (params) {
     const cache = getGamesCache(`${params.game_code}_${params.type_code}`)
-    if (cache) {
-      return Promise.resolve(cache)
-    }
+    // if (cache) {
+    //   return Promise.resolve(cache)
+    // }
     return axios(Object.assign({}, _formatParams('POST', params), {
       url: `${getUrl()}/getinfo/odds`
     })).then(checkStatus).then(checkCode)

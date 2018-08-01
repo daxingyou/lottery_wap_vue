@@ -1,101 +1,111 @@
 <template>
   <div class="box">
-  <div class="title color1">
+    <div class="title color1">
 		  <i @click="goBack()"></i>
 		  <span>捕鱼游戏</span>
 		</div>
-    <div class='bgImg' ref="bgagimg">
-    	<div class="edzh" v-show="isWan!='游客'" style="z-index: 2;position: fixed;left: 0;top:1.92rem;">
-    		<div class="top_t">
-		      <p>捕鱼余额 :<span>{{agMoney}}</span></p>
-		      <p>彩票余额:<span>{{balance}}</span></p>
-		    </div>
-		    <div class="headerChoose">
-		    	<button @click="edzhag">额度转换</button>
-		    	<button @click="gotoPayAddress('fishHistory')">下注记录</button>
-		    	<button @click="gotoPayAddresscz">交易记录</button>
-		    </div>
-    	</div>
-		<div class="anNiu">
-			<button @click="ykzr">
-				<img src="../../../wap/images/zhenWan.png"/>
-			</button>
-			<button @click="shiwan">
-				<img :src="`../../../wap/images/${is_gd_ali}/isWan.png`"/>
-			</button>
-		</div>
-		 <div class="edzhmodel" v-show="isEdzh">
-		 	<div class="edzhdiv">
-	    		<div class="edzhTop color1" >
-	    			 <span style="margin-left: 1rem;">额度转换</span>
-	    			  <a style="float: right;text-align:center;line-height: 1rem;margin-right: 0.3rem;margin-top:0.3rem;display:block;width: 1rem;height: 1rem;" @click="gbedzh">
-	    			  		<img  style="width: 100%;"  :src="$getPublicImg('/images/agsw.png')"/></a>
-	    		</div>
-	    		<div class="edzhFood">
-	    			<label><input type="radio" class="radio" name="1"  v-model="transferType" value="1"/><i class="checkboxinput"></i><a>彩票余额</a><img :src="$getPublicImg('/images/edzhjt.png')"/><a>捕鱼余额</a></label>
-	    			<label>
-	    				<input type="radio" class="radio" v-model="transferType" value="0"/>
-	    				<i class="checkboxinput"></i><a>捕鱼余额</a>
-	    				<img :src="$getPublicImg('/images/edzhjt.png')"/><a>彩票余额</a></label>
-	    			<div class="numberMoney"><span></span>
-	    				<input type="tel"  
-	    					pattern="\d*"
-	    					placeholder="请输入转换金额" 
-	    					@input.stop.prevent="zhengshu" 
-	    					v-model="nut"/>
-	    			</div>
-	    			<div class="edzhbtn">
-	    				<button @click="submit">确认</button>
-	    				<button @click="chongzhi">重置</button>
-	    			</div>
-	    		</div>
-    		</div>
-   		</div>
-    </div>
-      <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
-      <div class="loading">
-        <div class="loader-inner line-spin-fade-loader">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
-    </div>
-     <div v-show="istx">
-      <div class="modal_box_feedback">
-        <div class="modal_div">
-          <div class="modal_header color1">
-            <span style="margin-left: 1rem;">通知</span>
-            <a style="float: right;text-align:center;line-height: 1rem;margin-right: 0.3rem;margin-top:0.45rem;display:block;width: 1rem;height: 1rem;"></a>
+
+      <div class="box">
+        <div class='bgImg' :class="{bk1:bgyiteng}" ref="bgagimg">
+          <div class="edzh" v-show="isWan!='游客'" style="z-index: 2;">
+            <div class="top_t">
+              <p>捕鱼余额 :<span>{{agMoney}}</span></p>
+              <p>彩票余额:<span>{{balance}}</span></p>
+            </div>
+            <div class="headerChoose">
+              <button @click="edzhag">额度转换</button>
+              <button @click="gotoPayAddress('fishHistory')">下注记录</button>
+              <button @click="gotoPayAddresscz">交易记录</button>
+            </div>
           </div>
-          <div class="modal_foot">
-            <div  clss="gantan"><img style="width: 100%;height: 100%;" :src="$getPublicImg('/images/gantan.png')"/></div>
-            <p>试玩模式金额不能提现</p>
+          <div class="anNiu" v-if="is_gd_ali != 'yiteng'">
+            <button @click="ykzr">
+              <img src="../../../wap/images/zhenWan.png"/>
+            </button>
+            <button @click="shiwan">
+              <img :src="`../../../wap/images/${is_gd_ali}/isWan.png`"/>
+            </button>
+          </div>
+          <div class="anNiu" v-else>
+            <button @click="ykzr" class="now">
+            </button>
+            <button @click="shiwan" class="try">
+            </button>
+          </div>
+          <div class="edzhmodel" v-show="isEdzh">
+            <div class="edzhdiv">
+              <div class="edzhTop color1" >
+                <span style="margin-left: 1rem;">额度转换</span>
+                <a style="float: right;text-align:center;line-height: 1rem;margin-right: 0.3rem;margin-top:0.3rem;display:block;width: 1rem;height: 1rem;" @click="gbedzh">
+                  <img  style="width: 100%;"  :src="$getPublicImg('/images/agsw.png')"/></a>
+              </div>
+              <div class="edzhFood">
+                <label><input type="radio" class="radio" name="1"  v-model="transferType" value="1"/><i class="checkboxinput"></i><a>彩票余额</a><img :src="$getPublicImg('/images/edzhjt.png')"/><a>捕鱼余额</a></label>
+                <label>
+                  <input type="radio" class="radio" v-model="transferType" value="0"/>
+                  <i class="checkboxinput"></i><a>捕鱼余额</a>
+                  <img :src="$getPublicImg('/images/edzhjt.png')"/><a>彩票余额</a></label>
+                <div class="numberMoney"><span></span>
+                  <input type="tel"
+                         pattern="\d*"
+                         placeholder="请输入转换金额"
+                         @input.stop.prevent="zhengshu"
+                         v-model="nut"/>
+                </div>
+                <div class="edzhbtn">
+                  <button @click="submit">确认</button>
+                  <button @click="chongzhi">重置</button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div v-show="isykag">
-      <div class="modal_box_feedback">
-        <div class="modal_div">
-          <div class="modal_header color1">
-            <span>通知</span>
+        <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
+          <div class="loading">
+            <div class="loader-inner line-spin-fade-loader">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
           </div>
-          <div class="modal_foot">
-            <div  clss="gantan" style="margin-top: 0.2rem;"><img style="width: 100%;height: 100%;" :src="$getPublicImg('/images/gantan.png')"/></div>
-            <p>请先注册</p>
-            <button style="background: #2e64d2;margin-left: 2rem;" @click="agzc">注册</button>
-            <button style="background: #da524d;margin-left: 1rem;" @click="gbzr">关闭</button>
+        </div>
+        <div v-show="istx">
+          <div class="modal_box_feedback">
+            <div class="modal_div">
+              <div class="modal_header color1">
+                <span style="margin-left: 1rem;">通知</span>
+                <a style="float: right;text-align:center;line-height: 1rem;margin-right: 0.3rem;margin-top:0.45rem;display:block;width: 1rem;height: 1rem;"></a>
+              </div>
+              <div class="modal_foot">
+                <div  clss="gantan"><img style="width: 100%;height: 100%;" :src="$getPublicImg('/images/gantan.png')"/></div>
+                <p>试玩模式金额不能提现</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div v-show="isykag">
+          <div class="modal_box_feedback">
+            <div class="modal_div">
+              <div class="modal_header color1">
+                <span>通知</span>
+              </div>
+              <div class="modal_foot">
+                <div  clss="gantan" style="margin-top: 0.2rem;"><img style="width: 100%;height: 100%;" :src="$getPublicImg('/images/gantan.png')"/></div>
+                <p>请先注册</p>
+                <button style="background: #2e64d2;margin-left: 2rem;" @click="agzc">注册</button>
+                <button style="background: #da524d;margin-left: 1rem;" @click="gbzr">关闭</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    	<promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" 
+
+    	<promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow"
    	:promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
 </template>
@@ -105,10 +115,11 @@
   export default {
     components: {
       iHeader,
-      promptbox
+      promptbox,
     },
     data() {
       return {
+				bgyiteng:false,
       	isWan:sessionStorage.getItem('im_username')?sessionStorage.getItem('im_username'):'游客',
       	bgSrc:'',
       	agbgimg:'',
@@ -152,7 +163,7 @@
            // 后退
            this.$router.go(-1)
          }
-    },			    	
+    },
     	ykzr(){
     		this.successshow=false
     		if(this.isWan=='游客'){
@@ -196,7 +207,7 @@
     	yksw(){
     		this.successshow=false
     		let params ={};
-		        params.oid = sessionStorage.getItem('im_token');
+		      params.oid = sessionStorage.getItem('im_token');
 			    this.$http.post(getUrl()+'/aginfo/getAgGameLink/0/6',JSON.stringify(params)).then(res => {
 			  	 if(res.data.msg == 4001){
 				          sessionStorage.clear();
@@ -316,7 +327,7 @@
               setTimeout(() => {
                 this.panelShow = false;
               },1200)
-            
+
           }else if(res.data.msg == 2006){
           	this.successshow=true
             this.promptboxtext = "转换成功";
@@ -343,7 +354,7 @@
             this.balance = this.balance.toFixed(2);
             sessionStorage.setItem('im_money', this.balance)
             this.panelShow = true;
-           
+
             this.isEdzh=false
           }
         })
@@ -383,6 +394,9 @@
 
     },
     created() {
+			if(this.is_gd_ali == 'yiteng'){
+				this.bgyiteng = true;
+			}
        	if(this.isWan=='游客'){
        		this.showCurtion=false
        	}else{
@@ -409,7 +423,7 @@
 			              this.$router.push('/index');
 			            },1200)
 		          }
-			          this.agMoney = Number(res.data.balance.agBalance).toFixed(2);			          
+			          this.agMoney = Number(res.data.balance.agBalance).toFixed(2);
 			          this.balance = Number(res.data.balance.userBalance).toFixed(2);
 			          sessionStorage.setItem('im_money', this.balance)
 		        }else if(res.data.msg == 7001){
@@ -438,10 +452,31 @@
 
 <style  lang='less' scoped>
 @import '../../assets/less/variable.less';
+.bk1{
+	width: 100%;
+	height: 1126/46.875rem!important;
+	background:url(/wap/images/yiteng/buyu.jpg)!important;
+	background-size: 100% 100% !important;
+	overflow:scroll;
+}
+.now{
+		position: relative;
+		top: 5.7rem;
+    height: 1.5rem!important;
+    width: 5rem!important;
+		left: 4rem;
+}
+.try{
+	position: relative;
+  top: 2.75rem;
+	height: 1.5rem!important;
+	width: 5rem!important;
+	right: 4rem;
+}
   @zoom: 46.875rem;
   .title{
+    /*position: relative;*/
     width: 100%;
-    height: 90/46.875rem;
     background:#196fde;
     line-height: 90/46.875rem;
     text-align: center;
@@ -466,21 +501,30 @@
 	  }
 .box{
 	height: 100%;
+  /*padding-top: 1.9rem;*/
+  flex: 1;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 	>.bgImg{
 		width: 100%;
-		height: 1334/46.875rem;
+		/*height: 1334/46.875rem;*/
+    height: 100%;
 		background: url(../../../wap/images/userfinsh.png) no-repeat;
-		background-size: 100% 100%;
-		position:fixed;
-		top:0;
+		background-size: 100% 100% !important;
+		/*position:fixed;*/
+		/*top:0;*/
+    /*padding-top: 3.3rem;*/
 		>.edzh{
+      position: initial;
 			width: 100%;
-			height:196/@zoom;
+			/*height:196/@zoom;*/
 			background: #FFFFFF;
+      padding-top: 2rem;
 			>.top_t{
 			    height:84/46.875rem;
 			    /*line-height:84/46.875rem;*/
-			    padding:0.6rem;
+			    /*padding:0.6rem;*/
+			    padding:0.4rem 0.6rem 0;
 			    border-bottom: 1px solid #E0E2E7;
 			  }
 			>.top_t p{
@@ -532,7 +576,8 @@
 		>.anNiu{
 			width: 100%;
 			position: absolute;
-			bottom:345/@zoom;
+			/*bottom:345/@zoom;*/
+			bottom:0.2rem;
 			left: 0;
 
 			>button{

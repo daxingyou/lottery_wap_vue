@@ -11,11 +11,33 @@
 		<div class="centermiddle">
     <div class="list3" v-for="item in history_list" v-show="isShow4">
       <div>
-        <div class="list4" style="background-color:#666">
+        <div @click="yijie1(item.date)" class="list4" style="background-color:#666">
           <span>{{item.date}}</span>
           <span class="more"></span>
         </div>
-        <div class="list5" v-for="its in item.content">
+        <div class="list5">
+          <div>
+            <!--<span>
+                  <i>交易日期</i>
+                  <i>{{item.date}}</i>
+            </span>-->
+            <span>
+                <i >游戏总局数</i>
+                <i>{{item.num}}</i>
+            </span>
+            <span>
+                <i style="margin-left:.4rem">输赢总额</i>
+                <i>{{item.total}}</i>
+            </span>
+          </div>
+          <div>
+            <span>
+                <i >总抽税</i>
+                <i>{{item.rev}}</i>
+            </span>
+          </div>
+        </div>
+        <!--<div class="list5" v-for="its in item.content">
           <div>
             <span>
                   <i>游戏名称</i>
@@ -28,7 +50,7 @@
           </div>
           <div>
             <span>
-                <i>总计</i>
+                <i>输赢总额</i>
                 <i>{{its.inc_total}}</i>
             </span>
             <span>
@@ -36,7 +58,7 @@
                 <i>{{its.inc_rev}}</i>
             </span>
           </div>
-        </div>
+        </div>-->
       </div>
     </div>
     <div v-show='kon' style='text-align:center;margin:3rem 0;font-size:0.8rem'>
@@ -44,7 +66,7 @@
     </div>
     <div class="zhudan zhudan22"  v-show='isShow5' v-for="groups in finished11.length ? finished11 :finished111" ref="yijies">
       <div>
-        <span>注单时间：{{groups.time}}</span>
+        <span>游戏局数编号：{{groups.id}}</span>
         <!-- <span class="">已结</span> -->
       </div>
       <ul>
@@ -52,9 +74,13 @@
           <span>游戏名称</span>
           <span>{{groups.gname}}</span>
         </li>
+        <li class="clearfix" >
+          <span>下注时间</span>
+          <span>{{groups.time}}</span>
+        </li>
         <li class="clearfix">
-          <span>输赢金额</span>
-          <span>{{groups.inc}}</span>
+          <span>输赢结果</span>
+          <span :class="{'red-color': groups.inc < 0}">{{groups.inc}}</span>
         </li>
         <li class="clearfix" >
           <span>抽税金额</span>
@@ -133,7 +159,7 @@
         isWan: '',
         yjts: '',
         zj:'',
-        pageNumber:'20',
+        pageNumber:'16',
         pageshow:false,
         pagenum:'1',
         pagenmb:false,
@@ -175,7 +201,8 @@
         let params = {}
         params.oid = sessionStorage.getItem('im_token')
         params.is_total = 1
-        this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(params)).then(res => {
+        // this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(params)).then(res => {
+        this.$http.post(`${getUrl()}/Wh_APP_Api/SearchGameRecord`, JSON.stringify(params)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;
@@ -186,14 +213,24 @@
                 path: '/login'
               })
             }, 1000)
+            this.kon = res.data.data.length == 0
           }else if(res.data.msg == 2006){
-            this.history_list = res.data.data||[];
-            console.log(this.history_list)
-            if (this.history_list.length == 0) {
+            res.data.data = res.data.data||[];
+            if (res.data.data.length == 0) {
               this.kon = true;
-            } else {
-              this.kon = false;
+              return
             }
+
+            res.data.data.forEach(item => {
+              item.total = _.reduce(item.content, (sum, obj) => sum + obj.inc_total, 0)
+              item.rev = _.reduce(item.content, (sum, obj) => sum + obj.inc_rev, 0)
+              item.num = _.reduce(item.content, (sum, obj) => sum + obj.nums, 0)
+            })
+
+            this.history_list = res.data.data;
+            this.kon = false;
+          } else if (res.data.msg == 7001) {
+            this.kon = true
           }
         })
         this.isShow3 = false;
@@ -214,17 +251,23 @@
         let params = {};
         let oidinfo = sessionStorage.getItem('im_token');
         params.oid = oidinfo;
-        params.type = 1;
+        // params.type = 1;
         params.page = 1;
         params.number = this.pageNumber;
         let stringTime = daydate;
 				let timestamp2 = Date.parse(new Date(stringTime));
-        params.time = timestamp2 / 1000;
-					if(wintype=='3'){
+        // params.time = timestamp2 / 1000;
+         if (daydate) {
+           params.stime = `${ daydate } 00:00:00`
+           params.etime = `${ daydate } 23:59:59`
+           params.is_total = 0
+         }
+					/*if(wintype=='3'){
 						params.time=this.pageday
-					}
+					}*/
 				this.pageday = params.time
-        this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(params)).then(res => {
+        // this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(params)).then(res => {
+        this.$http.post(`${getUrl()}/Wh_APP_Api/SearchGameRecord`, JSON.stringify(params)).then(res => {
           console.log(res)
         	this.daywin = false
           if (res.data.msg == 4001){
@@ -278,7 +321,8 @@
 					}
         this.pageday = params.time
         params.is_total = 1
-        this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(params)).then(res => {
+        // this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(params)).then(res => {
+        this.$http.post(`${getUrl()}/Wh_APP_Api/SearchGameRecord`, JSON.stringify(params)).then(res => {
         	this.daywin = false
           if (res.data.msg == 4001){
             sessionStorage.clear();
@@ -341,7 +385,8 @@
         prams.page = index;
        	prams.number = this.pageNumber;
 				prams.time = this.pageday;
-        this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
+        // this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/Wh_APP_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;
@@ -388,7 +433,8 @@
         prams.page = this.pagenum;
        	prams.number = this.pageNumber;
 				prams.time = this.pageday;
-        this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
+        // this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/Wh_APP_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;
@@ -435,7 +481,8 @@
         prams.page = this.pagenum;
        	prams.number = this.pageNumber;
 				prams.time = this.pageday;
-        this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
+        // this.$http.post(`${getUrl()}/Wh_H5_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
+        this.$http.post(`${getUrl()}/Wh_APP_Api/SearchGameRecord`, JSON.stringify(prams)).then(res => {
           if (res.data.msg == 4001) {
             sessionStorage.clear();
             this.panelShow = true;
@@ -468,6 +515,9 @@
 </script>
 <style lang="less" rel="stylesheet/less" scoped>
 @import '../../assets/less/variable.less';
+  .red-color{
+    color: red;
+  }
 	.z-header{
 		position: fixed;
 		left: 0;

@@ -29,12 +29,13 @@
                       <div class="issue-rs-item-wp">
                         <span class="issue-rs-item" v-if="item.game_code==51||item.game_code==240||item.game_code==171||item.game_code==210||item.game_code==260" v-for="i in numbeYs(item.result)" :class="`cl_${i} color88`"></span>
                         <span class="issue-rs-item" v-if="item.game_code==47" v-for="i in numbeYs(item.result)" :class="`color_${i} color88`"></span>
-                        <span class="issue-rs-item" v-if="item.game_code==3||item.game_code==2||item.game_code==46||item.game_code==250" v-for="i in numbeYs(item.result)" :class="`color_${i} color88`" style="border-radius:50%">{{i}}</span>
+                        <span class="issue-rs-item" v-if="item.game_code==3||item.game_code==2||item.game_code==46||item.game_code==250||item.game_code==220" v-for="i in numbeYs(item.result)" :class="`color_${i} color88`" style="border-radius:50%">{{i}}</span>
                         <span class="issue-rs-item" v-if="item.game_code==172||item.game_code==280" v-for="i in numbeYs(item.result)" :class="`color_${i} color88`"></span>
                         <span class="issue-rs-item" v-if="item.game_code==160" v-for="i in pcdd" :class="`color_${i} color88`" style="border-radius:50%">{{i}}</span>
                         <span class="issue-rs-item" v-if="item.game_code==69" v-for="i in xq" :class="i=='+'?`color_v color88`:`color_${i} color88`" style="border-radius:50%">{{i}}</span>
                         <span class="issue-rs-item" v-if="item.game_code==270" v-for="i in jc" :class="i=='+'?`color_v color88`:`color_${i} color88`" style="border-radius:50%">{{i}}</span>
                         <span class="issue-rs-item" v-if="item.game_code==180"  v-for="i in numbeYs(item.result)" :class="i <= 40 ? 'icon-gray-f-ball' : 'icon-blue-f-ball'"  >{{i}}</span>
+                        <span class="issue-rs-item" v-if="item.game_code==133"  v-for="i in numbeYs(item.result)" >{{i}}</span>
                       </div>
                   </div>
                 </div>
@@ -96,6 +97,8 @@
         timeSm:0,
         timeLhc:0,
         timeBjkl8:0,
+        timeFc3d:0,
+        timeGd11x5:0,
         time:[],
         className:[],
         isOpen: false,
@@ -232,6 +235,14 @@
           this.timeTj--;
         }
       }, 1000)
+      //福彩3D
+			setInterval(() => {
+        if (this.timeFc3d <= 0) {
+          return
+        } else {
+          this.timeFc3d--;
+        }
+      }, 1000)
       //88赛马
 			setInterval(() => {
         if (this.timeSm <= 0) {
@@ -253,6 +264,15 @@
           return
         } else {
           this.timeBjkl8--;
+        }
+      }, 1000)
+      // 广东11选5
+      
+      setInterval(() => {
+        if (this.timeGd11x5 <= 0) {
+          return
+        } else {
+          this.timeGd11x5--;
         }
       }, 1000)
     },
@@ -334,7 +354,6 @@
 	    		window.location.href ="http://pk10tv.com/"
 	    	}else if(this.is_gd_ali=='gd'){
 	    		window.location.href ="http://www.caipiaoshipin.com"
-
 	    	}else if(this.is_gd_ali=='lv'){
 	    		window.location.href ='http://www.1188kai.com/html/public/home.html'
 	    	}else if(this.is_gd_ali=='uc'){
@@ -342,11 +361,13 @@
 	    	}else if(this.is_gd_ali=='fh'){
 	    			window.location.href ='https://www.428kj.com'
 	    	}else if(this.is_gd_ali=='ly'){
-	    			window.location.href ='https://www.87111.com/'
+	    			window.location.href ='http://www.87111.com/'
 	    	}else if(this.is_gd_ali=='yiren'){
 	    			window.location.href ='https:/yirkj.com/'
 	    	}else if(this.is_gd_ali=='agcai'){
 	    			window.location.href ='https:/yirkj.com/'
+	    	}else if(this.is_gd_ali=='yiteng'){
+	    			window.location.href ='https://373555.com/'
 	    	}
 	    },
 	 inArray1(needle,array,bool){
@@ -379,7 +400,8 @@
     	if(this.is_gd_ali=='ali'){
 	    	this.titletext = 'PK10tv.com开奖网'
 	    	this.kjlogoleft = "6rem"
-	    }else if(this.is_gd_ali=='gd'){
+      }
+      else if(this.is_gd_ali=='gd'){
 	    	this.titletext = 'caipiaoshipin.com开奖网'
 	    	this.kjlogoleft = "7.5rem"
 	    }else if(this.is_gd_ali=='lv'){
@@ -408,11 +430,7 @@
         this.showkjw=false
 	    	this.titletext = 'yirkj.com开奖网'
 	    	this.kjlogoleft = "5.2rem"
-      }else if(this.is_gd_ali=='crown'){
-        this.showkjw=false
-	    	this.titletext = 'yirkj.com开奖网'
-	    	this.kjlogoleft = "5.2rem"
-	    }else if(this.is_gd_ali=='yile'){
+      }else if(this.is_gd_ali=='yile'){
         this.showkjw=false
 	    	this.titletext = 'yirkj.com开奖网'
 	    	this.kjlogoleft = "5.2rem"
@@ -433,14 +451,17 @@
 	    	this.titletext = 'yirkj.com开奖网'
 	    	this.kjlogoleft = "5.2rem"
 	    }else if(this.is_gd_ali=='yiteng'){
+        this.showkjw=true
+	    	this.titletext = '373555.com开奖网'
+	    	this.kjlogoleft = "6.2rem"
+	    }else if(this.is_gd_ali=='letian'){
         this.showkjw=false
-	    	this.titletext = 'yirkj.com开奖网'
-	    	this.kjlogoleft = "5.2rem"
+	    	this.titletext = '373555.com开奖网'
+	    	this.kjlogoleft = "6.2rem"
 	    }
       this.isIndex = window.location.href.split("=")[1];
 
     	this.$http.post(`${getUrl()}/systems/getgameclosetime`).then(res => {
-        console.log(res)
      	  this.de = false
         this.isReady = true;
         this.list = res.data.timeStamp;
@@ -525,6 +546,11 @@
               gameTime = 'this.timeNc';
               className = 'game_25';
               break;
+            case 220:
+              this.timeFc3d = res.data.timeStamp[i].time - res.data.timeStamp[i].serverTime;
+              gameTime = 'this.timeFc3d';
+              className = 'game_220';
+              break;
             case 160:
               this.time28 = res.data.timeStamp[i].time - res.data.timeStamp[i].serverTime;
               gameTime = 'this.time28';
@@ -539,6 +565,11 @@
               this.timeBjkl8 = res.data.timeStamp[i].time - res.data.timeStamp[i].serverTime;
               gameTime = 'this.timeBjkl8';
               className = 'game_180';
+              break;
+            case 133:
+              this.timeGd11x5 = res.data.timeStamp[i].time - res.data.timeStamp[i].serverTime;
+              gameTime = 'this.timeGd11x5';
+              className = 'game_133';
               break;
             default:
               break;
@@ -557,7 +588,7 @@
     watch: {
       timeBj: function() {
         let arry_time=[0,10,20,30,40,50,60,70,80,90,100,110,120,130,140,150,160,170,180,190,200,200,210,220,230,240,250,260,270,280,290];
-        if (arry_time.indexOf(this.timeBj)!=-1|| this.timeCq == 0 || this.timeXg == 0 || this.timeXy == 0 || this.timeXy == 0 || this.timeGd == 0 || this.time28 == 0 || this.timeNc == 0|| this.timeSm == 0|| this.timeLhc == 0 || this.timeBjkl8 == 0) {
+        if (arry_time.indexOf(this.timeBj)!=-1|| this.timeCq == 0 || this.timeXg == 0 || this.timeXy == 0 || this.timeXy == 0 || this.timeGd == 0 || this.time28 == 0 || this.timeNc == 0|| this.timeSm == 0|| this.timeLhc == 0 || this.timeBjkl8 == 0 || this.timeFc3d == 0|| this.timeGd11x5 == 0) {
           this.$http.post(`${getUrl()}/systems/getgameclosetime`).then(res => {
 //          this.de = false
             this.isReady = true;
@@ -643,6 +674,11 @@
                   gameTime = 'this.timeNc';
                   className = 'game_25';
                   break;
+                case 220:
+                  this.timeFc3d = res.data.timeStamp[i].time - res.data.timeStamp[i].serverTime;
+                  gameTime = 'this.timeFc3d';
+                  className = 'game_25';
+                  break;
                 case 160:
                   this.time28 = res.data.timeStamp[i].time - res.data.timeStamp[i].serverTime;
                   gameTime = 'this.time28';
@@ -658,6 +694,11 @@
                   gameTime = 'this.timeBjkl8';
                   className = 'game_180';
                   break;
+                case 133:
+                  this.timeGd11x5 = res.data.timeStamp[i].time - res.data.timeStamp[i].serverTime;
+                  gameTime = 'this.timeGd11x5';
+                  className = 'game_133';
+                  break;
                 default:
                   break;
               }
@@ -672,7 +713,7 @@
 </script>
 
 <style lang="less" rel="stylesheet/less" scoped>
-@import "../../icon/iconfont.css";
+/*@import "../../icon/iconfont.css";*/
 @import '../../assets/less/variable.less';
 .open-net-sub-title {
     margin-bottom: 0.2rem;
@@ -871,7 +912,7 @@
     }
   }
 }
-.issue-rs-wp {  
+.issue-rs-wp {
   display: flex;
   font-size: 25/47rem;
   font-weight: bold;
@@ -928,8 +969,8 @@
                                 text-align:left;
                             }
                         }
-                        // div:nth-child(2) { 
-                        .issue-rs-wp {  
+                        // div:nth-child(2) {
+                        .issue-rs-wp {
                             span {
                                  margin-left:4/40rem;
                                  width: 40/40rem;
@@ -950,7 +991,7 @@
                           flex-wrap: wrap;
                         }
                     }
-                    > div { 
+                    > div {
                       color: #272727;
                     }
                     // > div {
@@ -1281,7 +1322,7 @@ header {
        border:none!important;
      }
 }
-.game_40,.game_20,.game_60,.game_201{
+.game_40,.game_20,.game_60,.game_201,.game_220{
   // >span:nth-child(1){
   // .last-issue-txt {
   //   width: 1.4rem!important;
@@ -1386,7 +1427,7 @@ header {
 }
 .game_20,.game_201{
   // >span:nth-child(1){
-  // .last-issue-txt {   
+  // .last-issue-txt {
   //   width: 1.4rem!important;
   //   text-shadow:none!important;
   //   color: #666666!important;
@@ -1473,7 +1514,7 @@ header {
     line-height:40/46.875rem!important;
   }
 }
-.game_40,.game_60,.game_20,.game_201{
+.game_40,.game_60,.game_20,.game_201,.game_220{
 	.color88{
 		background-color: #146cdc!important;
 		border: 1px solid #666666;
@@ -1481,7 +1522,7 @@ header {
 }
 .game_35{
   // >span:nth-child(1){
-  // .last-issue-txt {  
+  // .last-issue-txt {
   //   width: 1.4rem!important;
   //   text-shadow:none!important;
   //   color: #666666!important;
@@ -1527,7 +1568,7 @@ header {
 }
 .game_25,.game_30{
   // >span:nth-child(1){
-  .last-issue-txt {  
+  .last-issue-txt {
     width: 1.4rem;
     text-shadow:none;
     color: #666666;
@@ -1548,11 +1589,11 @@ header {
 }
 .game_25.issue-rs-wp {
 // >span:nth-child(1){
-  .last-issue-txt {  
+  .last-issue-txt {
     font-size: 0.55rem!important;
   }
   span{
-    font-size: 0!important;   
+    font-size: 0!important;
   }
   .color_01{
       background: url('@{public_img}/images/xync_1.png') no-repeat!important;
@@ -1707,5 +1748,10 @@ header {
 	background-size: 100%;
 	color: #fff;
 }
-
+.game_133 .issue-rs-item{
+  background: url(/wap/images/blue_ball.png);
+  background-size: 100% 100% !important;
+  color: #333 !important;
+  text-shadow: none!important
+}
 </style>

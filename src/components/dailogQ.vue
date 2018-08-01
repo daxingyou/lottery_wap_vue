@@ -1,10 +1,61 @@
 <template>
 <div class="">
-
   <div class="is-active" v-if="!panelShow">
     <div class="modal-content" v-show="loading">
       <div class="title">投注明细</div>
-      <ul>
+      <ul v-if="game_code == '220'">
+        <li v-if="lottery_ty == '6201'" v-for="(item,j) in lotteryS">
+          <div>
+            <span>{{item.groupName}} {{item.key.slice(10,11)}}</span>
+            <span>&nbsp;{{item.title}}&nbsp; ({{item.odds}})</span>
+          </div>
+          <div>
+            <span class="monry">{{item.money}}</span>
+          </div>
+          <i @click.stop="delt(j)"></i>
+        </li>
+        <li v-if="lottery_ty == '6202'||lottery_ty == '6203'||lottery_ty == '6204'||lottery_ty == '6205'" class="ezdw">
+          <p v-if="grouo_b.length > 0">
+            <span>佰</span>
+            <span></span>
+            <span v-for="(item,j) in grouo_b">
+              <span>{{item.key.slice(-1)}} </span>
+              <span class="dian-odd">,</span>
+            </span>
+            <a style="color:#333"> ({{odds_b}})</a>
+          </p>
+          <p  v-if="grouo_s.length > 0">
+            <span>拾</span>
+            <span></span>
+            <span v-for="(item,j) in grouo_s">
+              <span >{{item.key.slice(-1)}}</span>
+              <span>,</span>
+            </span>
+            <a style="color:#333"> ({{odds_s}})</a>
+          </p>
+          <p  v-if="grouo_g.length > 0">
+            <span>个</span>
+            <span></span>
+            <span v-for="(item,j) in grouo_g">
+              <span >{{item.key.slice(-1)}}{{sbm}}</span>
+              <span>,</span>
+            </span>
+            <a style="color:#333"> ({{odds_g}})</a>
+          </p>
+        </li>
+        <li v-if="lottery_ty != '6201'&&lottery_ty != '6202'&&lottery_ty != '6203'&&lottery_ty != '6204'&&lottery_ty != '6205'" v-for="(item,j) in lotteryS">
+          <div>
+            <span v-if="lottery_ty == '6208'">{{item.groupName}} {{item.key.slice(8,9)}}</span>
+            <span v-else>{{item.groupName}}</span>
+            <span>&nbsp;{{item.title}}&nbsp; ({{item.odds}})</span>
+          </div>
+          <div>
+            <span class="monry">{{item.money}}</span>
+          </div>
+          <i @click.stop="delt(j)"></i>
+        </li>
+      </ul>
+      <ul v-else>
         <li v-for="(item,j) in lotteryS">
           <div>
             <span>{{item.groupName}}</span>
@@ -16,7 +67,17 @@
           <i @click.stop="delt(j)"></i>
         </li>
       </ul>
-      <div class="total">
+      <div v-if="lottery_ty == '6202'||lottery_ty == '6203'||lottery_ty == '6204'||lottery_ty == '6205'" class="total">
+        <div>
+          <span>组数</span>
+          <span  class="color_money"  style="color: #0a44e1;">{{lengthss}}</span>
+        </div>
+        <div>
+          <span>总计</span>
+          <span class="color_money" style="color: #0a44e1;">{{zonghes}}元</span>
+        </div>
+      </div>
+      <div v-else class="total">
         <div>
           <span>组数</span>
           <span  class="color_money"  style="color: #0a44e1;">{{lengths}}</span>
@@ -43,8 +104,8 @@
       <div></div>
       <div></div>
     </div>
-  </div> 
-  <promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" 
+  </div>
+  <promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow"
    	:promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
 </div>
 </template>
@@ -56,7 +117,9 @@ export default {
     	is_gd_ali: is_gd_ali(),
       lotteryS: [],
       lengths: 0,
+      lengthss: 0,
       zonghe: 0,
+      zonghes: 0,
       odd: {},
       title: "",
       loading:true,
@@ -68,8 +131,17 @@ export default {
 	    panelShow:false,
 	    promptboxshow:true,
 	    successshow:false,
-	    promptsystem:'',
-	    gametoken1:JSON.parse(sessionStorage.getItem('gametoken')),
+      promptsystem:'',
+      odds:'',
+      gametoken1:JSON.parse(sessionStorage.getItem('gametoken')),
+      lottery_ty:'',
+      groupName:'',
+      grouo_b:[],
+      grouo_s:[],
+      grouo_g:[],
+      grouo_b:'',
+      grouo_s:'',
+      grouo_g:''
     }
   },
   components: {
@@ -98,17 +170,80 @@ export default {
     }
   },
   created(){
-  	
-    this.lotteryS = this.lotteryM;
-   	let s= ''
-    for (let i=0; i<this.lotteryS.length; i++){
-      this.lotteryS[i].money = this.money;
-       s= this.lotteryS[i].key;
-      this.odd[s] = this.money;
-      this.lengths++;
-      this.zonghe = this.lengths * this.money
-   }
-   
+    if(this.game_code == 220){
+      this.lotteryS = this.lotteryM;
+      console.log(this.lotteryS)
+      this.grouo_b = []
+      this.grouo_s = []
+      this.grouo_g = []
+      for (let i = 0; i < this.lotteryS.length; i++) {
+        let lett = this.lotteryS[i].key
+        this.lottery_ty = lett.slice(3,7)
+        if(this.lottery_ty == 6209){
+          this.lotteryS[i].title = (this.lotteryS[i].key).slice(10,11)
+        }
+        let group = this.lotteryS[i].groupName;
+        if(group == '佰'||group == '佰位'){
+          this.grouo_b.push(this.lotteryS[i])
+          for (let i = 0; i < this.grouo_b.length; i++) {
+            this.odds_b = this.grouo_b[i].odds
+          }
+        }
+        if(group == '拾'||group == '拾位'){
+          this.grouo_s.push(this.lotteryS[i])
+          for (let i = 0; i < this.grouo_s.length; i++) {
+            this.odds_s = this.grouo_s[i].odds
+          }
+        }
+        if(group == '个'||group == '个位'){
+          this.grouo_g.push(this.lotteryS[i])
+          for (let i = 0; i < this.grouo_g.length; i++) {
+            this.odds_g = this.grouo_g[i].odds
+          }
+        }
+        this.groupName = group;
+      }
+      let s= ''
+      for (let i=0; i<this.lotteryS.length; i++){
+        this.lotteryS[i].money = this.money;
+        this.odds = this.lotteryS[i].odds;
+        s= this.lotteryS[i].key;
+        this.odd[s] = this.money;
+        this.lengths++;
+        this.zonghe = this.lengths * this.money
+        if(this.lottery_ty == 6202){
+          this.lengthss = this.grouo_b.length * this.grouo_s.length;
+          this.zonghes = this.lengthss * this.money;
+        }
+        if(this.lottery_ty == 6203){
+          this.lengthss = this.grouo_b.length * this.grouo_g.length;
+          this.zonghes = this.lengthss * this.money
+        }
+        if(this.lottery_ty == 6204){
+          this.lengthss = this.grouo_s.length * this.grouo_g.length;
+          this.zonghes = this.lengthss * this.money
+        }
+        if(this.lottery_ty == 6205){
+          this.lengthss = this.grouo_b.length * this.grouo_s.length * this.grouo_g.length ;
+          this.zonghes = this.lengthss * this.money
+        }
+      }
+    }else{
+      this.lotteryS = this.lotteryM;
+      for (let i = 0; i < this.lotteryS.length; i++) {
+        let lett = this.lotteryS[i].key
+        this.lottery_ty = lett.slice(3,7)
+      }
+      let s= ''
+      for (let i=0; i<this.lotteryS.length; i++){
+        this.lotteryS[i].money = this.money;
+        this.odds = this.lotteryS[i].odds;
+        s= this.lotteryS[i].key;
+        this.odd[s] = this.money;
+        this.lengths++;
+        this.zonghe = this.lengths * this.money
+      }
+    }
   },
   beforeUpdate(){
   },
@@ -136,9 +271,6 @@ export default {
     kadun(){
     },
     xiazhu() {
-//  	for(var a in this.lotteryS ){
-//	     this.lotteryS[a].isCheck=false
-//     }//循环遍历true
       this.sendParent();
       this.loading=false
       let oidInfo = sessionStorage.getItem('im_token');
@@ -172,19 +304,19 @@ export default {
           this.panelShow = true
           setTimeout(this.kadun,1200);
           setTimeout(this.hideDailog,1000);
-          
+
         }
         else if (res.data.msg == 5002) {
           this.erreocode='5002'
 					this.panelShow = true
-					this.promptsystem = "该游戏正在封盘，可前往其他游戏！" 
+					this.promptsystem = "该游戏正在封盘，可前往其他游戏！"
           this.sendParent();
           setTimeout(this.hideDailog, 1200);
         }
         else if (res.data.msg == 5003){
           this.erreocode='5003'
 					this.panelShow = true
-					this.promptsystem = "因网络原因，本次投注未成功，请稍后重试！" 
+					this.promptsystem = "因网络原因，本次投注未成功，请稍后重试！"
           this.sendParent();
           setTimeout(this.hideDailog,1200);
         }
@@ -232,13 +364,13 @@ export default {
         }else if(res.data.msg ==3002){
         	this.erreocode='3002'
 					this.panelShow = true
-					this.promptsystem = "下注内容未开放，请尝试该游戏的其他玩法!" 
+					this.promptsystem = "下注内容未开放，请尝试该游戏的其他玩法!"
 					this.sendParent();
 					setTimeout(this.hideDailog, 1200);
         }else if(res.data.msg ==3003){
         	this.erreocode='3003'
 					this.panelShow = true
-					this.promptsystem = "抱歉，网络原因导致下注未成功，请重新尝试!" 
+					this.promptsystem = "抱歉，网络原因导致下注未成功，请重新尝试!"
 					this.sendParent();
 					setTimeout(this.hideDailog, 1200);
         }
@@ -257,7 +389,7 @@ export default {
 </script>
 
 <style lang='less' rel="stylesheet/less">
-@import url(../icon/iconfont.css);
+/*@import url(../icon/iconfont.css);*/
 @import '../assets/less/variable.less';
 .fade-enter-active, .fade-leave-active {
   transition: opacity 2s
@@ -493,5 +625,17 @@ export default {
     height: 15/20rem;
   }
 }
-
+.ezdw{
+  height: auto!important;
+  display:block!important;
+}
+.ezdw p{
+  border-bottom:1px solid #f1f1f1;
+}
+.ezdw p:last-child{
+  border-bottom:none!important;
+}
+.ezdw p > span:nth-last-child(2) span:nth-child(2) {
+  display:none;
+}
 </style>

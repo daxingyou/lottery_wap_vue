@@ -1,7 +1,8 @@
 <template>
-  <section class="information" :style="{marginTop: isIosWebview ? '2.9rem' : '1.9rem'}">
+  <!--<section class="information" :style="{marginTop: isIosWebview ? '2.9rem' : '1.9rem'}">-->
+  <section class="information" :style="{marginTop: isIosWebview ? '2.9rem' : '0'}">
     <p v-show="zhe" class="masker_al"></p>
-    <iframe id="kj" :src="url" v-if="kjsp" scrolling="no" frameborder="0"style="width:16rem; height:11rem; -webkit-text-size-adjust:none!important;">暂无开奖视频
+    <iframe id="kj" :src="url" v-if="kjsp" scrolling="no" frameborder="0" style="width:16rem; height:11rem; -webkit-text-size-adjust:none!important;">暂无开奖视频
     </iframe>
     <span v-show="clo" class="clos" @click="clos"><img src="/wap/images/clos.png" alt=""></span>
     <div id="top_sp" class="lottery-rs-remain" style="position:relative">
@@ -14,7 +15,7 @@
       </div>
       <div v-if="game_code == 69" style="width:100%;padding-right:5px">
         <div ref="xgcendtime" :style="{'fontSize':bigger}" style="margin-top: 0.1rem;text-align:right">
-          
+
           <span style="margin-left: 0.1rem;">开奖时间:</span>
           <!-- <span>{{lotteryObj.next.round ? `${myfilter(endtime, endtime - fentime)}` : `00:00`}}</span> -->
           <span v-if="this.gameType=='20'" style="display:none">{{lotteryObj.next.round ? `${myfilter(endtime, endtime - fentime)}` : `00:00`}}</span>
@@ -24,7 +25,7 @@
         <div class="lottery_play_area">
           <span  @click="shipin">
             <img class="img_icon" style="" v-show="url!==''" src="/wap/images/online.jpg" alt="">
-            <span v-show="url!==''" style="color:#e1760e;position:relative;top:.3rem;">开奖直播</span>
+            <span v-show="url!==''" style="color:#e1760e;position:relative;top:.3rem;font-size:14px;">开奖直播</span>
           </span>
           <div>
             <i style="font-size: 1.4rem; line-height: 1.2rem;margin-right: 0.25rem;color: #333;margin-top: 0.05rem;">封</i>
@@ -49,7 +50,7 @@
         <div class="lottery_play_area">
           <span @click="shipin" >
             <img class="img_ico" v-show="url!==''" src="/wap/images/online.jpg" alt="">
-            <span v-show="url!==''" style="color:#e1760e;position:relative;top:.3rem;">开奖直播</span>
+            <span v-show="url!==''" style="color:#e1760e;position:relative;top:.3rem;font-size:14px;">开奖直播</span>
           </span>
           <div style="position:relative;">
             <i style="font-size: 1.4rem; line-height: 1.2rem;margin-right: 0.25rem;color: #333;margin-top: 0.05rem;">封</i>
@@ -68,7 +69,7 @@
       <div class="lottory_time" >
         <span>{{lotteryObj.last.round}}期</span>
       </div>
-      <div class="lotteryOpen" @click='gotoAddress("/trend:"+game_code)'>
+      <div class="lotteryOpen" @click='gotoAddress("/trend:" + game_code)'>
         <ul>
           <template v-if="game_code==180">
               <li v-for="(v,i) in lotteryObj.last.number" class="boll-item-180" :class="v <= 40 ? 'icon-gray-f-ball' : 'icon-blue-f-ball'">{{jsks?'':v}}</li>
@@ -121,6 +122,25 @@
           <li>{{pkfour}}</li>
         </ul>
       </div>
+
+      <!--广东11选5-->
+      <div class="sxh gd11x5" v-show="gd11x5==true">
+        <ul>
+          <li style="background-color: #eaeaea;">总和</li>
+          <li>{{kjzh}}</li>
+          <li>{{pkyhgdx}}</li>
+          <li>{{pkyghds}}</li>
+          <li style="background-color: #eaeaea;width: 12%;">尾大小</li>
+          <li style="width: 8%;">{{wdx}}</li>
+          <li style="background-color: #eaeaea;">1-5球</li>
+          <li>{{lotteryObj.last.number[0]}}</li>
+          <li>{{lotteryObj.last.number[1]}}</li>
+          <li>{{lotteryObj.last.number[2]}}</li>
+          <li>{{lotteryObj.last.number[3]}}</li>
+          <li>{{lotteryObj.last.number[4]}}</li>
+        </ul>
+      </div>
+
       <!--重庆幸运农场-->
       <div class="sxh cqxynsxh" v-show="cqxync==true">
         <ul>
@@ -211,6 +231,7 @@ export default {
       xyft: false,
       jsks: false,
       gdklsf: false,
+      gd11x5:false,
       cqxync: false,
       xglhc: false,
       pcdd: false,
@@ -257,7 +278,7 @@ export default {
   props: {
     gameCode: {
       type: Number,
-      default: ""
+      // default: ''
     },
     lotteryObj: {
       type: Object
@@ -291,6 +312,7 @@ export default {
     if (this.gameCode) {
       this.game_code = this.gameCode;
     }
+    console.log(this.game_code)
     var u = navigator.userAgent,
       app = navigator.appVersion;
     var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
@@ -370,6 +392,9 @@ export default {
       }
     },
     timetrans(date) {
+      if(!date){
+        return '待定'
+      }
       var date = new Date(date * 1000); //如果date为13位不需要乘1000
       var Y = date.getFullYear() + "-";
       var M =
@@ -446,7 +471,9 @@ export default {
             parseInt(this.lotteryObj.last.number[7]);
           if (this.kjzh >= 85) {
             this.pkyhgdx = "大";
-          } else {
+          }else if (this.kjzh == 84) {
+            this.pkyhgdx = "和";
+          }else {
             this.pkyhgdx = "小";
           }
 
@@ -570,7 +597,9 @@ export default {
             parseInt(this.lotteryObj.last.number[7]);
           if (this.kjzh >= 85) {
             this.pkyhgdx = "大";
-          } else {
+          }else if (this.kjzh == 84) {
+            this.pkyhgdx = "和";
+          }else {
             this.pkyhgdx = "小";
           }
           if (this.kjzh % 2 == 0) {
@@ -584,6 +613,69 @@ export default {
             this.wdx = "尾大";
           } else {
             this.wdx = "尾小";
+          }
+          if (
+            parseInt(this.lotteryObj.last.number[0]) >
+            parseInt(this.lotteryObj.last.number[7])
+          ) {
+            this.pkone = "龙";
+          } else {
+            this.pkone = "虎";
+          }
+          if (
+            parseInt(this.lotteryObj.last.number[1]) >
+            parseInt(this.lotteryObj.last.number[6])
+          ) {
+            this.pktwo = "龙";
+          } else {
+            this.pktwo = "虎";
+          }
+          if (
+            parseInt(this.lotteryObj.last.number[2]) >
+            parseInt(this.lotteryObj.last.number[5])
+          ) {
+            this.pkthree = "龙";
+          } else {
+            this.pkthree = "虎";
+          }
+          if (
+            parseInt(this.lotteryObj.last.number[3]) >
+            parseInt(this.lotteryObj.last.number[4])
+          ) {
+            this.pkfour = "龙";
+          } else {
+            this.pkfour = "虎";
+          }
+          // this.url =
+          //   "https://kj.kai861.com/view/video/GDklsf/index.html?10005?1682011.cn";
+          break;
+          case "133":
+          this.gd11x5 = true;
+          this.game_code = 133;
+          this.kjzh =
+            parseInt(this.lotteryObj.last.number[0]) +
+            parseInt(this.lotteryObj.last.number[1]) +
+            parseInt(this.lotteryObj.last.number[2]) +
+            parseInt(this.lotteryObj.last.number[3]) +
+            parseInt(this.lotteryObj.last.number[4])
+          if (this.kjzh >= 85) {
+            this.pkyhgdx = "大";
+          }else if (this.kjzh == 84) {
+            this.pkyhgdx = "和";
+          }else {
+            this.pkyhgdx = "小";
+          }
+          if (this.kjzh % 2 == 0) {
+            this.pkyghds = "双";
+          } else {
+            this.pkyghds = "单";
+          }
+          if (
+            this.kjzh.toString().substr(this.kjzh.toString().length - 1) >= 5
+          ) {
+            this.wdx = "大";
+          } else {
+            this.wdx = "小";
           }
           if (
             parseInt(this.lotteryObj.last.number[0]) >
@@ -1060,7 +1152,10 @@ export default {
           this.jsksyxethreee = this.kssx(
             Number(this.lotteryObj.last.number[2])
           );
-
+          break;
+        case "220":
+          this.jsks = false;
+          this.game_code = 220;
           break;
       }
     },
@@ -1156,12 +1251,13 @@ export default {
     min-width: 100/20rem;
   }
   /* > div:nth-of-type(1) {*/
-  .lottery-rs-remain {    
+  .lottery-rs-remain {
     display: flex;
     height: 120/46.875rem;
     border-bottom: 1px solid #f3f3f3;
     > div:nth-of-type(1) {
       width: 60%;
+      text-align: left;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -1252,6 +1348,7 @@ export default {
           justify-content: flex-start;
           align-items: center;
           padding-left: 10/20rem;
+          font-size: 0.6rem;
       }
     /* > div:nth-of-type(2) { */
     .lotteryOpen {
@@ -1293,7 +1390,7 @@ export default {
           }
     }
   }
-    .lottery-rs-pertis {  
+    .lottery-rs-pertis {
       position: relative;
       // height: 100/46.875rem;
       display: flex;
@@ -1374,6 +1471,7 @@ export default {
       }
     }
     > .gdklsfsxh,
+    >.gd11x5,
     .cqxynsxh {
       width: 100%;
       > ul {
@@ -1390,6 +1488,13 @@ export default {
         > li:nth-child(1),
         li:nth-child(7) {
           width: 11.5%;
+        }
+      }
+    }
+    >.gd11x5{
+      >ul{
+        >li{
+          width: 6.8%
         }
       }
     }
@@ -1860,6 +1965,12 @@ export default {
 }
 .clos img {
   width: 1rem;
+}
+
+.game_133 .boll-item {
+  background: url('../../wap/images/blue_ball.png') no-repeat center center!important;
+  background-size: 100% 100% !important;
+  color: black!important;
 }
 
 </style>

@@ -14,7 +14,7 @@
 			</div>
 		</div>
 	</div>
-     <promptbox  @panelShow="panelShow=false" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" 
+     <promptbox  @panelShow="panelShow=false" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow"
    	:promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
 </template>
@@ -56,7 +56,7 @@
          		this.times = 0
             this.promptboxtext = "请登录正式会员账号!"
             this.panelShow = true
-            
+
             return
         }
       	let params = {};
@@ -68,7 +68,7 @@
 	      	params.oid = userOid;
 				}
       	this.$http.post(`${getUrl()}/WheelActivity/doUserDraw`, JSON.stringify(params)).then(res =>{
-      	
+
        	if (res.data.msg == 4001) { //  1未登陆
             sessionStorage.clear();
 						this.panelShow = true;
@@ -181,7 +181,7 @@
     line-height: 90/46.875rem;
     text-align: center;
     z-index: 4;
-    position: fixed;
+    /*position: fixed;*/
     left: 0;
     top: 0;
     >i{
@@ -220,7 +220,7 @@
 		.zhuanpan{
 			width: 668/46.875rem;
 			height: 668/46.875rem;
-			
+
 			position: absolute;
 			left: 50%;
 			margin-left: -668/46.875/2rem;
@@ -228,7 +228,7 @@
 			.circle{
 				width: 207/46.875rem;
 				height: 207/46.875rem;
-	
+
 				position: absolute;
 				left: 50%;
 				margin-left: -207/46.875/2rem;
@@ -236,7 +236,7 @@
 				margin-top: -207/46.875/2rem;
 				z-index: 3;
 				transition:all 5s;
-				
+
 			/*	transform-origin:50% 50%;*/
 				>.pointer{
 						width: 25/46.875rem;
@@ -244,11 +244,11 @@
 					position: absolute;
 					top: -1.08rem;
 					left: 48%;
-					
+
 					background-size:100% 100%;
 				}
 			}
-			
+
 		}
 	}
 </style>

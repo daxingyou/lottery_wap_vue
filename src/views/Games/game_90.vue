@@ -3,56 +3,60 @@
   <div style='height:100%'>
     <dailog-q :type_code="activeClassifyId" :gametoken="gametoken" :game_code="260" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
     <lotteryHeader :title="title" :game_code="game_code" @regulation_click="regulation_control=true"></lotteryHeader>
-    <div id="cont_main" v-on:touchmove="banmove()" style='position:absolute;top:0;bottom:2.45rem;overflow:auto;-webkit-overflow-scrolling:touch;width:100%'>
-      <lotteryArea class="game_55" :lotteryObj="body" :zMoney="zMoney" :fenpan="fengpan" :endtime="endtime" :fentime="fentime" v-if="isOk" gameType="90"></lotteryArea>
-      <div class="lottery_nav_bar" :style='de==true||loadpage==true?"display:none":"display:block"'>
-        <ul>
-          <button class="trapezoid color1" v-for="(item,i) in smClassify" :class="{active8: activeClassifyId === item.type_code}" @click="changeDate(item,i)">
-            <span>{{item.name}}</span>
-          </button>
-        </ul>
+
+    <gameChat>
+      <div id="cont_main" v-on:touchmove="banmove()" style='overflow-x: hidden; overflow-y: auto;-webkit-overflow-scrolling:touch;width:100%;padding-bottom:2rem;'>
+        <lotteryArea class="game_55" :lotteryObj="body" :zMoney="zMoney" :fenpan="fengpan" :endtime="endtime" :fentime="fentime" v-if="isOk" gameType="90"></lotteryArea>
+        <div class="lottery_nav_bar" :style='de==true||loadpage==true?"display:none":"display:block"'>
+          <ul>
+            <button class="trapezoid color1" v-for="(item,i) in smClassify" :class="{active8: activeClassifyId === item.type_code}" @click="changeDate(item,i)">
+              <span>{{item.name}}</span>
+            </button>
+          </ul>
+        </div>
+        <section :class='setSectionClass' ref="seller" :style='de==true||loadpage==true?"display:none":"display:block"'>
+          <ul>
+            <li v-for="(item,j) in currentGame">
+              <span class="colortitle">{{item.name}}</span>
+              <ul>
+                <li v-for="(ite,i) in item.list" :class="setBtnClass(i)">
+                  <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan||round=='loading'">
+                    <span>{{ite.name}}</span>
+                    <span class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
+                  </button>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <Loadpage v-if='loadpage'></Loadpage>
+        <luzhu gameCode="260"/>
       </div>
-      <section :class='setSectionClass' ref="seller" :style='de==true||loadpage==true?"display:none":"display:block"'>
-        <ul>
-          <li v-for="(item,j) in currentGame">
-            <span class="colortitle">{{item.name}}</span>
-            <ul>
-              <li v-for="(ite,i) in item.list" :class="setBtnClass(i)">
-                <button class="color4" :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan||round=='loading'">
-                  <span>{{ite.name}}</span>
-                  <span class="odd">{{(fengpan||round=='loading')?"封盘":ite.odds}}</span>
-                </button>
-              </li>
-            </ul>
-          </li>
-        </ul>
+      <section class="bet_bar" ref="bet_bar">
+        <div>
+          <span class="qin" @click="qingkong">重置</span>
+        </div>
+        <div style='position:relative'>
+          <span style="color:#FFFFFF;" v-if="xshuzi>0">{{xshuzi}}</span>
+          <span style="background:`url(${getPublicImg('/images/small_m.png')}) no-repeat`;background-size:100% 100%;" v-else="xshuzi=0">{{xshuzi}}</span>
+          <div style='position:relative;height:1.4rem'>
+            <input style='position:absolute;left:0;padding-left:1.5rem;line-height:1.4rem;' type="number" pattern="\d*" v-model="money_s" placeholder="输入金额" @input="changes_m()" @focus='fours()' @blur='blur()' min="1" />
+            <img @click='cleanmoney' v-show="money_s!=null" style="width: 0.8rem;height: 0.8rem;float: right;margin-top: 0.32rem;margin-right: 0.3rem;" :src="$getPublicImg('/images/tzgb.png')" alt="" />
+          </div>
+        </div>
+        <div>
+          <button class="gdcolor" :class="{color1:isBlue}" type="button" @click="subMit">确认下注</button>
+        </div>
       </section>
-      <Loadpage v-if='loadpage'></Loadpage>
-      <luzhu gameCode="260"/>
-    </div>
-    <section class="bet_bar" ref="bet_bar">
-      <div>
-        <span class="qin" @click="qingkong">重置</span>
-      </div>
-      <div style='position:relative'>
-        <span style="color:#FFFFFF;" v-if="xshuzi>0">{{xshuzi}}</span>
-        <span style="background:`url(${getPublicImg('/images/small_m.png')}) no-repeat`;background-size:100% 100%;" v-else="xshuzi=0">{{xshuzi}}</span>
-        <div style='position:relative;height:1.4rem'>
-          <input style='position:absolute;left:0;padding-left:1.5rem;line-height:1.4rem;' type="number" pattern="\d*" v-model="money_s" placeholder="输入金额" @input="changes_m()" @focus='fours()' @blur='blur()' min="1" />
-          <img @click='cleanmoney' v-show="money_s!=null" style="width: 0.8rem;height: 0.8rem;float: right;margin-top: 0.32rem;margin-right: 0.3rem;" :src="$getPublicImg('/images/tzgb.png')" alt="" />
+      <div :style='de?"display:block":"display:none"' style="position: fixed;top:0;left:0;background:rgba(0,0,0,0.5);opacity:.8;width:100%;height:100%;z-index:6">
+        <div style='position: fixed;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;'>
+          <mu-circular-progress :size="40" />
         </div>
       </div>
-      <div>
-        <button class="gdcolor" :class="{color1:isBlue}" type="button" @click="subMit">确认下注</button>
+      <div class="fp" v-if="fengpan">
       </div>
-    </section>
-    <div :style='de?"display:block":"display:none"' style="position: fixed;top:0;left:0;background:rgba(0,0,0,0.5);opacity:.8;width:100%;height:100%;z-index:6">
-      <div style='position: fixed;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;'>
-        <mu-circular-progress :size="40" />
-      </div>
-    </div>
-    <div class="fp" v-if="fengpan">
-    </div>
+    </gameChat>
+
     <promptbox @panelShow="panelShow=false" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" :promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
   </div>
 </template>
@@ -74,6 +78,8 @@ import api from "@/api";
 import { smClassify } from "@/config/classify.config";
 import promptbox from "../../components/promptbox";
 import luzhu from '../../components/luzhu'
+import gameChat from '@/components/game-chat/index';
+
 export default {
   data() {
     return {
@@ -447,12 +453,14 @@ export default {
       if (
         this.endtime == 0 ||
         this.endtime == 80 ||
-        this.endtime == 75 ||
-        this.endtime == 20
+        this.endtime == 70 ||
+        this.endtime == 60 ||
+        this.endtime == 50 ||
+        this.endtime == 30 
       ) {
         let newTime = Date.parse(new Date()) / 1000;
         this.fengpan = false;
-        this.qingkong();
+        // this.qingkong();
         let oidInfo = sessionStorage.getItem('im_token');
         this.oid_info = oidInfo;
         let params = {
@@ -546,7 +554,8 @@ export default {
     dailogS,
     Loadpage,
     promptbox,
-    luzhu
+    luzhu,
+    gameChat
     // 'ex-simple': model,
   }
 };
@@ -924,7 +933,7 @@ button {
 }
 .bet_bar {
   width: 100%;
-  position: absolute;
+  position: fixed;
   bottom: 0;
   display: flex;
   justify-content: space-between;

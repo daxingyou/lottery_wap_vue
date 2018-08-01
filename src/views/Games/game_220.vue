@@ -1,166 +1,247 @@
 <template>
     <div style='height:100%'>
-        <!-- <dailog-q :gametoken="gametoken" :type_code="activeClassifyId > 50 ? 13 : activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
-        <dailog-w :gametoken="gametoken" :type_code="activeClassifyId > 50 ? 13 : activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :indeT="indexT" :lotteryM="objects" v-if="showDailogW" v-on:listenToChildEvent="showMsgFromChild"></dailog-w>
-        <dailog-s :gametoken="gametoken" :type_code="13" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" :typecode="Number(activeClassifyId)" v-if="showDailogS" v-on:listenToChildEvent="showMsgFromChild"></dailog-s> -->
+        <dailog-q :gametoken="gametoken" :type_code="activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :lotteryM="objects" v-if="showDailogQ" v-on:listenToChildEvent="showMsgFromChild"></dailog-q>
+        <dailog-z :gametoken="gametoken" :type_code="activeClassifyId" :game_code="game_code" :money="money_s" :round="round" :indeT="indexT" :lotteryM="objects" v-if="showDailogZ" v-on:listenToChildEvent="showMsgFromChild"></dailog-z>
         <lotteryHeader :title="title" :game_code="game_code" @regulation_click="regulation_control=true"></lotteryHeader>
-        <div style='position:absolute;top:0;bottom:2.45rem;  overflow: auto; -webkit-overflow-scrolling: touch;width:100%'>
+
+        <gameChat>
+          <div style='overflow-x: hidden; overflow-y: auto; -webkit-overflow-scrolling: touch;width:100%;padding-bottom:2rem;'>
             <lotteryArea class="game_220" :zMoney="zMoney" :lotteryObj="body" :endtime="endtime" :fenpan="fengpan" :fentime="fentime" v-if="isOk" gameType="220"></lotteryArea>
             <div :style='de==true||loadpage==true?"display:none":"display:block"' class="nav_o">
-                <ul :class="`${indexF} ${isShowNavf?'isShowNav':''}`" ref="firstNav">
-                    <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav<4" :class="{active8:itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
-                        <span v-if="nav_i<4" @click.stop='updown()'></span>
-                    </li>
-                </ul>
-                <ul :class="`${indexS} ${isShowNavs?'isShowNav':''}`" ref="secondNav">
-                    <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav>=4&&indexNav<8" :class="{active8 :itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
-                        <span v-if="nav_i>=4&&nav_i<8" @click.stop='updown()'></span>
-                    </li>
-                </ul>
-                <ul :class="`${indexTh} ${isShowNavt?'isShowNav':''}`" ref="threeNav">
-                    <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav>=8" :class="{active8:itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
-                        <span v-if="nav_i>=8" @click.stop='updown()'></span>
-                    </li>
-                </ul>
+              <ul :class="`${indexF} ${isShowNavf?'isShowNav':''}`" ref="firstNav">
+                <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav<4" :class="{active8:itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
+                  <span v-if="nav_i<4" @click.stop='updown()'></span>
+                </li>
+              </ul>
+              <ul :class="`${indexS} ${isShowNavs?'isShowNav':''}`" ref="secondNav">
+                <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav>=4&&indexNav<8" :class="{active8 :itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
+                  <span v-if="nav_i>=4&&nav_i<8" @click.stop='updown()'></span>
+                </li>
+              </ul>
+              <ul :class="`${indexTh} ${isShowNavt?'isShowNav':''}`" ref="threeNav">
+                <li class="" v-for="(itmek,indexNav) in datas" v-if="indexNav>=8" :class="{active8:itmek.isCheck}" @click="changgeNav(itmek,indexNav)">{{itmek.name}}
+                  <span v-if="nav_i>=8" @click.stop='updown()'></span>
+                </li>
+              </ul>
             </div>
-            <section v-for="(itemZ,indexZ) in datas" :class="`cqList${indexZ}`" v-if="de==false&&nav_i==indexZ&&loadpage==false">
-                <div style="width: 100%;" v-if="indexZ!=0&&indexZ!=1">
-                    <ul>
-                        <li class="li_4" v-for='(item,index) in itemZ.datasT'>
-                            <button :class="{isred: activeClassifyId === item.type_code}" @click="one(item,index,itemZ.datasT)">{{item._name}}</button>
-                        </li>
-                    </ul>
-                </div>
+            <section v-for="(itemZ,indexZ) in datas" class="cqList" :class="`cqList${indexZ}`" v-if="de==false&&nav_i==indexZ&&loadpage==false">
+              <div style="width: 100%;" v-if="indexZ==3||indexZ==7">
                 <ul>
-                    <li v-for="(item,j) in itemZ.datats" :key="j">
-                        <span class='o_title'>{{item.name}}</span>
-                        <ul>
-                            <li v-if="item.name == '一字组合'" v-for="(ite,i) in ico">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '佰'" v-for="(ite,i) in hes_0" class="bai">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '拾'" v-for="(ite,i) in hes_1" class="bai">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '个'" v-for="(ite,i) in hes_2" class="bai">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '佰拾'" v-for="(ite,i) in hes_3" class="bai_1">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '佰个'" v-for="(ite,i) in hes_4" class="bai_1">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '拾个'" v-for="(ite,i) in hes_5" class="bai_1">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '佰拾和尾数'" v-for="(ite,i) in hes_6" class="bai_2">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '佰个和尾数'" v-for="(ite,i) in hes_7" class="bai_2">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '拾个和尾数'" v-for="(ite,i) in hes_8" class="bai_2">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '佰拾个和数'" v-for="(ite,i) in hes_9" class="bai_2">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                            <li v-if="item.name == '佰拾个和尾数'" v-for="(ite,i) in hes_10" class="bai_2">
-                                <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
-                                    <span v-if="ite.odds!=''" class="color_money">{{fengpan?"封盘":ite.odds}}</span>
-                                </button>
-                            </li>
-                        </ul>
-                    </li>
+                  <li class="li_4" v-for='(item,index) in itemZ.datasT'>
+                    <button :class="{isred: inde === item.inde}" @click="one(item,index,itemZ.datasT)">{{item._name}}</button>
+                  </li>
                 </ul>
-                <!-- <ul v-else class="evencode">
-                    <li v-for="j in 1" :key="j">
-                        <ul>
-                            <li v-for="(item, i) in evenCodeList" :key="i">
-                                <button :class="{active3:item.isCheck}" @click="isCheck(j,i,item)" :disabled="fengpan">
-                                    <span v-bind:class="setRoundNumberClass(item.name)">{{item.name}}</span>
-                                    <span v-if="item.odds!=''" class="color_money">{{fengpan?"封盘":item.odds}}</span>
-                                </button>
-                            </li>
-                        </ul>
+              </div>
+              <div style="width: 100%;" v-if="indexZ==5">
+                <ul>
+                  <li class="li_4" v-for='(item,index) in itemZ.datasT'>
+                    <button :class="{isred: activeClassifyId === item.type_code}" @click="ones(item,index,itemZ.datasT)">{{item._name}}</button>
+                  </li>
+                </ul>
+              </div>
+              <ul>
+                <li v-for="(item,j) in itemZ.datats" :key="j">
+                  <span v-show="item.name != ''&&item.names != 'ezzh'&&item.names != 'zxs'&&item.names != 'zxl'&&item.names != 'kd'&&item.names != 'szzh'" class='o_title'>{{item.name}}</span>
+                  <ul>
+                    <li v-if="item.names == 'yzzh'" v-for="(ite,i) in ico">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
                     </li>
-                </ul> -->
+                    <li v-if="item.names == 'bai'" v-for="(ite,i) in hes_0" class="bai">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'shi'" v-for="(ite,i) in hes_1" class="bai">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'ge'" v-for="(ite,i) in hes_2" class="bai">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'baishi'" v-for="(ite,i) in hes_3" class="bai_1">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'baige'" v-for="(ite,i) in hes_4" class="bai_1">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'shige'" v-for="(ite,i) in hes_5" class="bai_1">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'bshws'" v-for="(ite,i) in hes_6" class="bai_2">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'bghws'" v-for="(ite,i) in hes_7" class="bai_2">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'sghws'" v-for="(ite,i) in hes_8" class="bai_2">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'bsghs'" v-for="(ite,i) in hes_9" class="bai_2">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'bsghws'" v-for="(ite,i) in hes_10" class="bai_2">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'ezzh'||item.names == 'szhs'"  v-for="(ite,i) in ico">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'szzh'"  v-for="(ite,i) in ico_display">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'yzdwB'||item.names == 'ezdwB'||item.names == 'szdwB'"  v-for="(ite,i) in ico.hundreds">
+                      <button  class="baiwei" :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{i}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'yzdwS'||item.names == 'ezdwS'||item.names == 'szdwS'"  v-for="(ite,i) in ico.decade">
+                      <button class="shiwei" :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{i}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'yzdwG'||item.names == 'ezdwG'||item.names == 'szdwG'"  v-for="(ite,i) in ico.unit">
+                      <button class="gewei" :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{i}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'ebshs'"  v-for="(ite,i) in ezhs_bs">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'ebghs'"  v-for="(ite,i) in ezhs_bg">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'esghs'"  v-for="(ite,i) in ezhs_sg">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{ite.title}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'ebshws'"  v-for="(ite,i) in ezhs_bsw">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{i}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'szhws'"  v-for="(ite,i) in icos.tail_3">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{i}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'ebghws'"  v-for="(ite,i) in ezhs_bgw">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{i}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'esghws'"  v-for="(ite,i) in ezhs_sgw">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{i}}</span>
+                        <span v-if="ite.odds!=''" class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'zxs'||item.names == 'zxl'" v-for="(ite,i) in coss">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{i}}</span>
+                        <span ref='kuang' class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                    <li v-if="item.names == 'kd'" v-for="(ite,i) in ico">
+                      <button :class="{active3:ite.isCheck}" @click="isCheck(j,i,ite,item.name)" :disabled="fengpan">
+                        <span v-bind:class="setRoundNumberClass(ite.title)">{{i}}</span>
+                        <span class="odd color_money">{{fengpan?"封盘":ite.odds}}</span>
+                      </button>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
             </section>
             <Loadpage v-if='loadpage'></Loadpage>
-        </div>
-        <section class="bet_bar" ref="bet_bar">
+          </div>
+          <section class="bet_bar" ref="bet_bar">
 
             <div>
-                <span class="qin" @click="qingkong">重置</span>
+              <span class="qin" @click="qingkong">重置</span>
             </div>
             <div style='position:relative'>
-                <span style="color:#FFFFFF;" v-if="xshuzi>0">{{xshuzi}}</span>
-                <span style="background:`url(${getPublicImg('/images/small_m.png')}) no-repeat`;background-size:100% 100%;" v-else="xshuzi=0">{{xshuzi}}</span>
-                <div style='position:relative;height:1.4rem'><input style='position:absolute;left:0;padding-left:1.5rem;line-height:1.4rem;' type="number" pattern="\d*" v-model="money_s" placeholder="输入金额" @input="changes_m()" @focus='fours()' @blur='blur()' min="1" />
-                    <img @click='cleanmoney' v-show="money_s!=null" style="width: 0.8rem;height: 0.8rem;float: right;margin-top: 0.32rem;margin-right: 0.3rem;" :src="$getPublicImg('/images/tzgb.png')" alt="" />
-                </div>
+              <span style="color:#FFFFFF;" class="kuan1" v-if="xshuzi>0">{{xshuzi}}</span>
+              <span style="background:`url(${getPublicImg('/images/small_m.png')}) no-repeat`;background-size:100% 100%;" v-else="xshuzi=0">{{xshuzi}}</span>
+              <div style='position:relative;height:1.4rem'><input style='position:absolute;left:0;padding-left:1.5rem;line-height:1.4rem;' type="number" pattern="\d*" v-model="money_s" placeholder="输入金额" @input="changes_m()" @focus='fours()' @blur='blur()' min="1" />
+                <img @click='cleanmoney' v-show="money_s!=null" style="width: 0.8rem;height: 0.8rem;float: right;margin-top: 0.32rem;margin-right: 0.3rem;" :src="$getPublicImg('/images/tzgb.png')" alt="" />
+              </div>
             </div>
             <div>
-                <button class="gdcolor" :class="{color1:isBlue}" type="button" @click="subMit">确认下注</button>
+              <button class="gdcolor" :class="{color1:isBlue}" type="button" @click="subMit">确认下注</button>
             </div>
-        </section>
-
-        <div :style='de?"display:block":"display:none"' style="position: fixed;top:0;left:0;background:rgba(0,0,0,0.5);opacity:.8;width:100%;height:100%;z-index:6">
+          </section>
+          <div :style='de?"display:block":"display:none"' style="position: fixed;top:0;left:0;background:rgba(0,0,0,0.5);opacity:.8;width:100%;height:100%;z-index:6">
             <div style='position: fixed;top:50%;left:50%;width:40px;height:40px;margin:-20px 0 0 -20px;'>
-                <mu-circular-progress style="" :size="40" />
+              <mu-circular-progress style="" :size="40" />
             </div>
-        </div>
-        <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
+          </div>
+          <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
             <div class="loading">
-                <div class="loader-inner line-spin-fade-loader">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
+              <div class="loader-inner line-spin-fade-loader">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
             </div>
-        </div>
+          </div>
+        </gameChat>
+
         <promptbox @panelShow="panelShow=false" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" :promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
     </div>
 </template>
@@ -170,11 +251,11 @@ import { mapGetters, mutations } from "vuex";
 import lotteryHeader from "../../components/header/lotteryHeader";
 import lotteryArea from "../../components/lottery-area";
 import dailogQ from "../../components/dailogQ.vue";
-import dailogW from "../../components/dailogW.vue";
-import dailogS from "../../components/dailogS.vue";
+import dailogZ from "../../components/dailogZ.vue";
 import Loadpage from "../../components/Loadpage.vue";
 import { getEvenCode } from "./marksixe.config";
 import promptbox from "../../components/promptbox";
+import gameChat from '@/components/game-chat/index';
 import api from "@/api";
 import {
   parseOddsList,
@@ -187,8 +268,9 @@ export default {
     return {
       currentGame: [], // 当前游戏
       activeClassifyId: 6210, // typecode
-      // evencodeId: 617,
-       evencodeId: 6210,
+      groupName:'',
+      inde:0,
+      evencodeId: 6210,
       evenCodeList: getEvenCode(),
       isShowNavf: false,
       isShowNavs: true,
@@ -200,7 +282,6 @@ export default {
       indexS: "nav_o_2",
       indexTh: "nav_o_3",
       classIndex: ["nav_o_1", "nav_o_2", "nav_o_3"],
-      // typecode: 617,
       typecode: 6210,
       xshuzi: 0,
       zMoney: 0,
@@ -215,6 +296,8 @@ export default {
       showCurtion: true,
       loadpage: false,
       gametoken: "",
+      ite:'',
+      indexCodes:'',
       datas: [
         {
           name: "主势盘",
@@ -229,19 +312,20 @@ export default {
           datats:[
             {
               name: "一字组合",
-               type_code: 6194
+              names:'yzzh',
+              type_code: 6194
             },
-            { name: "佰"},
-            {name:"拾"},
-            {name:"个"},
-            {name:"佰拾"},
-            {name:"佰个"},
-            {name:"拾个"},
-            {name:"佰拾和尾数"},
-            {name:"佰个和尾数"},
-            {name:"拾个和尾数"},
-            {name:"佰拾个和数"},
-            {name:"佰拾个和尾数"}
+            {name:"佰", names:'bai',},
+            {name:"拾", names:'shi',},
+            {name:"个", names:'ge',},
+            {name:"佰拾", names:'baishi',},
+            {name:"佰个", names:'baige',},
+            {name:"拾个", names:'shige',},
+            {name:"佰拾和尾数", names:'bshws',},
+            {name:"佰个和尾数", names:'bghws',},
+            {name:"拾个和尾数",names:'sghws',},
+            {name:"佰拾个和数", names:'bsghs',},
+            {name:"佰拾个和尾数", names:'bsghws',}
           ]
         },
         {
@@ -255,19 +339,10 @@ export default {
             }
           ],
           datats:[
-            {
-              name: "一字组合",
-              type_code: 6194
-            },
-            {
-              name: "佰"
-            },
-            {
-              name:"拾"
-            },
-            {
-              name:"个"
-            }
+            {name: "一字组合",type_code: 6194, names:'yzzh',},
+            {name: "佰", names:'bai',},
+            {name:"拾", names:'shi',},
+            {name:"个", names:'ge',}
           ]
         },
         {
@@ -276,359 +351,201 @@ export default {
           datasT: [
             {
               isCheck: true,
-              _name: "正1特",
-              _index: "tm1",
-              type_code: 5
+              _index: "ezzh",
+              type_code: 6195
             },
-            {
-              isCheck: false,
-              _name: "正2特",
-              _index: "tm2",
-              type_code: 6
-            },
-            {
-              isCheck: false,
-              _name: "正3特",
-              _index: "tm3",
-              type_code: 7
-            },
-            {
-              isCheck: false,
-              _name: "正4特",
-              _index: "tm4",
-              type_code: 8
-            },
-            {
-              isCheck: false,
-              _name: "正5特",
-              _index: "tm5",
-              type_code: 9
-            },
-            {
-              isCheck: false,
-              _name: "正6特",
-              _index: "tm6",
-              type_code: 10
-            }
+          ],
+          datats:[
+            {name: "二字组合", names:'ezzh',},
           ]
         },
         {
           name: "三字组合",
           isCheck: false,
+          type_code: 6197,
           datasT: [
             {
               isCheck: true,
-              _index: "zhydl",
-              type_code: 11
-            }
-          ]
-        },
-        {
-          name: "连码",
-          isCheck: false,
-          type_code: 13,
-          datasT: [
-            {
-              isCheck: true,
-              _name: "三全中(670)",
-              _index: "lianm",
-              type_code: 617,
+              _index: "0~58",
+              _name: "000-058",
               inde: 3,
-              maxIsCheck: 10
+              type_code: 6197
             },
             {
               isCheck: false,
-              _name: "三中二,三(20/110)",
-              _index: "lianm",
-              type_code: 619,
-              inde: 3,
-              maxIsCheck: 10
-            },
-            {
-              isCheck: false,
-              _name: "二全中(60)",
-              _index: "lianm",
-              type_code: 613,
-              inde: 2,
-              maxIsCheck: 10
-            },
-            {
-              isCheck: false,
-              _name: "二中特,二(25/50)",
-              _index: "lianm",
-              type_code: 615,
-              inde: 2,
-              maxIsCheck: 10
-            },
-            {
-              isCheck: false,
-              _name: "特串(150)",
-              _index: "lianm",
-              type_code: 616,
-              inde: 2
-            },
-            {
-              isCheck: false,
-              _name: "四中一(1.96)",
-              _index: "lianm",
-              type_code: 808,
+              _index: "59~157",
               inde: 4,
-              maxIsCheck: 10
-            }
-          ]
-        },
-        {
-          name: "半波",
-          isCheck: false,
-          datasT: [
-            {
-              isCheck: true,
-              _index: "banbo",
-              type_code: 14
-            }
-          ]
-        },
-        {
-          name: "一肖/尾数",
-          isCheck: false,
-          datasT: [
-            {
-              isCheck: true,
-              _index: "yxiao",
-              type_code: 15
-            }
-          ]
-        },
-        {
-          name: "特码生肖",
-          isCheck: false,
-          datasT: [
-            {
-              isCheck: true,
-              _index: "tex",
-              type_code: 16
-            }
-          ]
-        },
-        {
-          name: "合肖",
-          isCheck: false,
-          datasT: [
-            {
-              isCheck: true,
-              _name: "二肖",
-              _index: "hx2",
-              type_code: 17,
-              inde: 2
+              _name: "059-157"
             },
             {
               isCheck: false,
-              _name: "三肖",
-              _index: "hx3",
-              type_code: 18,
-              inde: 3
-            },
-            {
-              isCheck: false,
-              _name: "四肖",
-              _index: "hx4",
-              type_code: 19,
-              inde: 4
-            },
-            {
-              isCheck: false,
-              _name: "五肖",
-              _index: "hx5",
-              type_code: 20,
-              inde: 5
-            },
-            {
-              isCheck: false,
-              _name: "六肖",
-              _index: "hx6",
-              type_code: 21,
-              inde: 6
-            }
-          ]
-        },
-        {
-          name: "生肖连",
-          isCheck: false,
-          datasT: [
-            {
-              isCheck: true,
-              _name: "二肖连中",
-              _index: "sxl2zh",
-              type_code: 27,
-              inde: 2,
-              maxIsCheck: 8
-            },
-            {
-              isCheck: false,
-              _name: "三肖连中",
-              _index: "sxl3zh",
-              type_code: 28,
-              inde: 3,
-              maxIsCheck: 8
-            },
-            {
-              isCheck: false,
-              _name: "四肖连中",
-              _index: "sxl4zh",
-              type_code: 29,
-              inde: 4,
-              maxIsCheck: 8
-            },
-            {
-              isCheck: false,
-              _name: "五肖连中",
-              _index: "sxl5zh",
-              type_code: 30,
+              _index: "158~278",
               inde: 5,
-              maxIsCheck: 8
+              _name: "158-278"
             },
             {
               isCheck: false,
-              _name: "二肖连不中",
-              _index: "sx2bzh",
-              type_code: 31,
-              inde: 2,
-              maxIsCheck: 8
+              _index: "279~466",
+              inde: 6,
+              _name: "279-466"
             },
             {
               isCheck: false,
-              _name: "三肖连不中",
-              _index: "sx3bzh",
-              type_code: 32,
-              inde: 3,
-              maxIsCheck: 8
-            },
-            {
-              isCheck: false,
-              _name: "四肖连不中",
-              _index: "sx4bzh",
-              type_code: 33,
-              inde: 4,
-              maxIsCheck: 8
+              _index: "467~999",
+              inde: 7,
+              _name: "467-999"
             }
+          ],
+          datats:[
+            {name:'三字组合',names:'szzh'}
           ]
         },
         {
-          name: "尾数连",
+          name: "一字定位",
+          isCheck: false,
+          type_code: 6201,
+          datasT: [
+              {
+              isCheck: true,
+              _index: "yzdw",
+              type_code: 6201
+            }
+          ],
+          datats:[
+            {name: "佰", names:'yzdwB',},
+            {name: "拾", names:'yzdwS',},
+            {name: "个", names:'yzdwG',},
+          ]
+        },
+        {
+          name: "二字定位",
           isCheck: false,
           datasT: [
             {
               isCheck: true,
-              _name: "二尾连中",
-              _index: "wl2zh",
-              type_code: 34,
-              inde: 2,
-              maxIsCheck: 8
+              _index: "bsdw",
+              _name:'佰拾定位',
+              type_code: 6202,
             },
-            {
-              isCheck: false,
-              _name: "三尾连中",
-              _index: "wl3zh",
-              type_code: 35,
-              inde: 3,
-              maxIsCheck: 8
+             {
+              isCheck: true,
+              _index: "bgdw",
+              _name:'佰个定位',
+              type_code: 6203
             },
-            {
-              isCheck: false,
-              _name: "四尾连中",
-              _index: "wl4zh",
-              type_code: 36,
-              inde: 4,
-              maxIsCheck: 8
-            },
-
-            {
-              isCheck: false,
-              _name: "二尾连不中",
-              _index: "wl2bz",
-              type_code: 37,
-              inde: 2,
-              maxIsCheck: 8
-            },
-            {
-              isCheck: false,
-              _name: "三尾连不中",
-              _index: "wl3bz",
-              type_code: 38,
-              inde: 3,
-              maxIsCheck: 8
-            },
-            {
-              isCheck: false,
-              _name: "四尾连不中",
-              _index: "wl4bz",
-              type_code: 39,
-              inde: 4,
-              maxIsCheck: 8
+             {
+              isCheck: true,
+              _index: "sgdw",
+              _name:'拾个定位',
+              type_code: 6204
             }
-          ]
+          ],
+          datats:[]
         },
         {
-          name: "全不中",
+          name: "三字定位",
           isCheck: false,
+          type_code: 6205,
           datasT: [
             {
               isCheck: true,
-              _name: "五不中",
-              _index: "bz5",
-              type_code: 40,
-              inde: 5
-            },
-            {
-              isCheck: false,
-              _name: "六不中",
-              _index: "bz6",
-              type_code: 41,
-              inde: 6
-            },
-            {
-              isCheck: false,
-              _name: "七不中",
-              _index: "bz7",
-              type_code: 42,
-              inde: 7
-            },
-
-            {
-              isCheck: false,
-              _name: "八不中",
-              _index: "bz8",
-              type_code: 43,
-              inde: 8
-            },
-            {
-              isCheck: false,
-              _name: "九不中",
-              _index: "bz9",
-              type_code: 44,
-              inde: 9
-            },
-            {
-              isCheck: false,
-              _name: "十不中",
-              _index: "bz10",
-              type_code: 45,
-              inde: 10
-            },
-            {
-              isCheck: false,
-              _name: "十一不中",
-              _index: "bz11",
-              type_code: 46,
-              inde: 11
-            },
-            {
-              isCheck: false,
-              _name: "十二不中",
-              _index: "bz12",
-              type_code: 47,
-              inde: 12
+              _index: "szdw",
+              type_code: 6205
             }
+          ],
+          datats:[
+            {name: "佰位", names:'szdwB',},
+            {name: "拾位", names:'szdwS',},
+            {name: "个位", names:'szdwG',},
+          ]
+        },
+        {
+          name: "二字和数",
+          isCheck: false,
+          type_code: 6206,
+           datasT: [
+            {
+              isCheck: true,
+              _index: "baishi",
+              _name:'佰拾',
+              inde: 3,
+              type_code: 6206,
+            },
+             {
+              isCheck: true,
+              _index: "baige",
+              _name:'佰个',
+              inde: 4,
+              type_code: 6206
+            },
+             {
+              isCheck: true,
+              _index: "shige",
+              _name:'拾个',
+              inde: 5,
+              type_code: 6206
+            }
+          ],
+        },
+        {
+          name: "三字和数",
+          isCheck: false,
+          type_code: 6207,
+          datasT: [
+            {
+              isCheck: true,
+              _index: "szhs",
+              type_code: 6207
+            },
+          ],
+          datats:[
+            {name: "三字和数", names:'szhs',},
+            {name: "三字和数尾数", names:'szhws',}
+          ]
+        },
+        {
+          name: "组选三",
+          isCheck: false,
+          type_code: 6211,
+          datasT: [
+            {
+              isCheck: false,
+              _index: "zxs",
+              type_code: 6211
+            },
+          ],
+          datats:[
+            {name: "组选三", names:'zxs',}
+          ]
+        },
+         {
+          name: "组选六",
+          isCheck: false,
+          type_code: 6212,
+          datasT: [
+            {
+              isCheck: false,
+              _index: "zxl",
+              type_code: 6212
+            },
+          ],
+          datats:[
+            {name: "组选六", names:'zxl',}
+          ]
+        },
+        {
+          name: "跨度",
+          isCheck: false,
+          type_code: 6208,
+          datasT: [
+            {
+              isCheck: false,
+              _index: "kd",
+              type_code: 6208,
+            }
+          ],
+          datats:[
+            {name: "跨度", names:'kd',}
           ]
         }
       ],
@@ -669,6 +586,10 @@ export default {
       successshow: false,
       selectedTabName: "",
       ico:'',
+      ico_display:[],
+      ico_er:[],
+      currentGames:'',
+      icos:'',
       he:'',
       zh:'',
       hes_0:'',
@@ -681,40 +602,24 @@ export default {
       hes_7:'',
       hes_8:'',
       hes_9:'',
-      hes_10:''
-      // maxIsCheck:null
-      // pcznavc_a:1//二級選項卡，默認顯示兩面盤
+      hes_10:'',
+      cos:'',
+      coss:'',
+      ezhs_bs:'',
+      ezhs_bg:'',
+      ezhs_sg:'',
+      ezhs_bsw:'',
+      ezhs_bgw:'',
+      ezhs_sgw:'',
+      icost:'',
+      ezdwflag:false,
+      szdwflag:false,
+      groupNames:'',
+      index_l:""
     };
   },
 
   methods: {
-    // sortZodiacArray(data) {
-    //   let ZodiacArray = [
-    //     "鼠",
-    //     "马",
-    //     "牛",
-    //     "羊",
-    //     "虎",
-    //     "猴",
-    //     "兔",
-    //     "鸡",
-    //     "龙",
-    //     "狗",
-    //     "蛇",
-    //     "猪"
-    //   ];
-    //   let orderedData = [];
-    //   ZodiacArray.forEach((item, index) => {
-    //     data &&
-    //       data.length &&
-    //       data.forEach(dataItem => {
-    //         if (item == dataItem.name) {
-    //           orderedData.push(dataItem);
-    //         }
-    //       });
-    //   });
-    //   return orderedData;
-    // },
     cleanmoney() {
       this.money_s = null;
     },
@@ -727,7 +632,6 @@ export default {
     fours() {
       this.onoff = false;
       if (navigator.userAgent.indexOf("UCBrowser") > -1) {
-        // alert(1)
         setTimeout(() => {
           document.body.scrollTop = document.body.scrollHeight;
         }, 600);
@@ -776,10 +680,16 @@ export default {
       }
     },
     changgeNav(itmek, index) {
-      this.selectedTabName = itmek.name;
-      if (itmek.type_code !== 13) {
-        this.fetchGames({ type_code: itmek.datasT[0].type_code });
+      this.index_l = index;
+      this.qingkong();
+      if(this.nav_i == index){
+        return false;
       }
+      if(itmek.name == '二字和数' ||itmek.name == '三字和数'){
+        this.fetchGame({ type_code: 6209 });
+      }
+      this.selectedTabName = itmek.name;
+      this.fetchGames({ type_code: itmek.datasT[0].type_code });
       this.activeClassifyId = itmek.datasT[0].type_code;
       for (let i = 0; i < this.datas.length; i++) {
         this.datas[i].isCheck = false;
@@ -807,18 +717,6 @@ export default {
         this.indexTh = this.classIndex[1];
         this.indexF = this.classIndex[2];
       }
-      for (let i = 0; i < itmek.datasT.length; i++) {
-        if (itmek.datasT[i].isCheck) {
-          if (index == 4) {
-            this.type_code = 13;
-            this.typecode = itmek.datasT[i].type_code;
-            this.indexT = 3;
-          } else {
-            this.indexT = 2;
-            this.type_code = itmek.datasT[i].type_code;
-          }
-        }
-      }
       this.xshuzi = 0;
       this.isBlue = false;
       this.nav_i = index;
@@ -826,33 +724,6 @@ export default {
       if (!this.updownB) {
         this.updownB = !this.updownB;
       }
-    },
-    one(item, j, k) {
-      this.qingkong();
-      if (Number(this.activeClassifyId) !== 13) {
-        this.fetchGames({ type_code: item.type_code });
-        this.activeClassifyId = item.type_code;
-        this.object = {};
-        this.xshuzi = 0;
-      } else {
-        this.evencodeId = item.type_code;
-      }
-
-      item.isCheck = false;
-
-      k.forEach(function(key) {
-        key.isCheck = false;
-      });
-
-      k[j].isCheck = true;
-      this.indexT = k[j].inde;
-
-      if (this.nav_i == 4) {
-        this.typecode = k[j].typecode;
-      } else {
-        this.type_code = k[j].typecode;
-      }
-      this.dadiao = item._index;
     },
     changes_m() {
       this.money_s = this.money_s.replace(/[^0-9]/g, "");
@@ -870,6 +741,9 @@ export default {
       this.isBlue = false;
       this.money_s = null;
       this.xshuzi = 0;
+      for (let j = 0; j < this.coss.length; j++){
+        this.coss[j].odds = '';
+      }
       for (let item in this.object) {
         this.object[item].isCheck = false;
       }
@@ -898,98 +772,89 @@ export default {
         setTimeout(this.isSHowff, 1200);
         return;
       }
-      if (this.nav_i == 4) {
-        if (this.objects.length < this.indexT || this.objects.length > 10) {
+      if(this.nav_i == 9){
+        if (this.objects.length < 5) {
           this.objects.length < this.indexT
-            ? (this.promptboxtext = `至少选择${this.indexT}个号码`)
+            ? (this.promptboxtext = `至少选择5个号码,最多选择10个号码`)
             : (this.promptboxtext = `最多选择10个号码`);
           this.panelShow = true;
           this.objects = [];
           return;
-        } else {
-          this.$store.dispatch("showDailogS");
+        }else{
+          this.$store.dispatch("showDailogZ");
+          for (let j = 0; j < this.coss.length; j++) {
+            // this.coss[j].odds = '';
+          }
           return;
         }
-      } else if (this.nav_i == 8) {
-        if (this.objects.length != this.indexT) {
-          this.promptboxtext = `请您选${this.indexT}号码`;
+      }
+      if(this.nav_i == 10){
+         if (this.objects.length < 4) {
+          this.objects.length < this.indexT
+            ? (this.promptboxtext = `至少选择4个号码,最多选择8个号码`)
+            : (this.promptboxtext = `最多选择8个号码`);
           this.panelShow = true;
           this.objects = [];
           return;
-        } else {
-          this.$store.dispatch("showDailogW");
+        }else{
+          this.$store.dispatch("showDailogZ");
           return;
         }
-      } else if (this.nav_i == 11) {
-        if (this.indexT == 2) {
-          this.indexT = 5;
+      }
+      if(this.nav_i == 5){
+        this.ezdwflag = false;
+        let aa = [];
+        let bb = [];
+        let flag_a = false;
+        let flag_b = false;
+        // if (this.dadiao == 'zsp' || this.dadiao == 'bsdw') {
+        if (this.index_l == 5) {
+          aa = document.getElementsByClassName('baiwei active3');
+          bb = document.getElementsByClassName('shiwei active3');
         }
-        if (
-          this.indexT == 5 ||
-          this.indexT == 6 ||
-          this.indexT == 7 ||
-          this.indexT == 8
-        ) {
-          if (this.objects.length < this.indexT || this.objects.length > 10) {
-            this.objects.length < this.indexT
-              ? (this.promptboxtext = `至少选择${this.indexT}个号码`)
-              : (this.promptboxtext = `最多选择10个号码`);
-            this.panelShow = true;
-            this.objects = [];
-            return;
-          }
-        } else if (this.indexT == 9) {
-          if (this.objects.length < this.indexT || this.objects.length > 11) {
-            this.objects.length < this.indexT
-              ? (this.promptboxtext = `至少选择${this.indexT}个号码`)
-              : (this.promptboxtext = `最多选择11个号码`);
-            this.panelShow = true;
-            this.objects = [];
-            return;
-          }
-        } else if (this.indexT == 10) {
-          if (this.objects.length < this.indexT || this.objects.length > 12) {
-            this.objects.length < this.indexT
-              ? (this.promptboxtext = `至少选择${this.indexT}个号码`)
-              : (this.promptboxtext = `最多选择12个号码`);
-            this.panelShow = true;
-            this.objects = [];
-            return;
-          }
-        } else if (this.indexT == 11) {
-          if (this.objects.length < this.indexT || this.objects.length > 13) {
-            this.objects.length < this.indexT
-              ? (this.promptboxtext = `至少选择${this.indexT}个号码`)
-              : (this.promptboxtext = `最多选择13个号码`);
-            this.panelShow = true;
-            this.objects = [];
-            return;
-          }
-        } else if (this.indexT == 12) {
-          if (this.objects.length < this.indexT || this.objects.length > 15) {
-            this.objects.length < this.indexT
-              ? (this.promptboxtext = `至少选择${this.indexT}个号码`)
-              : (this.promptboxtext = `最多选择15个号码`);
-            this.panelShow = true;
-            this.objects = [];
-            return;
-          }
+        if(this.indexCodes == 6203) {
+          aa = document.getElementsByClassName('baiwei active3');
+          bb = document.getElementsByClassName('gewei active3');
         }
-        this.$store.dispatch("showDailogW");
-        return;
-      } else if (this.nav_i > 8) {
-        if (this.objects.length < this.indexT) {
-          this.promptboxtext = `至少选择${this.indexT}个号码`;
+        if(this.indexCodes == 6204) {
+          aa = document.getElementsByClassName('shiwei active3');
+          bb = document.getElementsByClassName('gewei active3');
+        }
+
+        if (aa.length > 0 && bb.length > 0) {
+          this.ezdwflag = true;
+        }
+        if (this.ezdwflag == false)
+        {
+          this.promptboxtext = "两项中请各选一位!";
           this.panelShow = true;
-          this.objects = [];
+          this.promptboxshow = false;
           return;
-        } else if (this.objects.length > 8) {
-          this.promptboxtext = `最多选择8个号码`;
+        }
+      }
+      if(this.nav_i == 6){
+
+        this.szdwflag = false;
+        let aa = [];
+        let bb = [];
+        let cc = [];
+        let flag_a = false;
+        let flag_b = false;
+        let flag_c = false;
+        // if (this.dadiao == 'zsp' || this.dadiao == 'bsdw') {
+          if (this.index_l == 6) {
+          aa = document.getElementsByClassName('baiwei active3');
+          bb = document.getElementsByClassName('shiwei active3');
+          cc = document.getElementsByClassName('gewei active3');
+        }
+        if (aa.length > 0 && bb.length > 0 && cc.length > 0) {
+          this.szdwflag = true;
+        }
+        if (this.szdwflag == false)
+        {
+          this.promptboxtext = "三项中请各选一位";
           this.panelShow = true;
-          this.objects = [];
-          return;
-        } else {
-          this.$store.dispatch("showDailogW");
+          this.promptboxshow = false;
           return;
         }
       }
@@ -1005,6 +870,7 @@ export default {
       let n = `l${j}${i}`;
       item.isCheck = !item.isCheck;
       item.groupName = groupName;
+      this.ite = item.isCheck;
       if (item.isCheck === true) {
         this.object[n] = item;
       } else {
@@ -1016,15 +882,59 @@ export default {
         this.isBlue = false;
       }
       let s = 0;
-      for (let i in this.object) {
-        s++;
-      }
+      for (let i in this.object) { s++ }
       this.xshuzi = s;
+      if(groupName == '组选三'){
+
+        let flag = 0;
+        for (let i = 0; i < this.coss.length; i++) {
+          if(typeof(this.coss[i].isCheck != 'undefined') && this.coss[i].isCheck == true){
+            flag++;
+          }
+        }
+        for (let j = 0; j < this.coss.length; j++) {
+            this.coss[j].odds = '';
+          }
+        if(flag >= 5){
+          for (let j = 0; j < this.coss.length; j++) {
+            this.coss[j].odds = this.ico.oddlist[flag-5].odds
+          }
+        }
+      }
+      if(groupName == '组选六'){
+        let flag = 0;
+        for (let i = 0; i < this.coss.length; i++) {
+          if(typeof(this.coss[i].isCheck != 'undefined') && this.coss[i].isCheck == true){
+            flag++;
+          }
+        }
+        if (flag <= 8) {
+          this.zxSelect = true;
+          this.xshuzi = flag;
+        }
+        if(this.zxSelect == false && item.isCheck === true){
+          this.promptboxtext = "最多选择8个号码";
+          this.panelShow = true;
+          item.isCheck = false;
+          flag = 8;
+          this.xshuzi = 8;
+          return;
+        }
+        this.zxSelect = (flag == 8) ? false : true;
+        for (let j = 0; j < this.coss.length; j++) {
+          this.coss[j].odds = '';
+        }
+        if(flag >= 4 && flag <= 8){
+          for (let j = 0; j < this.coss.length; j++) {
+            this.coss[j].odds = this.ico.oddlist[flag-4].odds
+          }
+        }
+      }
     },
-    fetchGames(params) {
+    fetchGame(params) {
       let options = {
         oid: sessionStorage.getItem("im_token"),
-        game_code: 220
+        game_code: 220,
       };
       this.de = true;
       setTimeout(() => {
@@ -1053,10 +963,136 @@ export default {
         } else {
           this.de = false;
           this.loadpagebol = true;
+          this.currentGames = data.data;
+          for (let i = 0; i < this.currentGames.length; i++) {
+            this.icos = this.currentGames[i].list;
+            this.ezhs_bsw =this.icos.tail_2.hd,
+            this.ezhs_bgw =this.icos.tail_2.hu,
+            this.ezhs_sgw =this.icos.tail_2.du
+          }
+        }
+      })
+      .catch(err => {
+        this.de = false;
+      });
+    },
+    fetchGamees(params) {
+      let options = {
+        oid: sessionStorage.getItem("im_token"),
+        game_code: 220,
+      };
+      this.de = true;
+      setTimeout(() => {
+        if (!this.loadpagebol) {
+          this.de = false;
+          this.loadpage = true;
+          return;
+        }
+      }, 10000);
+      api.getOddsList(Object.assign({}, options, params)).then(data => {
+        if (data.data.msg == "4003") {
+          this.$router.push({
+            path: "/weihu"
+          });
+        }
+        if (data.data.msg == "4001") {
+          sessionStorage.clear();
+          this.panelShow = true;
+          this.promptboxtext = "您的账户已失效，请重新登录";
+          setTimeout(() => {
+            this.panelShow = false;
+            this.$router.push({
+              path: "/login"
+            });
+          }, 1000);
+        } else {
+          this.de = false;
+          this.loadpagebol = true;
+          this.currentGames = data.data;
+          for (let i = 0; i < this.currentGames.length; i++) {
+            this.icost = this.currentGames[i].list;
+          }
+        }
+      })
+      .catch(err => {
+        this.de = false;
+      });
+    },
+    fetchGames(params) {
+      let options = {
+        oid: sessionStorage.getItem("im_token"),
+        game_code: 220
+      };
+      this.de = true;
+      setTimeout(() => {
+        if (!this.loadpagebol) {
+          this.de = false;
+          this.loadpage = true;
+          return;
+        }
+      }, 10000);
+          if(params.type_code == 6197){
+            this.one(0,0,3)
+          }
+          if(params.type_code == 6202){
+            this.datas[5].datats=[
+              {name: "佰", names:'ezdwB',},
+              {name: "拾", names:'ezdwS',}
+            ]
+          }
+          if(params.type_code == 6203){
+            this.datas[5].datats=[
+              {name: "佰", names:'ezdwB',},
+              {name: "个", names:'ezdwG',}
+            ]
+          }
+          if(params.type_code == 6204){
+            this.datas[5].datats=[
+              {name: "拾", names:'ezdwS',},
+              {name: "个", names:'ezdwG',}
+            ]
+          }
+          if(params.type_code == 6206){
+            this.one(0, 0, 3)
+          }
+      api.getOddsList(Object.assign({}, options, params)).then(data => {
+        if (data.data.msg == "4003") {
+          this.$router.push({
+            path: "/weihu"
+          });
+        }
+        if (data.data.msg == "4001") {
+          sessionStorage.clear();
+          this.panelShow = true;
+          this.promptboxtext = "您的账户已失效，请重新登录";
+          setTimeout(() => {
+            this.panelShow = false;
+            this.$router.push({
+              path: "/login"
+            });
+          }, 1000);
+        } else {
+          this.de = false;
+          this.loadpagebol = true;
           this.currentGame = data.data;
           for (let i = 0; i < this.currentGame.length; i++) {
             this.ico = this.currentGame[i].list;
-            
+            this.ezhs_sg = this.ico.du;
+            this.ezhs_bg = this.ico.hu;
+            this.ezhs_bs = this.ico.hd;
+            this.cos = this.ico.key;
+            this.coss =  [
+              {key:   this.cos[0]},
+              {key:   this.cos[1]},
+              {key:   this.cos[2]},
+              {key:   this.cos[3]},
+              {key:   this.cos[4]},
+              {key:   this.cos[5]},
+              {key:   this.cos[6]},
+              {key:   this.cos[7]},
+              {key:   this.cos[8]},
+              {key:   this.cos[9]}
+            ]
           }
           if (!getGamesCache(`${options.game_code}_${params.type_code}`)) {
             setGamesCache(`${options.game_code}_${params.type_code}`, data);
@@ -1113,10 +1149,6 @@ export default {
             this.hes_8 = this.he[8];
             this.hes_9 = this.he[9];
             this.hes_10 = this.he[10];
-            // for (let j = 0; j < this.hes_0.length; j++) {
-            //   this.all_4 = this.hes_10[0]
-            //   console.log(this.all_4.odds)
-            // }
           }
           if (!getGamesCache(`${options.game_code}_${params.type_code}`)) {
             setGamesCache(`${options.game_code}_${params.type_code}`, data);
@@ -1126,7 +1158,69 @@ export default {
       .catch(err => {
         this.de = false;
       });
-    }
+    },
+    one(item, j, k) {
+      this.qingkong();
+      this.fetchGamees({ type_code: item.type_code });
+      this.inde = item.inde;
+      this.ico_display = [];
+      if (j == 0){
+        this.inde = 3;
+        for (let i = 0; i < 44; i++) {
+          this.ico_display.push(this.icost[i]);
+        }
+        this.datas[7].datats=[
+          {name: "佰拾和数", names:'ebshs',},
+          {name: "佰拾和尾数", names:'ebshws',type_code:'6209'}
+        ]
+      }
+      if (j == 1){
+        for (let i = 44; i < 88; i++) {
+          this.ico_display.push(this.icost[i]);
+        }
+        this.datas[7].datats=[
+          {name: "佰个和数", names:'ebghs',},
+          {name: "佰个和尾数", names:'ebghws',type_code:'6209'}
+        ]
+      }
+      if (j == 2){
+        for (let i = 88; i < 132; i++) {
+          this.ico_display.push(this.icost[i]);
+        }
+        this.datas[7].datats=[
+          {name: "拾个和数", names:'esghs',},
+          {name: "拾个和尾数", names:'esghws',type_code:'6209'}
+        ]
+      }
+      if (j == 3){
+        for (let i = 132; i < 176; i++) {
+          this.ico_display.push(this.icost[i]);
+        }
+      }
+      if (j == 4){
+        for (let i = 176; i < 220; i++) {
+          this.ico_display.push(this.icost[i]);
+        }
+      }
+    },
+    ones(item, j, k) {
+        this.indexCodes = item.type_code;
+        this.qingkong();
+        this.fetchGames({ type_code: item.type_code });
+        this.activeClassifyId = item.type_code;
+        this.object = {};
+        this.xshuzi = 0;
+
+      item.isCheck = false;
+
+      k.forEach(function(key) {
+        key.isCheck = false;
+      });
+
+      k[j].isCheck = true;
+      this.indexT = k[j].inde;
+      this.dadiao = item._index;
+    },
   },
   filters: {
     formatTitle(val, typecode) {
@@ -1135,25 +1229,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["showDailogQ", "showDailogW", "showDailogS"]),
-    // filteredList() {
-    //   let ZodiacTabArray = ["一肖/尾数", "特码生肖", "合肖", "生肖连"];
-    //   // console.log(this.selectedTabName)
-    //   if (ZodiacTabArray.indexOf(this.selectedTabName) != -1) {
-    //     let list = _.cloneDeep(this.currentGame);
-    //     // 筛选出含有生肖的数据
-    //     let zodiacArr = _.filter(list[0].list, function(item) {
-    //       return isNaN(item.name);
-    //     });
-    //     let otherArr =
-    //       _.filter(list[0].list, function(item) {
-    //         return !isNaN(item.name);
-    //       }) || [];
-    //     list[0].list = [...this.sortZodiacArray(zodiacArr), ...otherArr];
-    //     return list;
-    //   }
-    //   return this.currentGame;
-    // }
+    ...mapGetters(["showDailogQ", "showDailogZ"]),
   },
   //初始化
   created() {
@@ -1166,14 +1242,19 @@ export default {
         sessionStorage.setItem("gametoken", JSON.stringify(res.data.token));
       });
     this.showCurtion = false;
-    //  this.de = true;
     let newTime = Date.parse(new Date()) / 1000;
     let oldTime = localStorage.getItem("fc3d_time");
-    this.fetchGames({
+     this.fetchGames({
       type_code: 6194
     });
     this.fetchGamess({
       type_code: 6210
+    });
+    this.fetchGame({
+      type_code: 6209
+    });
+    this.fetchGamees({
+      type_code: 6197
     });
     if (oldTime && newTime <= oldTime) {
       let bodyS = localStorage.getItem("fc3d_body");
@@ -1225,7 +1306,6 @@ export default {
             // l.last.number.splice(6, 0, "+");
             this.body = l;
             this.endtime = res.data.next.endtime - timeStamp;
-            console.log(res.data.next.endtime)
             this.round = res.data.next.round;
             let loaclTime = this.endtime + newTime;
             if (sessionStorage.getItem("im_realname") == "11") {
@@ -1325,9 +1405,10 @@ export default {
       } else if (this.endtime <= 2700 && this.endtime > 0) {
         this.qingkong();
         this.fengpan = true;
-        this.$store.dispatch("hideDailogS");
+        // this.$store.dispatch("hideDailogS");
         this.$store.dispatch("hideDailogQ");
-        this.$store.dispatch("hideDailogW");
+        this.$store.dispatch("hideDailogZ");
+        // this.$store.dispatch("hideDailogW");
       }
     },
     $route() {}
@@ -1336,11 +1417,10 @@ export default {
     lotteryArea,
     lotteryHeader,
     dailogQ,
-    dailogW,
-    dailogS,
+    dailogZ,
     Loadpage,
-    promptbox
-    // 'ex-simple': model,
+    promptbox,
+    gameChat
   }
 };
 </script>
@@ -1349,6 +1429,63 @@ export default {
 
 <style lang="less" rel="stylesheet/less" scoped>
 @import "../../assets/less/variable.less";
+.cqList{
+  background: #dde5ec;
+  > div {
+    width: 100%;
+    display: flex;
+    flex-flow: row wrap;
+    background: #dde5ec;
+
+    h3 {
+      margin: 0;
+      width: 100%;
+      height: 68/45rem;
+      line-height: 68/45rem;
+      font-weight: normal;
+      box-shadow: inset 1px 2px 1px #fff;
+      text-align: center;
+      background: #7a7a7a;
+      color: #fff;
+    }
+    ul {
+      text-align: center;
+      width: 100%;
+
+      li {
+        display: inline-block;
+        margin: 0 4/20rem;
+        width:30%;
+        button {
+          position: relative;
+          text-align: center;
+          height: 93/60rem;
+          width:100%;
+          border: 1px solid #e5e5e5;
+          margin: 0.3rem auto;
+          background: #fff;
+          line-height: 93/60rem;
+          font-size: 38/60rem;
+          border-radius: 3/20rem;
+          border:1px solid #cccccc;
+        }
+        .isred:before {
+          content: "";
+          background: url("@{public_img}/images/red1.png") no-repeat;
+          background-size: 0.55rem 0.55rem;
+          position: absolute;
+          left: -1px;
+          top: -1px;
+          width: 0.55rem;
+          height: 0.55rem;
+        }
+        .isred {
+          border: 1px solid #ed0132;
+        }
+      }
+    }
+  }
+}
 button {
   outline: none;
 }
@@ -1378,237 +1515,90 @@ button {
 .bai_2 button{
   width:166/45rem !important;
 }
-// .cqList4 {
-//   /*padding-bottom: 2.3rem;*/
-//   background: #dde5ec;
-//   > div {
-//     width: 100%;
+.cqList4 {
+  ul {
+    > li {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      > ul {
+        background: #dde5ec;
+        text-align: center;
+        li {
+          display: inline-block;
+          width: 20%;
+          button {
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 2.8rem;
+            height: 2rem;
+            border: 1px solid #e5e5e5;
+            margin: 8/45rem auto;
+            background: #fff;
+            line-height: 0.88888889rem;
+            border-radius: 0.15rem;
+            padding: 0;
+            > span:nth-child(2) {
+              color: #5084e2;
+              font-size: 12/20rem;
+              font-family: Arial !important;
+              display: block;
+              width: 100%;
+              height: 40%;
+              line-height: 0.9rem;
+              margin-bottom: -0.2rem;
+              color:#999999;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+            }
+            > span:nth-child(1) {
+                text-align: center;
+                font-size: 0.7rem;
+                width: .9rem;
+                height: .9rem;
+                border: 1px solid #105ff5;
+                display: inline-block;
+                border-radius: 50%;
+                line-height: .9rem;
+                background: #105ff5;
+                color: #fff;
+                position: relative;
+                margin-bottom:.2rem;
+            }
+          }
 
-//     background: #dde5ec;
-//     h3 {
-//       margin: 0;
-//       width: 100%;
-//       height: 68/45rem;
-//       line-height: 68/45rem;
-//       font-weight: normal;
-//       box-shadow: inset 1px 2px 1px #fff;
-//       text-align: center;
-//       background: #7a7a7a;
-//       color: #fff;
-//     }
-//     ul {
-//       text-align: center;
-//       width: 100%;
-//       li {
-//         display: inline-block;
-//         margin: 0 2/20rem;
-//         button {
-//           position: relative;
-//           width: 5.033333rem;
-//           text-align: center;
-//           height: 116/60rem;
-//           border: 1px solid #e5e5e5;
-//           margin: 0.3rem auto;
-//           background: #fff;
-//           line-height: 116/60rem;
-//           font-size: 8/20rem;
-//           border-radius: 3/20rem;
-//           padding: 0;
-//         }
-//         .isred:before {
-//           content: "";
-//           background: url("@{public_img}/images/red1.png") no-repeat;
-//           background-size: 0.55rem 0.55rem;
-//           position: absolute;
-//           left: -1px;
-//           top: -1px;
-//           width: 0.55rem;
-//           height: 0.55rem;
-//         }
-//         .isred {
-//           border: 1px solid #ed0132;
-//         }
-//       }
-//     }
-//   }
-//   ul {
-//     > li {
-//       > span {
-//         display: block;
-//         background: red;
-//         width: 100%;
-//         height: 1.5rem;
-//         line-height: 1.5rem;
-//         font-size: 12/20rem;
-//         text-align: center;
-//         border: 1px solid #fff;
-//         background: -webkit-radial-gradient(#555, #2a2926);
-//         color: #fcfcfc;
-//       }
-//       > ul {
-//         background: #dde5ec;
-//         text-align: center;
-//         li {
-//           display: inline-block;
-//           width: 3.5rem;
-//           margin: 0 4/20rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 3.5rem;
-//             height: 2rem;
-//             border: 1px solid #e5e5e5;
-//             margin: 8/45rem auto 0;
-//             background: #fff;
-//             line-height: 40/45rem;
-//             border-radius: 3/20rem;
-//             padding: 0;
-//             > span:nth-child(2) {
-//               color: #5084e2;
-//               font-size: 12/20rem;
-//               font-family: Arial !important;
-//               display: block;
-//               width: 100%;
-//               height: 40%;
-//               line-height: 0.9rem;
-//               margin-bottom: -0.1rem;
-//               background: linear-gradient(#eef1f5, #fff);
-//               background: -webkit-linear-gradient(#eef1f5, #fff);
-//             }
-//             > span:nth-child(1) {
-//               line-height: 1.5;
-//               text-align: center;
-//               height: 60%;
-//               // display:block;
-//               font-size: 32/40rem;
-//             }
-//             // .red {
-//             //   // background: #ff3545;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/red_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//             // .blue {
-//             //   // background: #4f57fa;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/blue_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//             // .green {
-//             //   // background: #22620c;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/green_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//           }
-
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-child(45) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//         li:nth-child(45),
-//         li:nth-child(46),
-//         li:nth-child(47),
-//         li:nth-child(48),
-//         li:nth-child(49) {
-//           width: 3.1rem;
-//           margin: 0;
-//           button {
-//             width: 2.8rem;
-//           }
-//         }
-//       }
-//     }
-//     li:nth-child(2) {
-//       > ul {
-//         li:nth-child(4) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-.cqList0 {
-  /* padding-bottom: 0rem;*/
-  background: #dde5ec;
-  > div {
-    /*height: 73/20rem;*/
-    width: 100%;
-    display: flex;
-    flex-flow: row wrap;
-    background: #dde5ec;
-
-    h3 {
-      margin: 0;
-      width: 100%;
-      height: 68/45rem;
-      line-height: 68/45rem;
-      font-weight: normal;
-      box-shadow: inset 1px 2px 1px #fff;
-      text-align: center;
-      background: #7a7a7a;
-      color: #fff;
-      /*margin-left: -4px;*/
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+      }
     }
-    ul {
-      text-align: center;
-      width: 100%;
-
-      li {
-        display: inline-block;
-        margin: 0 4/20rem;
-        button {
-          position: relative;
-          width: 430/60rem;
-          text-align: center;
-          height: 93/60rem;
-          border: 1px solid #e5e5e5;
-          margin: 0.3rem auto;
-          background: #fff;
-          line-height: 93/60rem;
-          font-size: 38/60rem;
-          border-radius: 3/20rem;
-        }
-        .isred:before {
-          content: "";
-          background: url("@{public_img}/images/red1.png") no-repeat;
-          background-size: 0.55rem 0.55rem;
-          position: absolute;
-          left: -1px;
-          top: -1px;
-          width: 0.55rem;
-          height: 0.55rem;
-        }
-        .isred {
-          border: 1px solid #ed0132;
+    li:nth-child(2) {
+      > ul {
+        li:nth-child(4) {
+          > button {
+            margin-bottom: 8/45rem;
+          }
         }
       }
     }
   }
+}
+.cqList0 {
   ul {
     > li {
       > span {
@@ -1665,37 +1655,6 @@ button {
               font-weight: normal;
               font-family: "arial";
             }
-
-            // .red {
-            //   // background: #ff3545;
-            //   // color: white;
-            //   background: url("../../../wap/images/red_ball.png") no-repeat;
-            //   display: inline-block;
-            //   width: 21/20rem !important;
-            //   background-size: contain;
-            //   background-position: center;
-            //   border-radius: 25/20rem;
-            // }
-            // .blue {
-            //   // background: #4f57fa;
-            //   // color: white;
-            //   background: url("../../../wap/images/blue_ball.png") no-repeat;
-            //   display: inline-block;
-            //   width: 21/20rem !important;
-            //   background-size: contain;
-            //   background-position: center;
-            //   border-radius: 25/20rem;
-            // }
-            // .green {
-            //   // background: #22620c;
-            //   // color: white;
-            //   background: url("../../../wap/images/green_ball.png") no-repeat;
-            //   display: inline-block;
-            //   width: 21/20rem !important;
-            //   background-size: contain;
-            //   background-position: center;
-            //   border-radius: 25/20rem;
-            // }
           }
 
           .active {
@@ -1706,39 +1665,73 @@ button {
             }
           }
         }
-        li:nth-child(45),
-        li:nth-child(65) {
-          > button {
-            margin-bottom: 8/45rem;
-          }
-        }
-        li:nth-child(45),
-        li:nth-child(46),
-        li:nth-child(47),
-        li:nth-child(48),
-        li:nth-child(49) {
-          width: 3.2rem;
-          button {
-            width: 3rem;
-          }
-        }
       }
     }
-    li:nth-child(2) {
+  }
+}
+
+.cqList1 {
+  ul {
+    > li {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
       > ul {
-        li:nth-child(13) {
-          > button {
-            margin-bottom: 8/45rem;
-          }
-        }
-        li:nth-child(13),
-        li:nth-child(14),
-        li:nth-child(15),
-        li:nth-child(16),
-        li:nth-child(17) {
-          width: 3.2rem;
+        background: #dde5ec;
+        text-align: center;
+        li {
+          display: inline-block;
+          width: 20%;
           button {
-            width: 3rem;
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 2.8rem;
+            height: 2rem;
+            border: 1px solid #e5e5e5;
+            margin: 8/45rem auto;
+            background: #fff;
+            line-height: 40/45rem;
+            border-radius: 3/20rem;
+            padding: 0;
+            > span:nth-child(2) {
+              color: #5084e2;
+              font-family: Arial !important;
+              display: block;
+              width: 100%;
+              height: 40%;
+              line-height: 0.9rem;
+              margin-bottom: -0.1rem;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+              font-size: 12/20rem;
+            }
+            > span:nth-child(1) {
+              padding-top: 3px;
+              padding-bottom: 3px;
+              font-size: 14/20rem;
+              height: 21/20rem;
+              display: inline-block;
+              width: 48/20rem;
+              font-weight: normal;
+              font-family: "arial";
+            }
+          }
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
           }
         }
       }
@@ -1746,1523 +1739,734 @@ button {
   }
 }
 
-// .cqList1 {
-//   /*padding-bottom: 2.5rem;*/
-//   background: #dde5ec;
-//   > div {
-//     /*height: 73/20rem;*/
-//     width: 100%;
+.cqList9,.cqList10,.cqList11 {
+  ul {
+    > li {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
 
-//     background: #dde5ec;
-//     h3 {
-//       margin: 0;
-//       width: 100%;
-//       height: 68/45rem;
-//       line-height: 68/45rem;
-//       font-weight: normal;
-//       box-shadow: inset 1px 2px 1px #fff;
-//       text-align: center;
-//       background: #7a7a7a;
-//       color: #fff;
-//       /*margin-left: -4px;*/
-//     }
-//     ul {
-//       width: 100%;
-//       text-align: center;
-//       li {
-//         display: inline-block;
-//         margin: 0 4/20rem;
-//         button {
-//           position: relative;
-//           width: 430/60rem;
-//           text-align: center;
-//           height: 93/60rem;
-//           border: 1px solid #e5e5e5;
-//           margin: 0.3rem auto;
-//           background: #fff;
-//           line-height: 93/60rem;
-//           font-size: 38/60rem;
-//           border-radius: 3/20rem;
-//         }
-//         .isred:before {
-//           content: "";
-//           background: url("@{public_img}/images/red1.png") no-repeat;
-//           background-size: 0.55rem 0.55rem;
-//           position: absolute;
-//           left: -1px;
-//           top: -1px;
-//           width: 0.55rem;
-//           height: 0.55rem;
-//         }
-//         .isred {
-//           border: 1px solid #ed0132;
-//         }
-//       }
-//     }
-//   }
-//   ul {
-//     > li {
-//       > span {
-//         display: block;
-//         background: red;
-//         width: 100%;
-//         height: 1.5rem;
-//         line-height: 1.5rem;
-//         font-size: 12/20rem;
-//         text-align: center;
-//         border: 1px solid #fff;
-//         background: -webkit-radial-gradient(#555, #2a2926);
-//         color: #fcfcfc;
-//       }
-//       > ul {
-//         background: #dde5ec;
-//         text-align: center;
-//         li {
-//           display: inline-block;
-//           width: 180/45rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 3.75rem;
-//             height: 2rem;
-//             border: 1px solid #e5e5e5;
-//             margin: 8/45rem auto;
-//             background: #fff;
-//             line-height: 40/45rem;
-//             border-radius: 3/20rem;
-//             padding: 0;
-//             > span:nth-child(2) {
-//               color: #5084e2;
-//               font-family: Arial !important;
-//               display: block;
-//               width: 100%;
-//               height: 40%;
-//               line-height: 0.9rem;
-//               margin-bottom: -0.1rem;
-//               background: linear-gradient(#eef1f5, #fff);
-//               background: -webkit-linear-gradient(#eef1f5, #fff);
-//               font-size: 12/20rem;
-//             }
-//             > span:nth-child(1) {
-//               padding-top: 3px;
-//               padding-bottom: 3px;
-//               font-size: 14/20rem;
-//               height: 21/20rem;
-//               display: inline-block;
-//               width: 48/20rem;
-//               font-weight: normal;
-//               font-family: "arial";
-//             }
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      > ul {
+        background: #dde5ec;
+        text-align: center;
+        li {
+          display: inline-block;
+          width: 20%;
+          button {
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 2.8rem;
+            height: 2rem;
+            border: 1px solid #e5e5e5;
+            margin: 8/45rem auto;
+            background: #fff;
+            line-height: 40/45rem;
+            border-radius: 3/20rem;
+            padding: 0;
+            > span:nth-child(2) {
+              color: #5084e2;
+              font-family: Arial !important;
+              display: block;
+              width: 100%;
+              height: 40%;
+              line-height: 0.9rem;
+              margin-bottom: -0.1rem;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+              font-size: 12/20rem;
+            }
+            > span:nth-child(1) {
+              padding-top: 3px;
+              padding-bottom: 3px;
+              font-size: 14/20rem;
+              height: 21/20rem;
+              display: inline-block;
+              width: 48/20rem;
+              font-weight: normal;
+              font-family: "arial";
+            }
+          }
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.cqList8 {
+  ul {
+    > li:nth-child(1) {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
 
-//             // .red {
-//             //   // background: #ff3545;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/red_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//             // .blue {
-//             //   // background: #4f57fa;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/blue_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//             // .green {
-//             //   // background: #22620c;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/green_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//           }
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-child(45),
-//         li:nth-child(65) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//         li:nth-child(45),
-//         li:nth-child(46),
-//         li:nth-child(47),
-//         li:nth-child(48),
-//         li:nth-child(49) {
-//           width: 3.2rem;
-//           button {
-//             width: 3rem;
-//           }
-//         }
-//       }
-//     }
-//     li:nth-child(2) {
-//       > ul {
-//         li:nth-child(13) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//         li:nth-child(13),
-//         li:nth-child(14),
-//         li:nth-child(15),
-//         li:nth-child(16),
-//         li:nth-child(17) {
-//           width: 3.2rem;
-//           button {
-//             width: 2.63333333rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      > ul {
+        background: #dde5ec;
+        text-align: center;
+        li:nth-child(1),
+        li:nth-child(2),
+        li:nth-child(3),
+        li:nth-child(4),
+        li:nth-child(5),
+        li:nth-child(6){
+          width: 16.6%;
+          button{
+            width:2.4rem;
+          }
+        }
+        li {
+          display: inline-block;
+          margin: 0 /20rem;
+          width: 20%;
+          button {
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 126/45rem;
+            height: 2rem;
+            border: 1px solid #e5e5e5;
+            margin: 8/45rem auto;
+            background: #fff;
+            line-height: 40/45rem;
+            border-radius: 3/20rem;
+            padding: 0;
+            > span:nth-child(2) {
+              color: #5084e2;
 
-// .cqList9 {
-//   /* padding-bottom: 2.3rem;*/
-//   height: 18rem;
-//   background: #dde5ec;
-//   > div {
-//     /*height: 73/20rem;*/
-//     width: 100%;
-//     display: flex;
-//     flex-flow: row wrap;
-//     background: #dde5ec;
-//     h3 {
-//       margin: 0;
-//       width: 100%;
-//       height: 68/45rem;
-//       line-height: 68/45rem;
-//       font-weight: normal;
-//       box-shadow: inset 1px 2px 1px #fff;
-//       text-align: center;
-//       background: #7a7a7a;
-//       color: #fff;
-//       /*margin-left: -4px;*/
-//     }
-//     ul {
-//       width: 100%;
-//       text-align: center;
-//       li {
-//         display: inline-block;
-//         width: 240/60rem;
-//         button {
-//           position: relative;
-//           width: 225/60rem;
-//           margin: 0 auto;
-//           text-align: center;
-//           height: 116/60rem;
-//           border: 1px solid #e5e5e5;
-//           margin: 0.2rem auto;
-//           background: #fff;
-//           line-height: 116/60rem;
-//           font-size: 30/60rem;
-//           border-radius: 3/20rem;
-//         }
-//         .isred:before {
-//           content: "";
-//           background: url("@{public_img}/images/red1.png") no-repeat;
-//           background-size: 0.55rem 0.55rem;
-//           position: absolute;
-//           left: -1px;
-//           top: -1px;
-//           width: 0.55rem;
-//           height: 0.55rem;
-//         }
-//         .isred {
-//           border: 1px solid #ed0132;
-//         }
-//       }
-//       li:nth-child(5),
-//       li:nth-child(6),
-//       li:nth-child(7) {
-//         width: 5rem;
-//         margin: 0 2/20rem;
-//         button {
-//           width: 100%;
-//         }
-//       }
-//     }
-//   }
+              font-family: Arial !important;
+              display: block;
+              width: 100%;
+              height: 40%;
+              margin-bottom: -0.1rem;
+              line-height: 0.9rem;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+              font-size: 12/20rem;
+            }
+            > span:nth-child(1) {
+              padding-top: 3px;
+              padding-bottom: 3px;
+              font-size: 14/20rem;
+              height: 21/20rem;
+              display: inline-block;
+              width: 48/20rem;
+              font-weight: normal;
+              font-family: "arial";
+            }
+          }
 
-//   ul {
-//     > li {
-//       /*width: 5.33333333rem;*/
-//       > span {
-//         display: block;
-//         background: red;
-//         width: 100%;
-//         height: 1.5rem;
-//         line-height: 1.5rem;
-//         font-size: 12/20rem;
-//         text-align: center;
-//         border: 1px solid #fff;
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+        li:nth-child(12) {
+          > button {
+            margin-bottom: 8/45rem;
+          }
+        }
+      }
+    }
+    > li:nth-child(2) {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
 
-//         background: -webkit-radial-gradient(#555, #2a2926);
-//         color: #fcfcfc;
-//       }
-//       > ul {
-//         background: #dde5ec;
-//         text-align: center;
-//         li {
-//           display: inline-block;
-//           width: 5.33333333rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 4rem;
-//             margin: 0 auto;
-//             height: 160/60rem;
-//             border: 1px solid #e5e5e5;
-//             margin: 8/45rem auto 0;
-//             background: #fff;
-//             border-radius: 3/20rem;
-//             padding: 0;
-//             /*line-height: 159/60rem;*/
-//             > span:nth-child(2) {
-//               height: 40%;
-//               width: 100%;
-//               display: block;
-//               line-height: 1.1rem;
-//               color: rgb(18, 93, 201);
-//               font-size: 12/20rem;
-//               font-family: arial;
-//               background: -webkit-linear-gradient(
-//                 rgb(238, 241, 245),
-//                 rgb(255, 255, 255)
-//               );
-//               background: -o-linear-gradient(
-//                 rgb(238, 241, 245),
-//                 rgb(255, 255, 255)
-//               );
-//               background: linear-gradient(
-//                 rgb(238, 241, 245),
-//                 rgb(255, 255, 255)
-//               );
-//             }
-//             > span:nth-child(1) {
-//               padding-top: 5/20rem;
-//               font-size: 32/40rem;
-//               height: 60%;
-//               display: block;
-//               width: 100%;
-//               line-height: 80/60rem;
-//               font-weight: normal;
-//               font-family: "arial";
-//             }
-//           }
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      > ul {
+        background: #dde5ec;
+        text-align: center;
+        li {
+          display: inline-block;
+          margin: 0 /20rem;
+          width: 20%;
+          button {
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 126/45rem;
+            height: 2rem;
+            border: 1px solid #e5e5e5;
+            margin: 8/45rem auto;
+            background: #fff;
+            line-height: 40/45rem;
+            border-radius: 3/20rem;
+            padding: 0;
+            > span:nth-child(2) {
+              color: #5084e2;
 
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-child(12) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-// .cqList10 {
-//   /*padding-bottom: 2.3rem;*/
-//   height: 18rem;
-//   background: #dde5ec;
-//   > div {
-//     /*height: 73/20rem;*/
-//     width: 100%;
-//     display: flex;
-//     flex-flow: row wrap;
-//     background: #dde5ec;
-//     h3 {
-//       margin: 0;
-//       width: 100%;
-//       height: 68/45rem;
-//       line-height: 68/45rem;
-//       font-weight: normal;
-//       box-shadow: inset 1px 2px 1px #fff;
-//       text-align: center;
-//       background: #7a7a7a;
-//       color: #fff;
-//       /*margin-left: -4px;*/
-//     }
-//     ul {
-//       width: 100%;
-//       text-align: center;
-//       li {
-//         width: 320/60rem;
-//         display: inline-block;
-//         align-items: center;
-//         button {
-//           position: relative;
-//           width: 280/60rem;
-//           text-align: center;
-//           height: 116/60rem;
-//           border: 1px solid #e5e5e5;
-//           margin: 0.1rem auto;
-//           background: #fff;
-//           line-height: 116/60rem;
-//           font-size: 38/60rem;
-//           border-radius: 3/20rem;
-//         }
-//         .isred:before {
-//           content: "";
-//           background: url("@{public_img}/images/red1.png") no-repeat;
-//           background-size: 0.55rem 0.55rem;
-//           position: absolute;
-//           left: -1px;
-//           top: -1px;
-//           width: 0.55rem;
-//           height: 0.55rem;
-//         }
-//         .isred {
-//           border: 1px solid #ed0132;
-//         }
-//       }
-//     }
-//   }
+              font-family: Arial !important;
+              display: block;
+              width: 100%;
+              height: 40%;
+              margin-bottom: -0.1rem;
+              line-height: 0.9rem;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+              font-size: 12/20rem;
+            }
+            > span:nth-child(1) {
+              padding-top: 3px;
+              padding-bottom: 3px;
+              font-size: 14/20rem;
+              height: 21/20rem;
+              display: inline-block;
+              width: 48/20rem;
+              font-weight: normal;
+              font-family: "arial";
+            }
+          }
 
-//   ul {
-//     > li {
-//       /*width: 5.33333333rem;*/
-//       > span {
-//         display: block;
-//         background: red;
-//         width: 100%;
-//         height: 1.5rem;
-//         line-height: 1.5rem;
-//         font-size: 12/20rem;
-//         text-align: center;
-//         border: 1px solid #fff;
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+        li:nth-child(12) {
+          > button {
+            margin-bottom: 8/45rem;
+          }
+        }
+      }
+    }
+  }
+}
+.cqList2 {
+  ul {
+    > li {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      > ul {
+        background: #dde5ec;
+        text-align: center;
+        li {
+          display: inline-block;
+          width: 20%;
+          button {
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 2.8rem;
+            height: 2rem;
+            border: 1px solid #e5e5e5;
+            margin: 8/45rem auto;
+            background: #fff;
+            line-height: 40/45rem;
+            border-radius: 3/20rem;
+            padding: 0;
+            > span:nth-child(2) {
+              color: #5084e2;
+              font-size: 12/20rem;
+              font-family: Arial !important;
+              display: block;
+              width: 100%;
+              height: 40%;
+              line-height: 0.9rem;
+              margin-bottom: -0.1rem;
+              color:#999999;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+              font-family: "arial";
+            }
+            > span:nth-child(1) {
+              padding-top: 3px;
+              padding-bottom: 3px;
+              font-size: 14/20rem;
+              height: 21/20rem;
+              display: inline-block;
+              width: 48/20rem;
+              font-weight: normal;
+              font-family: "arial";
+            }
+          }
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+        li:nth-child(71),
+        li:nth-child(72),
+        li:nth-child(73),
+        li:nth-child(74) {
+          button{
+            width:92%;
+          }
+          width:25%;
+        }
+      }
+    }
+  }
+}
+.cqList3 {
+  background: #dde5ec;
+  > div {
+    ul {
+      text-align: center;
+      width: 100%;
+      li {
+        display: inline-block;
+        margin: 0 4/20rem;
+        width:30%;
+        button {
+          position: relative;
+          width: 100%;
+          text-align: center;
+          height: 93/60rem;
+          border: 1px solid #e5e5e5;
+          margin: 0.3rem auto;
+          background: #fff;
+          line-height: 93/60rem;
+          font-size: 38/60rem;
+          border-radius: 3/20rem;
+          border:1px solid #cccccc;
+          height:98/55rem;
+        }
+      }
+      li:nth-child(4),li:nth-child(5){
+        width:46%;
+      }
+    }
+  }
+  ul {
+    > li {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      > ul {
+        text-align: center;
+        background: #dde5ec;
+        li {
+          display: inline-block;
+          width: 20%;
+          button {
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 90%;
+            margin: 0 auto;
+            height: 89/45rem;
+            border: 1px solid #e5e5e5;
+            margin: 8/45rem auto 0;
+            background: #fff;
+            padding: 0;
+            border-radius:0.15rem;
+            line-height: 40/45rem;
+            > span:nth-child(2) {
+              height: 38/45rem;
+              width: 100%;
+              display: block;
+              color: #125dc9;
+              font-size: 12/20rem;
+              font-family: "arial";
+              margin-bottom:-0.1rem;
+              color:#999999;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+            }
+            > span:nth-child(1) {
+              padding-top: 3px;
+              font-size: 28/45rem;
+              height: 43/45rem;
+              display: block;
+              width: 100%;
+              font-weight: normal;
+              font-family: "arial";
+            }
+          }
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+        li:nth-child(41),
+        li:nth-child(42),
+        li:nth-child(43),
+        li:nth-child(44){
+          width:25%;
+        }
+      }
+    }
+  }
+}
 
-//         background: -webkit-radial-gradient(#555, #2a2926);
-//         color: #fcfcfc;
-//       }
-//       > ul {
-//         background: #dde5ec;
-//         text-align: center;
-//         li {
-//           display: inline-block;
-//           width: 5.33333333rem;
-//           margin: 2/20rem 0;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 4.8rem;
-//             height: 160/60rem;
-//             border: 1px solid #e5e5e5;
-//             background: #fff;
-//             border-radius: 3/20rem;
-//             padding: 0;
-//             > span:nth-child(2) {
-//               height: 40%;
-//               width: 100%;
-//               display: block;
-//               line-height: 60/60rem;
-//               color: #125dc9;
-//               font-size: 12/20rem;
-//               font-family: "arial";
-//               background: linear-gradient(#eef1f5, #fff);
-//               background: -webkit-linear-gradient(#eef1f5, #fff);
-//             }
-//             > span:nth-child(1) {
-//               padding-top: 5/20rem;
-//               font-size: 32/40rem;
-//               height: 60%;
-//               display: block;
-//               width: 100%;
-//               line-height: 80/60rem;
-//               font-weight: normal;
-//               font-family: "arial";
-//             }
-//           }
+.cqList7 {
+  background: #dde5ec;
+  height: 18rem;
+  ul {
+    > li:nth-child(1) {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      > ul {
+        text-align: center;
+        background: #dde5ec;
+        li:nth-child(1),
+        li:nth-child(2),
+        li:nth-child(3),
+        li:nth-child(4),
+        li:nth-child(5){
+          width: 20%;
+          button{
+            width: 2.8rem;
+          }
+        }
+        li {
+          display: inline-block;
+          width: 16.6%;
+          button {
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 2.4rem;
+            margin: 8/45rem auto;
+            height: 2.277778rem;
+            border: 1px solid #e5e5e5;
+            border-radius: 3/20rem;
+            background: #fff;
+            padding: 0;
+            > span:nth-child(2) {
+              height: .8rem;
+              line-height: 1rem;
+              width: 100%;
+              display: block;
+              color: #125dc9;
+              font-size: 12/20rem;
+              font-family: "arial";
+              margin-bottom:-.1rem;
+              color:#999999;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+            }
+            > span:nth-child(1) {
+              font-size: 32/40rem;
+              height: 60%;
+              display: block;
+              width: 100%;
+              line-height: 90/60rem;
+              font-weight: normal;
+              font-family: "arial";
+            }
+          }
 
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+        li:nth-child(12) {
+          > button {
+            margin-bottom: 8/45rem;
+          }
+        }
+      }
+    }
+    > li:nth-child(2) {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      > ul {
+        text-align: center;
+        background: #dde5ec;
+        li {
+          display: inline-block;
+          width: 20%;
+          button {
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 2.8rem;
+            margin: 8/45rem auto;
+            height: 2.277778rem;
+            border: 1px solid #e5e5e5;
+            border-radius: 3/20rem;
+            background: #fff;
+            padding: 0;
+            > span:nth-child(2) {
+              height: .8rem;
+              line-height: 1rem;
+              width: 100%;
+              display: block;
+              color: #125dc9;
+              font-size: 12/20rem;
+              font-family: "arial";
+              margin-bottom:-.1rem;
+              color:#999999;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+            }
+            > span:nth-child(1) {
+              font-size: 32/40rem;
+              height: 60%;
+              display: block;
+              width: 100%;
+              line-height: 90/60rem;
+              font-weight: normal;
+              font-family: "arial";
+            }
+          }
 
-//         li:nth-child(10),
-//         li:nth-child(7),
-//         li:nth-child(8),
-//         li:nth-child(9) {
-//           width: 3.8rem;
-//           margin: 0 2/20rem;
-//           button {
-//             width: 3.6rem;
-//           }
-//         }
-//       }
-//     }
-//     li:nth-child(2) {
-//       ul {
-//         li {
-//           width: 3.2rem;
-//           button {
-//             width: 2.53333333rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-// .cqList11 {
-//   /*   padding-bottom: 2.3rem;*/
-//   background: #dde5ec;
-//   > div {
-//     /*height: 73/20rem;*/
-//     width: 100%;
-//     display: flex;
-//     flex-flow: row wrap;
-//     background: #dde5ec;
-//     h3 {
-//       margin: 0;
-//       width: 100%;
-//       height: 68/45rem;
-//       line-height: 68/45rem;
-//       font-weight: normal;
-//       box-shadow: inset 1px 2px 1px #fff;
-//       text-align: center;
-//       background: #7a7a7a;
-//       color: #fff;
-//     }
-//     ul {
-//       width: 100%;
-//       text-align: center;
-//       li {
-//         display: inline-block;
-//         width: 240/60rem;
-//         button {
-//           position: relative;
-//           width: 3.43333333rem;
-//           margin: 0 auto;
-//           text-align: center;
-//           height: 93/60rem;
-//           border: 1px solid #e5e5e5;
-//           margin: 0.1rem auto;
-//           background: #fff;
-//           line-height: 93/60rem;
-//           font-size: 30/60rem;
-//           border-radius: 3/20rem;
-//         }
-//         .isred:before {
-//           content: "";
-//           background: url("@{public_img}/images/red1.png") no-repeat;
-//           background-size: 0.55rem 0.55rem;
-//           position: absolute;
-//           left: -1px;
-//           top: -1px;
-//           width: 0.55rem;
-//           height: 0.55rem;
-//         }
-//         .isred {
-//           border: 1px solid #ed0132;
-//         }
-//       }
-//     }
-//   }
-//   ul {
-//     > li {
-//       > span {
-//         margin: 0;
-//         width: 100%;
-//         display: block;
-//         height: 68/45rem;
-//         line-height: 68/45rem;
-//         font-weight: normal;
-//         box-shadow: inset 1px 2px 1px #fff;
-//         text-align: center;
-//         background: #7a7a7a;
-//         color: #fff;
-//       }
-//       > ul {
-//         text-align: center;
-//         background: #dde5ec;
-//         li {
-//           display: inline-block;
-//           width: 180/45rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 3.5rem;
-//             margin: 0 auto;
-//             height: 89/45rem;
-//             border: 1px solid #e5e5e5;
-//             margin: 8/45rem auto 0;
-//             background: #fff;
-//             line-height: 40/45rem;
-//             border-radius: 3/20rem;
-//             padding: 0;
-//             > span:nth-child(2) {
-//               color: #5084e2;
-//               font-size: 12/20rem;
-//               font-family: Arial !important;
-//               display: block;
-//               width: 100%;
-//               height: 40%;
-//               line-height: 0.9rem;
-//               background: linear-gradient(#eef1f5, #fff);
-//               background: -webkit-linear-gradient(#eef1f5, #fff);
-//             }
-//             > span:nth-child(1) {
-//               line-height: 1.5;
-//               height: 60%;
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+        li:nth-child(12) {
+          > button {
+            margin-bottom: 8/45rem;
+          }
+        }
+      }
+    }
+  }
+}
+.cqList5 {
+  ul {
+    > li {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      > ul {
+        text-align: center;
+        background: #dde5ec;
+        li {
+          display: inline-block;
+          width: 20%;
+          button {
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 2.8rem;
+            margin: 8/45rem auto;
+            height: 89/45rem;
+            border: 1px solid #e5e5e5;
+            background: #fff;
+            line-height: 40/45rem;
+            border-radius: 3/20rem;
+            padding: 0;
+            > span:nth-child(2) {
+              color: #5084e2;
+              font-size: 12/20rem;
+              font-family: Arial !important;
+              display: block;
+              width: 100%;
+              height: 40%;
+              line-height: 0.9rem;
+              color:#999999;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+            }
+            > span:nth-child(1) {
+              text-align: center;
+              font-size: 0.7rem;
+              width: .9rem;
+              height: .9rem;
+              border: 1px solid #105ff5;
+              display: inline-block;
+              border-radius: 50%;
+              line-height: .9rem;
+              background: #105ff5;
+              color: #fff;
+              position: relative;
+              margin-bottom:.2rem;
+            }
+          }
 
-//               font-size: 28/40rem;
-//             }
-
-//             // .red {
-//             //   // background: #ff3545;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/red_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//             // .blue {
-//             //   // background: #4f57fa;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/blue_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//             // .green {
-//             //   // background: #22620c;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/green_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//           }
-
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-child(45) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//         li:nth-child(45),
-//         li:nth-child(46),
-//         li:nth-child(47),
-//         li:nth-child(48),
-//         li:nth-child(49) {
-//           width: 3.2rem;
-//           button {
-//             width: 2.8rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-// .cqList8 {
-//   /* padding-bottom: 2.3rem;*/
-//   height: 18rem;
-//   background: #dde5ec;
-//   > div {
-//     /*height: 73/20rem;*/
-//     width: 100%;
-//     display: inline-block;
-//     background: #dde5ec;
-//     h3 {
-//       margin: 0;
-//       width: 100%;
-//       height: 68/45rem;
-//       line-height: 68/45rem;
-//       font-weight: normal;
-//       box-shadow: inset 1px 2px 1px #fff;
-//       text-align: center;
-//       background: #7a7a7a;
-//       color: #fff;
-//       /*margin-left: -4px;*/
-//     }
-//     ul {
-//       width: 100%;
-//       text-align: center;
-//       li {
-//         width: 192/60rem;
-//         display: inline-block;
-//         align-items: center;
-//         button {
-//           position: relative;
-//           width: 162/60rem;
-//           margin: 0 auto;
-//           text-align: center;
-//           height: 116/60rem;
-//           border: 1px solid #e5e5e5;
-//           margin: 0.3rem auto;
-//           background: #fff;
-//           line-height: 116/60rem;
-//           font-size: 38/60rem;
-//           border-radius: 3/20rem;
-//         }
-//         .isred:before {
-//           content: "";
-//           background: url("@{public_img}/images/red1.png") no-repeat;
-//           background-size: 0.55rem 0.55rem;
-//           position: absolute;
-//           left: -1px;
-//           top: -1px;
-//           width: 0.55rem;
-//           height: 0.55rem;
-//         }
-//         .isred {
-//           border: 1px solid #ed0132;
-//         }
-//       }
-//     }
-//   }
-
-//   ul {
-//     > li {
-//       /*width: 5.33333333rem;*/
-//       > span {
-//         display: block;
-//         background: red;
-//         width: 100%;
-//         height: 1.5rem;
-//         line-height: 1.5rem;
-//         font-size: 12/20rem;
-//         text-align: center;
-//         border: 1px solid #fff;
-
-//         background: -webkit-radial-gradient(#555, #2a2926);
-//         color: #fcfcfc;
-//       }
-//       > ul {
-//         background: #dde5ec;
-//         text-align: center;
-//         li {
-//           display: inline-block;
-//           margin: 0 /20rem;
-//           width: 5.33333333rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 4rem;
-//             margin: 0 auto;
-//             height: 160/60rem;
-//             border: 1px solid #e5e5e5;
-//             margin: 8/45rem auto 0;
-//             background: #fff;
-//             padding: 0;
-//             border-radius: 3/20rem;
-//             /*line-height: 159/60rem;*/
-//             > span:nth-child(2) {
-//               height: 50%;
-//               width: 100%;
-//               display: block;
-//               line-height: 80/60rem;
-//               color: #125dc9;
-//               font-size: 12/20rem;
-//               font-family: "arial";
-//               background: linear-gradient(#eef1f5, #fff);
-//               background: -webkit-linear-gradient(#eef1f5, #fff);
-//             }
-//             > span:nth-child(1) {
-//               padding-top: 3px;
-//               font-size: 32/40rem;
-//               height: 50%;
-//               display: block;
-//               width: 100%;
-//               line-height: 80/60rem;
-//               font-weight: normal;
-//               font-family: "arial";
-//             }
-//           }
-
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-child(12) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-// .cqList2 {
-//   /*    padding-bottom: 2.3rem;*/
-//   background: #dde5ec;
-//   > div {
-//     width: 100%;
-//     background: #dde5ec;
-//     h3 {
-//       margin: 0;
-//       width: 100%;
-//       height: 68/45rem;
-//       line-height: 68/45rem;
-//       font-weight: normal;
-//       box-shadow: inset 1px 2px 1px #fff;
-//       text-align: center;
-//       background: #7a7a7a;
-//       color: #fff;
-//     }
-//     ul {
-//       text-align: center;
-//       width: 100%;
-//       li {
-//         display: inline-block;
-//         margin: 0 2/20rem;
-//         button {
-//           position: relative;
-//           width: 5rem;
-//           margin: 0 auto;
-//           padding: 0;
-//           text-align: center;
-//           height: 116/60rem;
-//           border: 1px solid #e5e5e5;
-//           margin: 0.1rem auto;
-//           background: #fff;
-//           line-height: 116/60rem;
-//           font-size: 38/60rem;
-//           border-radius: 3/20rem;
-//         }
-//         .isred:before {
-//           content: "";
-//           background: url("@{public_img}/images/red1.png") no-repeat;
-//           background-size: 0.55rem 0.55rem;
-//           position: absolute;
-//           left: -1px;
-//           top: -1px;
-//           width: 0.55rem;
-//           height: 0.55rem;
-//         }
-//         .isred {
-//           border: 1px solid #ed0132;
-//         }
-//       }
-//     }
-//   }
-//   ul {
-//     > li {
-//       > span {
-//         display: block;
-//         background: red;
-//         width: 100%;
-//         height: 1.5rem;
-//         line-height: 1.5rem;
-//         font-size: 12/20rem;
-//         text-align: center;
-//         border: 1px solid #fff;
-//         background: -webkit-radial-gradient(#555, #2a2926);
-//         color: #fcfcfc;
-//       }
-//       > ul {
-//         background: #dde5ec;
-//         text-align: center;
-//         li {
-//           display: inline-block;
-//           width: 180/45rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 3.75rem;
-//             height: 2rem;
-//             border: 1px solid #e5e5e5;
-//             margin: 8/45rem auto;
-//             background: #fff;
-//             line-height: 40/45rem;
-//             border-radius: 3/20rem;
-//             padding: 0;
-//             > span:nth-child(2) {
-//               color: #5084e2;
-//               font-size: 12/20rem;
-//               font-family: Arial !important;
-//               display: block;
-//               width: 100%;
-//               height: 40%;
-//               line-height: 0.9rem;
-//               margin-bottom: -0.1rem;
-//               background: linear-gradient(#eef1f5, #fff);
-//               background: -webkit-linear-gradient(#eef1f5, #fff);
-
-//               font-family: "arial";
-//             }
-//             > span:nth-child(1) {
-//               padding-top: 3px;
-//               padding-bottom: 3px;
-//               font-size: 14/20rem;
-//               height: 21/20rem;
-//               display: inline-block;
-//               width: 48/20rem;
-//               font-weight: normal;
-//               font-family: "arial";
-//             }
-
-//             // .red {
-//             //   /*background: url("../../../wap/images/lm_red.png") no-repeat;*/
-//             //   /*border: 1px solid red;*/
-//             //   background: url("../../../wap/images/red_ball.png") no-repeat;
-//             //   // background: #ff3545;
-//             //   // color: white;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//             // .blue {
-//             //   // background: #4f57fa;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/blue_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//             // .green {
-//             //   // background: #22620c;
-//             //   // color: white;
-//             //   background: url("../../../wap/images/green_ball.png") no-repeat;
-//             //   display: inline-block;
-//             //   width: 21/20rem !important;
-//             //   background-size: contain;
-//             //   background-position: center;
-//             //   border-radius: 25/20rem;
-//             // }
-//           }
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-child(45),
-//         li:nth-child(65) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//         li:nth-child(45),
-//         li:nth-child(46),
-//         li:nth-child(47),
-//         li:nth-child(48),
-//         li:nth-child(49) {
-//           width: 3.2rem;
-//           button {
-//             width: 3rem;
-//           }
-//         }
-//       }
-//     }
-//     li:nth-child(2) {
-//       > ul {
-//         li:nth-child(9) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//         li:nth-child(6),
-//         li:nth-child(7),
-//         li:nth-child(8),
-//         li:nth-child(5),
-//         li:nth-child(9) {
-//           width: 3.2rem;
-//           button {
-//             width: 3rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-// .cqList3 {
-//   background: #dde5ec;
-//   > div {
-//     width: 100%;
-//     display: flex;
-//     flex-flow: row wrap;
-//     h3 {
-//       margin: 0;
-//       width: 100%;
-//       height: 68/45rem;
-//       line-height: 68/45rem;
-//       font-weight: normal;
-//       box-shadow: inset 1px 2px 1px #fff;
-//       text-align: center;
-//       background: #7a7a7a;
-//       color: #fff;
-//     }
-//     ul {
-//       display: flex;
-//       width: 100%;
-//       justify-content: space-around;
-//       flex-flow: row wrap;
-
-//       li {
-//         button {
-//           position: relative;
-//           width: 260/60rem;
-//           margin: 0 auto;
-//           text-align: center;
-//           height: 116/60rem;
-//           border: 1px solid #e5e5e5;
-//           margin: 0.3rem auto;
-//           background: #fff;
-//           line-height: 116/60rem;
-//           font-size: 38/60rem;
-//         }
-//         .isred:before {
-//           content: "";
-//           background: url("@{public_img}/images/red1.png") no-repeat;
-//           background-size: 0.55rem 0.55rem;
-//           position: absolute;
-//           left: -1px;
-//           top: -1px;
-//           width: 0.55rem;
-//           height: 0.55rem;
-//         }
-//         .isred {
-//           border: 1px solid #ed0132;
-//         }
-//       }
-//     }
-//   }
-//   ul {
-//     > li {
-//       > span {
-//         display: block;
-//         background: red;
-//         width: 100%;
-//         height: 1.5rem;
-//         line-height: 1.5rem;
-//         font-size: 12/20rem;
-//         text-align: center;
-//         border: 1px solid #fff;
-//         background: -webkit-radial-gradient(#555, #2a2926);
-//         color: #fcfcfc;
-//       }
-//       > ul {
-//         background: red;
-//         li {
-//           display: inline-block;
-//           width: 180/45rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 146/45rem;
-
-//             height: 89/45rem;
-//             border: 1px solid #e5e5e5;
-//             margin: 8/45rem auto 0;
-//             background: #fff;
-//             line-height: 40/45rem;
-
-//             border-radius: 3/20rem;
-//             > span:nth-child(2) {
-//               color: #5084e2;
-//               font-size: 12/20rem;
-//               font-family: Arial !important;
-//               display: block;
-//               width: 100%;
-//               height: 40%;
-//               margin-bottom: -0.1rem;
-//               line-height: 0.9rem;
-//               background: linear-gradient(#eef1f5, #fff);
-//               background: -webkit-linear-gradient(#eef1f5, #fff);
-//             }
-//             > span:nth-child(1) {
-//               line-height: 1.5;
-//               height: 60%;
-//               display: block;
-//               font-size: 32/40rem;
-//             }
-//           }
-
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-child(45) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//         li:nth-child(45),
-//         li:nth-child(46),
-//         li:nth-child(47),
-//         li:nth-child(48),
-//         li:nth-child(49) {
-//           width: 3.2rem;
-//           button {
-//             width: 2.63333333rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-
-// .cqList7 {
-//   /*    padding-bottom: 2.3rem;*/
-//   background: #dde5ec;
-//   height: 18rem;
-//   ul {
-//     > li {
-//       /*width: 5.33333333rem;*/
-//       > span {
-//         display: block;
-//         background: red;
-//         width: 100%;
-//         height: 1.5rem;
-//         line-height: 1.5rem;
-//         font-size: 12/20rem;
-//         text-align: center;
-//         border: 1px solid #fff;
-//         background: -webkit-radial-gradient(#555, #2a2926);
-//         color: #fcfcfc;
-//       }
-//       > ul {
-//         text-align: center;
-//         background: #dde5ec;
-//         li {
-//           display: inline-block;
-//           width: 5.33333333rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 4rem;
-//             margin: 0 auto;
-//             height: 3.2666667rem;
-//             border: 1px solid #e5e5e5;
-//             border-radius: 3/20rem;
-//             margin: 15/45rem auto 0;
-//             background: #fff;
-//             padding: 0;
-//             /*line-height: 159/60rem;*/
-//             > span:nth-child(2) {
-//               height: 40%;
-//               width: 100%;
-//               display: block;
-//               line-height: 80/60rem;
-//               color: #125dc9;
-//               font-size: 12/20rem;
-//               font-family: "arial";
-//               background: linear-gradient(#eef1f5, #fff);
-//               background: -webkit-linear-gradient(#eef1f5, #fff);
-//             }
-//             > span:nth-child(1) {
-//               font-size: 32/40rem;
-//               padding-top: 8/20rem;
-//               height: 60%;
-//               display: block;
-//               width: 100%;
-//               line-height: 90/60rem;
-//               font-weight: normal;
-//               font-family: "arial";
-//             }
-//           }
-
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-child(12) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-// .cqList5 {
-//   /*    padding-bottom: 2.3rem;*/
-//   background: #dde5ec;
-//   height: 18rem;
-//   > div {
-//     /*height: 73/20rem;*/
-//     width: 100%;
-//     display: flex;
-//     flex-flow: row wrap;
-//     background-color: #fff;
-//     h3 {
-//       margin: 0;
-//       width: 100%;
-//       height: 68/45rem;
-//       line-height: 68/45rem;
-//       font-weight: normal;
-//       box-shadow: inset 1px 2px 1px #fff;
-//       text-align: center;
-//       background: #7a7a7a;
-//       color: #fff;
-//       /*margin-left: -4px;*/
-//     }
-//     ul {
-//       display: flex;
-//       width: 100%;
-//       justify-content: space-around;
-//       li {
-//         /*width: 280/45rem;*/
-//         div {
-//           width: 430/60rem;
-//           margin: 0 auto;
-//           text-align: center;
-//           height: 93/60rem;
-//           border: 1px solid #e5e5e5;
-//           margin: 0.3rem auto;
-//           background: #fff;
-//           line-height: 93/60rem;
-//           font-size: 38/60rem;
-//         }
-//         .isred {
-//           border: 1px solid #ff2312;
-//           box-sizing: border-box;
-//         }
-//       }
-//     }
-//   }
-//   ul {
-//     > li {
-//       > span {
-//         display: block;
-//         background: red;
-//         width: 100%;
-//         height: 1.5rem;
-//         line-height: 1.5rem;
-//         font-size: 12/20rem;
-//         text-align: center;
-//         border: 1px solid #fff;
-//         // border-left: 2/20rem solid #8c8c8c;
-//         // border-right: 2/20rem solid #d9d9d9;
-//         // border-bottom: 2/20rem solid #595959;
-//         // border-top: 2/20rem solid #636363;
-//         background: -webkit-radial-gradient(#555, #2a2926);
-//         color: #fcfcfc;
-//       }
-//       > ul {
-//         text-align: center;
-//         background: #dde5ec;
-//         li {
-//           margin: 0 2/20rem;
-//           display: inline-block;
-//           width: 230/45rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 4.5rem;
-//             margin: 0 auto;
-//             height: 89/45rem;
-//             border: 1px solid #e5e5e5;
-//             margin: 8/45rem auto 0;
-//             background: #fff;
-//             line-height: 40/45rem;
-//             border-radius: 3/20rem;
-//             padding: 0;
-//             > span:nth-child(2) {
-//               color: #5084e2;
-//               font-size: 12/20rem;
-//               font-family: Arial !important;
-//               display: block;
-//               width: 100%;
-//               height: 40%;
-//               line-height: 0.9rem;
-//               background: linear-gradient(#eef1f5, #fff);
-//               background: -webkit-linear-gradient(#eef1f5, #fff);
-//             }
-//             > span:nth-child(1) {
-//               line-height: 1.5;
-//               height: 60%;
-//               display: block;
-//               font-size: 32/40rem;
-//             }
-//           }
-
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-child(17),
-//         li:nth-child(18),
-//         li:nth-child(19),
-//         li:nth-child(20) {
-//           > button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-// .qin {
-//   /* margin-left: -8px;*/
-// }
-// .cqList6 {
-//   /* padding-bottom: 2.3rem;*/
-//   background: #dde5ec;
-//   height: 18rem;
-//   ul {
-//     > li {
-//       > span {
-//         display: block;
-//         background: red;
-//         width: 100%;
-//         height: 1.5rem;
-//         line-height: 1.5rem;
-//         font-size: 12/20rem;
-//         text-align: center;
-//         border: 1px solid #fff;
-//         background: -webkit-radial-gradient(#555, #2a2926);
-//         color: #fcfcfc;
-//       }
-//       > ul {
-//         text-align: center;
-//         background: #dde5ec;
-//         li {
-//           display: inline-block;
-//           margin: 0 /20rem;
-//           width: 180/45rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 3.5rem;
-//             height: 2.277778rem;
-//             border: 1px solid #e5e5e5;
-//             margin: 8/45rem auto 0;
-//             background: #fff;
-//             line-height: 40/45rem;
-//             border-radius: 3/20rem;
-//             padding: 0;
-//             > span:nth-child(2) {
-//               color: #5084e2;
-//               font-size: 12/20rem;
-//               font-family: Arial !important;
-//               display: block;
-//               width: 100%;
-//               height: 40%;
-//               line-height: 0.9rem;
-//               background: linear-gradient(#eef1f5, #fff);
-//               background: -webkit-linear-gradient(#eef1f5, #fff);
-//             }
-//             > span:nth-child(1) {
-//               line-height: 1.5;
-//               height: 60%;
-//               display: block;
-//               font-size: 32/40rem;
-//             }
-//           }
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-of-type(13),
-//         li:nth-of-type(14),
-//         li:nth-of-type(15),
-//         li:nth-of-type(16),
-//         li:nth-of-type(17),
-//         li:nth-of-type(18),
-//         li:nth-of-type(19),
-//         li:nth-of-type(20),
-//         li:nth-of-type(21),
-//         li:nth-of-type(22) {
-//           width: 3.1rem;
-//           button {
-//             width: 3rem;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
-// .cqList3 {
-//   /*padding-bottom: 2.3rem;*/
-//   background: #dde5ec;
-//   > div {
-//     /*height: 73/20rem;*/
-//     width: 100%;
-//     display: flex;
-//     flex-flow: row wrap;
-//     h3 {
-//       margin: 0;
-//       width: 100%;
-//       height: 68/45rem;
-//       line-height: 68/45rem;
-//       font-weight: normal;
-//       box-shadow: inset 1px 2px 1px #fff;
-//       text-align: center;
-//       // background: #7a7a7a;
-//       color: #fff;
-//       /*margin-left: -4px;*/
-//     }
-//     ul {
-//       display: flex;
-//       width: 100%;
-//       background: #dde5ec;
-//       justify-content: space-around;
-//       li {
-//         /*width: 280/45rem;*/
-//         div {
-//           width: 430/60rem;
-//           margin: 0 auto;
-//           text-align: center;
-//           height: 93/60rem;
-//           border: 1px solid #e5e5e5;
-//           margin: 0.3rem auto;
-//           background: #fff;
-//           line-height: 93/60rem;
-//           font-size: 38/60rem;
-//         }
-//         .isred {
-//           border: 1px solid #ff2312;
-//           box-sizing: border-box;
-//         }
-//       }
-//     }
-//   }
-
-//   ul {
-//     > li {
-//       width: 320/60rem;
-//       display: inline-block;
-//       > span {
-//         margin: 0;
-//         width: 100%;
-//         display: block;
-//         height: 68/45rem;
-//         line-height: 68/45rem;
-//         font-weight: normal;
-//         box-shadow: inset 1px 2px 1px #fff;
-//         text-align: center;
-//         // background: #7a7a7a;
-//         color: #fff;
-//       }
-//       > ul {
-//         text-align: center;
-//         background: #dde5ec;
-//         > li {
-//           display: inline-block;
-//           width: 4.5rem;
-//           button {
-//             position: relative;
-//             outline: 0;
-//             text-align: center;
-//             width: 100%;
-//             margin: 0 auto;
-//             height: 89/45rem;
-//             border: 1px solid #e5e5e5;
-//             margin: 8/45rem auto 0;
-//             background: #fff;
-//             padding: 0;
-//             line-height: 40/45rem;
-//             > span:nth-child(2) {
-//               height: 38/45rem;
-//               width: 100%;
-//               display: block;
-//               color: #125dc9;
-//               font-size: 12/20rem;
-//               font-family: "arial";
-//             }
-//             > span:nth-child(1) {
-//               padding-top: 3px;
-//               font-size: 28/45rem;
-//               height: 43/45rem;
-//               display: block;
-//               width: 100%;
-//               font-weight: normal;
-//               font-family: "arial";
-//             }
-//           }
-//           .active {
-//             border: 1/20rem solid #156bda;
-//             span:nth-of-type(2) {
-//               background: #3261d8;
-//               color: #fff;
-//             }
-//           }
-//         }
-//         li:nth-child(13) {
-//           button {
-//             margin-bottom: 8/45rem;
-//           }
-//         }
-//       }
-//     }
-//     li:nth-child(2n) {
-//       > ul {
-//         // background: #fff;
-//       }
-//     }
-//   }
-// }
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+        li:nth-child(17),
+        li:nth-child(18),
+        li:nth-child(19),
+        li:nth-child(20) {
+          > button {
+            margin-bottom: 8/45rem;
+          }
+        }
+      }
+    }
+  }
+}
+.cqList6 {
+  background: #dde5ec;
+  height: 18rem;
+  ul {
+    > li {
+      > span {
+        display: block;
+        background: red;
+        width: 100%;
+        height: 1.5rem;
+        line-height: 1.5rem;
+        font-size: 12/20rem;
+        text-align: center;
+        border: 1px solid #fff;
+        background: -webkit-radial-gradient(#555, #2a2926);
+        color: #fcfcfc;
+      }
+      > ul {
+        text-align: center;
+        background: #dde5ec;
+        li {
+          display: inline-block;
+          margin: 0 /20rem;
+          width: 20%;
+          button {
+            position: relative;
+            outline: 0;
+            text-align: center;
+            width: 2.8rem;
+            height: 2.277778rem;
+            border: 1px solid #e5e5e5;
+            margin: 8/45rem auto;
+            background: #fff;
+            line-height: 40/45rem;
+            border-radius: 3/20rem;
+            padding: 0;
+            > span:nth-child(2) {
+              color: #5084e2;
+              font-size: 12/20rem;
+              font-family: Arial !important;
+              display: block;
+              width: 100%;
+              height: 40%;
+              line-height: 0.9rem;
+              margin-bottom:-.2rem;
+              color:#999999;
+              background: linear-gradient(#eef1f5, #fff);
+              background: -webkit-linear-gradient(#eef1f5, #fff);
+            }
+            > span:nth-child(1) {
+              text-align: center;
+              font-size: 0.7rem;
+              width: .9rem;
+              height: .9rem;
+              border: 1px solid #105ff5;
+              display: inline-block;
+              border-radius: 50%;
+              line-height: .9rem;
+              background: #105ff5;
+              color: #fff;
+              position: relative;
+              margin-bottom:.2rem;
+            }
+          }
+          .active {
+            border: 1/20rem solid #156bda;
+            span:nth-of-type(2) {
+              background: #3261d8;
+              color: #fff;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 h3 {
   margin: 0;
   width: 100%;
+
   height: 68/45rem;
   line-height: 68/45rem;
   font-weight: normal;
@@ -3452,7 +2656,7 @@ h3 {
 .bet_bar {
   width: 100%;
   z-index: 999;
-  position: absolute;
+  position: fixed;
   bottom: 52px;
   display: flex;
   justify-content: space-around;
@@ -3623,6 +2827,10 @@ h3 {
     }
   }
 }
+.kuan1{
+  background: url("@{public_img}/images/moneybao.png") no-repeat !important;
+   background-size: 100% 100%!important;
+}
 .bet_bar {
   width: 100%;
   bottom: 0;
@@ -3669,7 +2877,8 @@ h3 {
       line-height: 1.15rem;
       margin-right: 0.2rem;
       display: inline-block;
-      background: url("@{public_img}/images/moneybao.png") no-repeat;
+      // background: url("@{public_img}/images/moneybao.png") no-repeat;
+      background: url("@{public_img}/images/many_bao.png") no-repeat;
       background-size: 100% 100%;
       font-size: 0.5rem;
     }

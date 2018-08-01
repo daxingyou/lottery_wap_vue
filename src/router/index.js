@@ -230,6 +230,11 @@ const lvlh = resolve => {
     resolve(component);
   });
 };
+const agdss = resolve => {
+  System.import("../views/activity/agdss").then(component => {
+    resolve(component);
+  });
+};
 const duanwu = resolve => {
   System.import("../views/activity/duanwu").then(component => {
     resolve(component);
@@ -280,6 +285,12 @@ const Index = resolve => {
 
 const Game55 = resolve => {
   System.import("../views/Games/game_55").then(component => {
+    resolve(component);
+  });
+};
+
+const Game220 = resolve => {
+  System.import("../views/Games/game_220").then(component => {
     resolve(component);
   });
 };
@@ -373,8 +384,27 @@ const Test = resolve => {
     resolve(component);
   });
 };
+
 const Game180 = resolve => {
   System.import("../views/Games/game_180").then(component => {
+    resolve(component)
+  })
+};
+
+const gameChat = resolve => {
+  System.import("../components/game-chat/index").then(component => {
+    resolve(component)
+  })
+};
+
+const mobileChat = resolve => {
+  System.import("../components/mobile-chat/index").then(component => {
+    resolve(component)
+  })
+};
+
+const Game133 = resolve => {
+  System.import("../views/Games/game_133").then(component => {
     resolve(component)
   })
 }
@@ -389,8 +419,22 @@ let routes = [
     redirect: "/index"
   },
   {
+    path: "/game-chat",
+    name: 'game-chat',
+    component: gameChat
+  },
+  {
+    path: "/mobile-chat",
+    name: 'mobile-chat',
+    component: mobileChat
+  },
+  {
     path: "/game_55",
     component: Game55
+  },
+  {
+    path: "/game_220",
+    component: Game220
   },
   {
     path: "/game_90",
@@ -451,6 +495,10 @@ let routes = [
   {
     path: '/game_180',
     component: Game180
+  },
+  {
+    path: '/game_133',
+    component: Game133
   },
   {
     path: '/my',
@@ -625,6 +673,10 @@ let routes = [
   {
     path: "/lvlh",
     component: lvlh
+  },
+  {
+    path: "/agdss",
+    component: agdss
   },
   {
     path: "/duanwu",

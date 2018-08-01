@@ -87,7 +87,7 @@
 		</div>
 		<div class="foot_bbh" >
 			Copyright ©2012-2018 All Right Reseverd <br/>
-			<a v-show="is_gd_ali != '618cp'" href="https://want-gaming.com" target="_blank" >万游科技提供技术支持</a>
+			<a v-show="techShow" href="https://want-gaming.com" target="_blank" >万游科技提供技术支持</a>
 		</div>
 		<promptbox @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" :promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
 	</div>
@@ -146,13 +146,20 @@ export default {
       panelShow: false,
       promptboxshow: true,
       promptsystem: "",
-      successshow: false
+			successshow: false,
+			techShow:false
     };
   },
   components: {
     promptbox
   },
-  created() {},
+  created() {
+		['lv', 'uc', 'fh', 'ly', 'gd','ali'].forEach(item => {
+      if (item === this.is_gd_ali) {
+        this.techShow = true
+      }
+    })
+	},
   methods: {
     changePasswordType_a() {
       (this.ispassword_a = !this.ispassword_a)
@@ -279,7 +286,16 @@ export default {
                     sessionStorage.setItem(
                       "im_firstr",
                       res.data.oid
-                    );
+										);
+
+										 // 重新加载赔率
+										if (
+											localStorage.getItem('odds_version') &&
+											res.data.rate_version != localStorage.getItem('odds_version')
+										) {
+											localStorage.clear()
+										}
+										localStorage.setItem('odds_version', res.data.rate_version)
 
                     setTimeout(() => {
                       this.panelShow = false;
@@ -443,7 +459,7 @@ export default {
       color:#4975ca;
     }
   }
-	
+
 	button {
 		outline: none;
 	}
@@ -458,12 +474,12 @@ export default {
 		height: 100%;
 		background: #fff;
 	}
-	
+
 	.back_login {
 		padding-top: 1rem;
 		text-align: center;
 	}
-	
+
 	.cent1>a {
 		text-decoration: none;
 		margin: 0.5rem auto;
@@ -473,11 +489,11 @@ export default {
 			height: 0.8rem;
 		}
 	}
-	
+
 	 ::-webkit-input-placeholder {
 		color: #cbcbcb;
 	}
-	
+
 	.cent1 {
 		padding: 0.5rem 1.5rem;
 		.logoazhu{
@@ -486,13 +502,13 @@ export default {
 			margin: 2rem auto 1rem;
 		}
 	}
-	
+
 	.cent1 h3 {
 		padding: 0;
 		margin: 0;
 		color: #fff;
 	}
-	
+
 	.form input {
 		width: 9.7rem;
 		height: 2rem;
@@ -505,19 +521,19 @@ export default {
 		margin-left: 5/20rem;
 		outline: 0;
 	}
-	
+
 	.form span {
 		color: #E0E2E7;
 		font-size: 0.6rem;
 	}
-	
+
 	.input3 {
 		width: 160/20rem;
 		margin-left: 4/25rem;
 		float: left;
 		margin-top: 0.25rem;
 	}
-	
+
 	.select_a {
 		height: 48/20rem;
 		>span:nth-of-type(1) {
@@ -538,7 +554,7 @@ export default {
 			padding-left: 6/20rem;
 		}
 	}
-	
+
 	.input3 select {
 		width: 32/20rem;
 		height: 1.5rem;
@@ -554,17 +570,17 @@ export default {
 		padding-left: 0.5rem;
 		margin-right: 0/20rem;
 	}
-	
+
 	.w {
 		color: #fff;
 		margin: 0.5rem 0 0.5rem 3rem;
 	}
-	
+
 	.form .btn5 {
 		margin: 1rem auto;
 		border-bottom: none;
 	}
-	
+
 	.btn5 button {
 		width: 100%;
 		height: 2rem;
@@ -575,7 +591,7 @@ export default {
 		font-size: 0.7rem;
 		border: none;
 	}
-	
+
 	.form {
 		margin-top: 38/20rem;
 		span {
@@ -621,7 +637,7 @@ export default {
 			}
 		}
 	}
-	
+
 	.login_back {
 		padding: 0.275rem 0.8rem;
 		margin-bottom: -0.8rem;
@@ -646,7 +662,7 @@ export default {
 			color: #fff;
 		}
 	}
-	
+
 	.loading {
 		position: fixed;
 		width: 100%;
