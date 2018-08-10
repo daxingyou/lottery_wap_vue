@@ -52,7 +52,7 @@
             <!-- 六合彩 -->
             <span  v-for='i in isNuber(item.number).slice(0, isNuber(item.number).length-1)' v-if = "urlId==69||urlId==270" :class="`bgxg_${i}`"  class="cqsscdd">{{i}}</span>
              <span class="plus_tm"  v-if = "urlId==69||urlId==270">+</span>
-             <span  v-for='i in isNuber(item.number).slice(5, isNuber(item.number).length-1)' v-if = "urlId==69||urlId==270" :class="`bgxg_${i}`"  class="cqsscdd">{{isNuber(item.number)[isNuber(item.number).length-1]}}</span>
+             <span  v-for='i in isNuber(item.number).slice(5, isNuber(item.number).length-1)' v-if = "urlId==69||urlId==270" :class="`bgxg_${isNuber(item.number)[isNuber(item.number).length-1]}`"  class="cqsscdd">{{isNuber(item.number)[isNuber(item.number).length-1]}}</span>
             <!-- 蛋蛋 -->
             <span  v-for='i in isNuber(item.number).slice(0, isNuber(item.number).length-2)' v-if = "urlId==160"   class="cqsscdd">{{i}}</span>
             <span class="plus_tm"  v-if = "urlId==160">+</span>

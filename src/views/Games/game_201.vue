@@ -142,7 +142,7 @@ export default {
       zMoney: 0,
       updownB: true,
       nav_i: 0,
-      fentime: 30,
+      fentime: 60,
       promptboxtext: "",
       panelShow: false,
       zhanshi: false,
@@ -1170,7 +1170,7 @@ export default {
               this.round = res.data.next.round;
             }
           });
-      } else if (this.endtime <= 30 && this.endtime > 0) {
+      } else if (this.endtime <= 60 && this.endtime > 0) {
         this.qingkong();
         this.fengpan = true;
         this.$store.dispatch("hideDailogS");

@@ -454,7 +454,7 @@ export default {
         this.endtime == 0 ||
         this.endtime == 80 ||
         this.endtime == 70 ||
-        this.endtime == 60 ||
+        this.endtime == 60 || 
         this.endtime == 50 ||
         this.endtime == 30 
       ) {

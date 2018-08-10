@@ -56,7 +56,6 @@
         this.yesterday.setDate(this.yesterday.getDate() - 1);
         this.last7Days = new Date(new Date(this.currentDate).getTime() - (7 * 24 * 60 * 60 * 1000));
         
-        this.requestData();
         this.webSocketOnMessage();
         this.events();
       },
@@ -81,18 +80,13 @@
         // Websocket On Message
 
         eventBus.$on('websocket:success', (messageDetails) => {
-          this.historyPage = -1;
-          this.requestHistory();
-        });
-        
-        eventBus.$on('websocket:requestHistory', (messageDetails) => {
-          this.historyPage = -1;
+          this.requestData();
           this.requestHistory();
         });
 
         eventBus.$on('websocket:history', (messageDetails) => {
           var checkStatus = setInterval(() => {
-            if (this.adminUserList.status == 'ok') {
+            if (this.adminUserList.status == 'success') {
               clearInterval(checkStatus);
               this.prependMessage(messageDetails);
               this.historyMessageLength = messageDetails.message_body.length;
@@ -102,7 +96,7 @@
 
         eventBus.$on('websocket:(msg,img)', (messageDetails) => {
           var checkStatus = setInterval(() => {
-            if (this.adminUserList.status == 'ok') {
+            if (this.adminUserList.status == 'success') {
               clearInterval(checkStatus);
               this.appendMessage(messageDetails);
             }
@@ -112,7 +106,7 @@
         eventBus.$on('websocket:(msg_status,img_status)', (messageDetails) => {
           if (messageDetails.is_sent == 1) {
             var checkStatus = setInterval(() => {
-              if (this.adminUserList.status == 'ok') {
+              if (this.adminUserList.status == 'success') {
                 clearInterval(checkStatus);
                 this.appendMessage(messageDetails);
               }
@@ -218,8 +212,9 @@
         // console.log(messageData);
 
         // Message
-        if (messageData.message_type == 'img' || messageData.message_type == 'msg' || messageData.type == 'img' ||
-            messageData.type == 'msg' || messageData.type == 'msg_status' || messageData.type == 'img_status') {
+        if (messageData.message_type == 'img' || messageData.message_type == 'msg' || messageData.message_type == 'img' || messageData.message_type == 'red_packet' ||
+            messageData.message_type == 'add_red_pa' || messageData.type == 'img' || messageData.type == 'msg' || messageData.type == 'msg_status' ||
+            messageData.type == 'img_status') {
 
           var avatarOverlay = document.createElement('div');
               avatarOverlay.classList.add('avatarOverlay');
@@ -307,6 +302,12 @@
             var messageContent = document.createElement('span');
                 messageContent.classList.add('messageContent');
                 messageContent.innerHTML = this.convertMessage(messageData.message_body);
+          }
+
+          if (messageData.message_type == 'red_packet' || messageData.message_type == 'add_red_pa') {
+            var messageContent = document.createElement('span');
+                messageContent.classList.add('messageContent');
+                messageContent.innerHTML = messageData.message_type;
           }
 
           var messageOverlay = document.createElement('div');

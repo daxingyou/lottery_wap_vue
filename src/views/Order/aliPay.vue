@@ -42,7 +42,7 @@
       <button class="color1" @click.prevent.stop="submitM()">确认充值</button>
       <button class="color1" @click="chongzhi()">重置金额</button>
     </div>
-    <promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow" 
+    <promptbox  @panelShow="panelShow=false" :promptsystem="promptsystem" :successshow="successshow" :promptboxshow="promptboxshow" :panelShow="panelShow"
    	:promptboxtext="promptboxtext" :erreocode="erreocode"></promptbox>
 		<!--遮罩层结束-->
      <div style="position: absolute; left: 0; right: 0; top:0; bottom:0; background: rgba(0,0,0,0.5);z-index: 1000!important;" ref="div" v-if="showCurtion">
@@ -123,7 +123,7 @@ export default {
         6:"33",
         7:"22"
       },
-      payUrls:''
+      payUrls:[]
     }
   },
   methods: {
@@ -131,7 +131,7 @@ export default {
       if (i == undefined){
         i = 0
       }
-      this.navIndex = i; 
+      this.navIndex = i;
       this.paramsL = j;
       this.moneyMin = j.min;
       this.moneyMax = j.max;
@@ -151,7 +151,7 @@ export default {
           this.data = [100, 200, 300, 500, 800, 1000, 2000, 3000]
         } else if (this.moneyMin >= 500 && this.moneyMin <= 600) {
           this.data = [this.moneyMin, this.moneyMin + 100, this.moneyMin + 200, this.moneyMin + 300, 1000, 2000, 3000, 5000]
-        } else { 
+        } else {
           this.data = [this.moneyMin + 500, this.moneyMin + 1000, this.moneyMin + 1500, this.moneyMin + 2000, this.moneyMin + 2500, this.moneyMin + 3000, this.moneyMin + 3500, this.moneyMin + 4000]
         }
       }else{
@@ -162,7 +162,7 @@ export default {
           this.data = [102, 201, 301, 502, 801, 1002, 2003, 3004]
         } else if (this.moneyMin >= 500 && this.moneyMin <= 600) {
           this.data = [this.moneyMin, this.moneyMin + 101, this.moneyMin + 202, this.moneyMin + 304, 1001, 2002, 3004, 5001]
-        } else { 
+        } else {
           this.data = [this.moneyMin + 501, this.moneyMin + 1002, this.moneyMin + 1503, this.moneyMin + 2001, this.moneyMin + 2504, this.moneyMin + 3004, this.moneyMin + 3504, this.moneyMin + 4001]
         }
       }
@@ -173,14 +173,11 @@ export default {
         if (Number(this.shu) < Number(this.moneyMin)) {
           this.promptboxtext = `存款金额不能少于${this.moneyMin}`
           this.panelShow = true
-          this.canSumbit = false
           setTimeout(() => {
             this.panelShow = false
-            return
           }, 1200)
-        } else {
-          this.canSumbit = true
-        };
+          return
+        }
         if(Number(this.shu) > Number(this.moneyMax)) {
           if(this.moneyMax != 0) {
             this.canSubmitMax = false
@@ -188,7 +185,7 @@ export default {
             this.panelShow = true
       		  return;
           }
-        } 
+        }
         if (this.shu < this.alipaymin) {
           this.promptboxtext = `取款金额不能少于${this.alipaymin}`
           this.panelShow = true
@@ -198,22 +195,19 @@ export default {
           this.panelShow = true
           return;
         } else {
-        	this.showCurtion = true;
+        	// this.showCurtion = true;
           let t = this.paramsL;
           this.payUrl = `&money=${this.shu}`;
           if(location.href.split('?')[1]=='GameName=AG'){
           	this.payUrl+='&GameName=AG';
           }
-          window.location.href = this.payUrls+this.payUrl+"&PayId="+this.bankName;
+          window.location.href = this.payUrls[this.navIndex]+this.payUrl+"&PayID="+this.bankName;
         }
       } else {
         if (Number(this.shu) < Number(this.moneyMin)) {
           this.promptboxtext = `存款金额不能少于${this.moneyMin}`;
           this.panelShow = true;
-          this.canSumbit = false;
           return
-        } else {
-          this.canSumbit = true;
         }
         if (Number(this.shu) > Number(this.moneyMax)) {
           this.canSubmitMax = false;
@@ -232,13 +226,13 @@ export default {
           this.panelShow = true;
           return
         } else if (this.shu >= this.alipaymin && this.isEnd == true) {
-        	this.showCurtion = true;
+        	// this.showCurtion = true;
           let t = this.paramsL;
           this.payUrl = `${t}&money=${this.shu}` ;
           if(location.href.split('?')[1]=='GameName=AG'){
           	this.payUrl+='&GameName=AG';
           }
-          window.location.href = this.payUrls+this.payUrl;
+          window.location.href = this.payUrls[this.navIndex]+this.payUrl;
         } else {
           this.promptboxtext = "操作异常，请重试";
           this.panelShow = true;
@@ -294,7 +288,7 @@ export default {
         for (let i = 0; i < res.data.online_pay_limit.length; i++) {
           if (this.urlId == this.type_list[res.data.online_pay_limit[i].pay_type]) {
             this.aliPayId.push(res.data.online_pay_limit[i])
-            this.payUrls = res.data.online_pay_limit[i].payUrl
+            this.payUrls.push(res.data.online_pay_limit[i].payUrl)
           }
         }
         let money_ss =  this.aliPayId[0]
@@ -325,7 +319,7 @@ export default {
           this.data = [100, 200, 300, 500, 800, 1000, 2000, 3000]
         } else if (this.moneyMin >= 500 && this.moneyMin <= 600) {
           this.data = [this.moneyMin, this.moneyMin + 100, this.moneyMin + 200, this.moneyMin + 300, 1000, 2000, 3000, 5000]
-        } else { 
+        } else {
           this.data = [this.moneyMin + 500, this.moneyMin + 1000, this.moneyMin + 1500, this.moneyMin + 2000, this.moneyMin + 2500, this.moneyMin + 3000, this.moneyMin + 3500, this.moneyMin + 4000]
         }
       }else{
@@ -336,11 +330,11 @@ export default {
           this.data = [102, 201, 301, 502, 801, 1002, 2003, 3004]
         } else if (this.moneyMin >= 500 && this.moneyMin <= 600) {
           this.data = [this.moneyMin, this.moneyMin + 101, this.moneyMin + 202, this.moneyMin + 304, 1001, 2002, 3004, 5001]
-        } else { 
+        } else {
           this.data = [this.moneyMin + 501, this.moneyMin + 1002, this.moneyMin + 1503, this.moneyMin + 2001, this.moneyMin + 2504, this.moneyMin + 3004, this.moneyMin + 3504, this.moneyMin + 4001]
         }
       }
-      
+
     })
 
 
@@ -522,14 +516,14 @@ button:nth-child(2) {
    /* background-image: url(../../../wap/images/pay_aisle.png);*/
     background-color:#E4E4E4;
   /*  box-shadow: 0 1/20rem 2/20rem #a0a0a0;*/
-    
+
     margin-left: 8/20rem;
     margin-top: 6/20rem;
     display: inline-block;
     font-size: 14/20rem;
     width: 95/20rem;
     border-radius: 3/20rem 3/20rem 3/20rem 3/20rem;
-   
+
     color: #9C9C9C;
     font-weight: 600;
     text-align: center;

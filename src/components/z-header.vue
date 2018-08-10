@@ -37,7 +37,7 @@
                 'myHistroy':"彩票记录",
                 'realHistory':"真人记录",
                 'dzHistory':"电子记录",
-                // 'qpHistory':"棋牌记录",
+                'qpHistory':"棋牌记录",
                 'sportHistory':"体育记录",
                 'fishHistory':"捕鱼记录",
             },
@@ -74,25 +74,51 @@
         }
     },
     created(){
-      this.openChessOrNot()// 是否要开启棋牌的下注记录
 
-      if(this.is_gd_ali == 'yile' && this.is_gd_ali == 'crow'){
-        this.listGame.dzHistory = '电子记录';
-      }
-      if(this.is_gd_ali == 'fulicai' || this.is_gd_ali == 'ali' || this.is_gd_ali == 'gd'){
-        // delete this.listGame.sportHistory;
-        delete this.listGame.realHistory;
-        delete this.listGame.dzHistory;
+      const fish = JSON.parse(sessionStorage.gamesort).sort.indexOf('5') > -1
+      const real = JSON.parse(sessionStorage.gamesort).sort.indexOf('1') > -1
+      const sport = JSON.parse(sessionStorage.gamesort).sort.indexOf('4') > -1
+      const mg = JSON.parse(sessionStorage.gamesort).sort.indexOf('7') > -1
+      const hasChess = JSON.parse(sessionStorage.gamesort).sort.indexOf('6') > -1
+      // 推荐位是否存在
+      const tfish = JSON.parse(sessionStorage.gamesort).tj_sort.indexOf('5') > -1
+      const treal = JSON.parse(sessionStorage.gamesort).tj_sort.indexOf('1') > -1
+      const tsport = JSON.parse(sessionStorage.gamesort).tj_sort.indexOf('4') > -1
+      const tmg = JSON.parse(sessionStorage.gamesort).tj_sort.indexOf('7') > -1
+      const thasChess = JSON.parse(sessionStorage.gamesort).tj_sort.indexOf('6') > -1
+      this.openChessOrNot()// 是否要开启棋牌的下注记录
+      if(fish == false && tfish == false){
         delete this.listGame.fishHistory;
       }
-      if(this.is_gd_ali == 'fulicai'){
-         delete this.listGame.sportHistory;
+      if(real == false && treal == false){
+        delete this.listGame.realHistory;
       }
-      if(this.is_gd_ali == 'letian'){
-         delete this.listGame.dzHistory;
+      if(sport == false && tsport == false){
+        delete this.listGame.sportHistory;
       }
+      if(mg == false && tmg == false){
+        delete this.listGame.dzHistory;
+      }
+      if(hasChess == false && thasChess == false){
+        delete this.listGame.qpHistory;
+      }
+      // if(this.is_gd_ali == 'yile'){
+      //   this.listGame.dzHistory = '电子记录';
+      // }
+      // if(this.is_gd_ali == 'fulicai' || this.is_gd_ali == 'ali' || this.is_gd_ali == 'gd'){
+      //   // delete this.listGame.sportHistory;
+      //   delete this.listGame.realHistory;
+      //   delete this.listGame.dzHistory;
+      //   delete this.listGame.fishHistory;
+      // }
+      // if(this.is_gd_ali == 'fulicai'){
+      //    delete this.listGame.sportHistory;
+      // }
+      // if(this.is_gd_ali == 'letian'){
+      //    delete this.listGame.dzHistory;
+      // }
       if (typeof(location.href.split('?')[1]) != 'undefined')
-        {
+        { 
             let pa = location.href.split('?')[1].split('=')[1];
         }
     }

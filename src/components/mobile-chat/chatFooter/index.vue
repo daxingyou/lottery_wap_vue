@@ -304,7 +304,7 @@
         this.$http.post(`${this.data.chat_server_url}/FILE/file-manager/upload-image/`, formData).then(
           success => {
             console.log(success);
-            if (success.data.status == 'ok') {
+            if (success.data.status == 'success') {
               this.websocketSendMessage({
                 type: 'img',
                 content: success.data.data[0]
